@@ -3,6 +3,7 @@ import "../../assets/css/Index/CoursesSection.css"; // Nhớ tạo file CSS
 import hinh1 from "../../assets/img/course-1.jpg";
 import hinh2 from "../../assets/img/course-2.jpg";
 import hinh3 from "../../assets/img/course-3.jpg";
+import { Link } from "react-router-dom";
 
 function CoursesSection() {
   const courses = [
@@ -56,7 +57,7 @@ function CoursesSection() {
                     <p className="category">{course.category}</p>
                   </div>
                   <h3>
-                    <a href="course-details.html">{course.title}</a>
+                    <Link to="/signup">{course.title}</Link>
                   </h3>
                   <p className="description">{course.description}</p>
                 </div>

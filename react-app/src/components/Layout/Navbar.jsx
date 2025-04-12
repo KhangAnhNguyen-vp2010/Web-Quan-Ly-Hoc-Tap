@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "../../assets/css/Layout/Navbar.css"; // Import your CSS file for styling
 
 const Navbar = () => {
@@ -15,7 +15,9 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="logo">EDUCATION 4.0</div>
+      <a href="/" className="logo">
+        EDUCATION 4.0
+      </a>
 
       <div className="hamburger" onClick={toggleMenu}>
         <span></span>

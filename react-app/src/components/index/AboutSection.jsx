@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../../assets/css/Index/AboutSection.css"; // Thay bằng đường dẫn đến file CSS của bạn
 
 function About(props) {
@@ -46,10 +47,10 @@ function About(props) {
               </li>
             </ul>
             {props.btn_more && (
-              <a href="#" className="read-more">
+              <Link to="/about" className="read-more">
                 <span>Read More</span>
                 <i className="bi bi-arrow-right"></i>
-              </a>
+              </Link>
             )}
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import "../../assets/css/Index/FeaturesSection.css"; // Thay bằng đường dẫn đến file CSS của bạn
+import { Link } from "react-router-dom";
 const featuresData = [
   { icon: "bi-eye", color: "#ffbb2c", title: "Lorem Ipsum", delay: 100 },
   { icon: "bi-infinity", color: "#5578ff", title: "Pain System", delay: 200 },
@@ -43,9 +44,9 @@ function FeaturesSection() {
                   style={{ color: feature.color }}
                 ></i>
                 <h3>
-                  <a href="#" className="stretched-link">
+                  <Link to="/about" className="stretched-link">
                     {feature.title}
-                  </a>
+                  </Link>
                 </h3>
               </div>
             </div>
