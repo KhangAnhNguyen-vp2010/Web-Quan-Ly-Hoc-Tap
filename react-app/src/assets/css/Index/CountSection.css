@@ -1,0 +1,55 @@
+/* Count Section */
+.section.counts {
+  padding: 60px 0;
+  background: #f9f9f9;
+}
+
+.stats-item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+}
+
+.stats-item span {
+  font-size: 48px;
+  font-weight: 700;
+  color: #7494ec;
+  display: block;
+  margin-bottom: 10px;
+  line-height: 1;
+  animation: pulse-number 1s ease-in-out infinite;
+}
+
+.stats-item p {
+  margin: 0;
+  font-size: 18px;
+  color: #444;
+  font-weight: 500;
+}
+
+@keyframes pulse-number {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.stats-item .counter {
+  font-size: 48px;
+  font-weight: 700;
+  color: #007bff;
+  display: block;
+  margin-bottom: 10px;
+}

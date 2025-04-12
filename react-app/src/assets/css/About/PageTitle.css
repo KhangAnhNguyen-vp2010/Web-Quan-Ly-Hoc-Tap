@@ -1,0 +1,64 @@
+.page-title {
+  background-color: #7494ec;
+  padding: 80px 0 40px;
+  text-align: center;
+  position: relative;
+}
+
+.page-title .heading h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: whitesmoke;
+  margin-bottom: 20px;
+}
+
+.page-title .heading p {
+  font-size: 18px;
+  color: whitesmoke;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.breadcrumbs {
+  background-color: #7494ec;
+  padding: 12px 0;
+  margin-top: 40px;
+}
+
+.breadcrumbs ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.breadcrumbs li {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  content: "›";
+  margin: 0 8px;
+  color: #9ca3af;
+}
+
+.breadcrumbs li a {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.breadcrumbs li a:hover {
+  color: #2563eb;
+}
+
+.breadcrumbs .current {
+  font-weight: 600;
+  color: #374151;
+}
