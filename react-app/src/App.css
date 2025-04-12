@@ -1,0 +1,18 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+body {
+  background-color: #fff;
+}
+
+.App {
+  padding-top: 80px; /* Đảm bảo nội dung không bị Navbar che khuất */
+}
+
+.App .Login-Layout {
+  padding-top: -100px; /* Đảm bảo nội dung không bị Navbar che khuất */
+}

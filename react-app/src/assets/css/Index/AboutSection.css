@@ -1,0 +1,69 @@
+/* Phần tổng thể section */
+.about.section {
+  padding: 60px 0;
+  background: #f9f9f9;
+}
+
+/* Tiêu đề */
+.about .content h3 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+/* Đoạn chữ nghiêng */
+.about .content p.fst-italic {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Danh sách ul */
+.about .content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.about .content ul li {
+  padding-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  color: #444;
+}
+
+.about .content ul li i {
+  color: #7494ec;
+  font-size: 20px;
+  margin-right: 10px;
+  margin-top: 3px;
+}
+
+.about .read-more {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  background-color: #7494ec;
+  font-size: 16px;
+}
+
+.about .read-more i {
+  margin-left: 10px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.about .read-more:hover {
+  opacity: 0.8;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.2);
+}
+
+.about .read-more:hover i {
+  transform: translateX(6px);
+}

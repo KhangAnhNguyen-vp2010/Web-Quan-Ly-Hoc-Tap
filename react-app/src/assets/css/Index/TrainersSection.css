@@ -1,0 +1,96 @@
+/* Trainers Section Styling */
+.trainers-index {
+  background-color: #f9f9f9;
+  padding: 60px 0;
+}
+
+.trainers-index .section-title h2 {
+  font-size: 32px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #1f2d3d;
+}
+
+.trainers-index .section-title p {
+  color: #555;
+  margin-bottom: 40px;
+  font-size: 18px;
+}
+
+.member {
+  background: #fff;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.member img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.member-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.member-content h4 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.member-content span {
+  display: block;
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 15px;
+}
+
+.member-content p {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.member .social a {
+  font-size: 18px;
+  display: inline-block;
+  background: #eee;
+  color: #555;
+  padding: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.member .social a:hover {
+  background: #7494ec;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .member-content {
+    padding: 15px;
+  }
+
+  .member-content h4 {
+    font-size: 18px;
+  }
+
+  .member-content p {
+    font-size: 14px;
+  }
+}
