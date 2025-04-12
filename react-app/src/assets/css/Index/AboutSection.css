@@ -51,6 +51,7 @@
   transition: all 0.3s ease-in-out;
   background-color: #7494ec;
   font-size: 16px;
+  text-decoration: none;
 }
 
 .about .read-more i {

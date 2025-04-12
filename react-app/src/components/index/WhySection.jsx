@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../../assets/css/Index/WhySection.css"; // Thay bằng đường dẫn đến file CSS của bạn
 function WhySection(params) {
   return (
@@ -15,10 +16,10 @@ function WhySection(params) {
                 optio ad corporis.
               </p>
               <div className="text-center">
-                <a href="#" className="more-btn">
+                <Link to="/contact" className="more-btn">
                   <span>Learn More</span>{" "}
                   <i className="bi bi-chevron-right"></i>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
