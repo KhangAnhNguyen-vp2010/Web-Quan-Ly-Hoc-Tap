@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VSCode settings
+.vscode/
+
+# Database (nếu bạn dùng SQLite file)
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python logs/debug
+*.log
+
+# FastAPI auto-generated files (nếu có)
+*.pid
