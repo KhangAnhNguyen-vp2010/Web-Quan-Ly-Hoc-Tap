@@ -1,4 +1,4 @@
-import "../../assets/css/Layout/Footer.css"; // Import your CSS file for styling
+import "../assets/css/Layout/Footer.css"; // Import your CSS file for styling
 
 function Footer() {
   return (
