@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import styles from "../../assets/css/Layout/LoginLayout.module.css"; // Import your CSS file for styling
+import styles from "../assets/css/Layout/LoginLayout.module.css"; // Import your CSS file for styling
 import clsx from "clsx";
 function LoginLayout(params) {
   return (

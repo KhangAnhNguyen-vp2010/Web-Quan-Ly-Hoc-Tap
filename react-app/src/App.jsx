@@ -8,10 +8,10 @@ import Index from "./components/index/Index"; // Đường dẫn đến file Ind
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
-import MainLayout from "./components/Layout/MainLayout";
-import LoginLayout from "./components/Layout/LoginLayout";
-import Login from "./components/Login_Form/Login";
-import ScrollToTop from "./components/Layout/ScrollToTop";
+import MainLayout from "./layouts/MainLayout";
+import LoginLayout from "./layouts/LoginLayout";
+import Login from "./pages/Login";
+import ScrollToTop from "./layouts/ScrollToTop";
 import "./App.css";
 
 function App() {
