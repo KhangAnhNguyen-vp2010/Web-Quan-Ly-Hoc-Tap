@@ -1,6 +1,8 @@
 // import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "boxicons/css/boxicons.min.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
@@ -13,6 +15,8 @@ import LoginLayout from "./layouts/LoginLayout";
 import Login from "./pages/Login";
 import ScrollToTop from "./layouts/ScrollToTop";
 import "./App.css";
+import Instructor from "./pages/Instructor";
+import Student from "./pages/Student";
 
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -81,6 +85,8 @@ function App() {
 
               <Route element={<LoginLayout />}>
                 <Route path="/signup" element={<Login />} />
+                <Route path="/instructor" element={<Instructor />} />
+                <Route path="/student" element={<Student />} />
               </Route>
             </Routes>
           </Router>
