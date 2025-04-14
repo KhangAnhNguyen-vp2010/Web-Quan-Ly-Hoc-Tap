@@ -1,7 +1,8 @@
 import clsx from "clsx";
 import styles from "../assets/css/Login_Form/Login.module.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/Login_Form/Signup";
@@ -16,6 +17,21 @@ function Login() {
   const handleLogin = () =>
     containerRef.current.classList.remove(styles.active);
 
+  const navigate = useNavigate();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Gọi khi login thành công
+  const handleSuccessLogin = (data) => {
+    console.log("Logged in user data:", data);
+    setIsLoggedIn(true);
+    setTimeout(() => {
+      if (data.role === "Student") {
+        navigate("/student");
+      } else navigate("/instructor");
+    }, 2000);
+  };
+
   const {
     loginForm,
     registerForm,
@@ -23,13 +39,13 @@ function Login() {
     handleRegisterChange,
     handleLoginSubmit,
     handleRegisterSubmit,
-  } = useAuthForm(null, handleLogin); // truyền hàm xử lý chuyển về login
+  } = useAuthForm(handleSuccessLogin, handleLogin); // truyền hàm xử lý chuyển về login
 
   return (
     <>
       <div
         ref={containerRef}
-        className={clsx(styles.container)}
+        className={clsx(styles.container, isLoggedIn && styles.zoomOut)}
         data-aos="zoom-in"
         data-aos-delay="1000"
       >
