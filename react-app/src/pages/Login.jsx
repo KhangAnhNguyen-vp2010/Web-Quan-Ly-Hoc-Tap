@@ -24,7 +24,6 @@ function Login() {
   // Gọi khi login thành công
   const handleSuccessLogin = (data) => {
     setIsLoggedIn(true);
-    localStorage.setItem("user", JSON.stringify(data));
     setTimeout(() => {
       if (data.role === "Student") {
         navigate("/student");

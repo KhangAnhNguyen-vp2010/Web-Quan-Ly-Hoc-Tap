@@ -4,10 +4,12 @@ import Sidebar from "../components/Interfaces/Instructors/Sidebar";
 import React, { useState } from "react";
 import clsx from "clsx";
 import styles from "../assets/css/Instructor/Instructor.module.css";
+import Courses from "../components/Interfaces/Instructors/Courses";
 
 function Instructor(params) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   const handleNext = (index) => {
     setActiveIndex(index);
@@ -17,9 +19,13 @@ function Instructor(params) {
     setCollapsed(!collapsed);
   };
 
+  const handleOpenProfile = () => {
+    setShowProfile(!showProfile);
+  };
+
   const rightComponents = [
     <Dashboard key="0" isCollapsed={collapsed} />,
-    <Profile key="1" />,
+    <Courses key="1" />,
   ];
 
   return (
@@ -28,6 +34,7 @@ function Instructor(params) {
         activeIndex={activeIndex}
         onLinkClick={handleNext}
         onClickCollapsed={handleCollapsed}
+        onClickOpenProfile={handleOpenProfile}
       />
       <div
         className={
@@ -38,18 +45,9 @@ function Instructor(params) {
       >
         {rightComponents[activeIndex]}
       </div>
+      {showProfile && <Profile onClose={() => setShowProfile(false)} />}
     </>
   );
 }
 
 export default Instructor;
-
-// const handle = () => {
-//   localStorage.removeItem("user");
-//   const hihi = JSON.parse(localStorage.getItem("user"));
-//   console.log("haha " + JSON.stringify(hihi));
-// };
-
-{
-  /* <button onClick={handle}>đasa</button> */
-}

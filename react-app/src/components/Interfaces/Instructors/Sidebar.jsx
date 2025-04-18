@@ -2,7 +2,13 @@ import { useState } from "react";
 import clsx from "clsx";
 import styles from "../../../assets/css/Instructor/Sidebar.module.css";
 import logo_img from "../../../assets/img/about.jpg";
-const Sidebar = ({ activeIndex, onLinkClick, onClickCollapsed }) => {
+
+const Sidebar = ({
+  activeIndex,
+  onLinkClick,
+  onClickCollapsed,
+  onClickOpenProfile,
+}) => {
   const [isOpen, setOpen] = useState(true);
 
   const handleOpenClick = () => {
@@ -22,7 +28,7 @@ const Sidebar = ({ activeIndex, onLinkClick, onClickCollapsed }) => {
         })}
       >
         <div className={clsx(styles.logo)}>
-          <img src={logo_img} alt="logo" />
+          <img src={logo_img} alt="logo" onClick={onClickOpenProfile} />
           <h2>Manager</h2>
           <button
             className="material-symbols-outlined"
@@ -41,7 +47,7 @@ const Sidebar = ({ activeIndex, onLinkClick, onClickCollapsed }) => {
               className="material-symbols-outlined"
               onClick={(e) => handleOnClick(e, 0)}
             >
-              Dashboard
+              dashboard
             </span>
             <a
               onClick={(e) => {
@@ -51,29 +57,36 @@ const Sidebar = ({ activeIndex, onLinkClick, onClickCollapsed }) => {
               Dashboard
             </a>
           </li>
+
           <li className={clsx(activeIndex === 1 && styles.active)}>
             <span
               className="material-symbols-outlined"
               onClick={(e) => handleOnClick(e, 1)}
             >
-              person
+              book
             </span>
             <a
               onClick={(e) => {
                 handleOnClick(e, 1);
               }}
             >
-              Profile
+              Courses
             </a>
           </li>
-
-          <li>
-            <span className="material-symbols-outlined">book</span>
-            <a href="#">Courses</a>
-          </li>
-          <li>
-            <span className="material-symbols-outlined">group</span>
-            <a href="#">Users</a>
+          <li className={clsx(activeIndex === 2 && styles.active)}>
+            <span
+              className="material-symbols-outlined"
+              onClick={(e) => handleOnClick(e, 2)}
+            >
+              group
+            </span>
+            <a
+              onClick={(e) => {
+                handleOnClick(e, 2);
+              }}
+            >
+              Users
+            </a>
           </li>
           <hr />
           <h4>Setting</h4>
