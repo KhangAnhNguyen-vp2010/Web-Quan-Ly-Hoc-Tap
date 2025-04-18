@@ -1,4 +1,3 @@
-// import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -17,6 +16,10 @@ import ScrollToTop from "./layouts/ScrollToTop";
 import "./App.css";
 import Instructor from "./pages/Instructor";
 import Student from "./pages/Student";
+import ProtectedRoute from "./routes/ProtectedRoute";
+
+const user = JSON.parse(localStorage.getItem("user")); // lấy thông tin người dùng
+const isAuthenticated = !!user;
 
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -85,8 +88,23 @@ function App() {
 
               <Route element={<LoginLayout />}>
                 <Route path="/signup" element={<Login />} />
-                <Route path="/instructor" element={<Instructor />} />
-                <Route path="/student" element={<Student />} />
+                <Route
+                  path="/instructor"
+                  element={
+                    <ProtectedRoute>
+                      <Instructor />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/student"
+                  element={
+                    <ProtectedRoute>
+                      <Student />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
             </Routes>
           </Router>

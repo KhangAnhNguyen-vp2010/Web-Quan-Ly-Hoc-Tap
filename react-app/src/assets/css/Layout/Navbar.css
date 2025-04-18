@@ -67,7 +67,7 @@
 
 .signup-btn:hover {
   opacity: 0.6;
-  transition: 0.5s ease;
+  transition: all 0.5s ease;
 }
 
 /* Hamburger icon */

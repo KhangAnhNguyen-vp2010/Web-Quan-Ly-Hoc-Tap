@@ -1,0 +1,28 @@
+.content {
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll; /* scrollbar chỉ xuất hiện khi tràn theo chiều dọc */
+  transform: translateX(0);
+  transition: all 0.5s ease;
+}
+
+.sidebar-collapsed.content {
+  transform: translateX(0);
+  width: 250%;
+}
+
+/* Thanh cuộn */
+.content::-webkit-scrollbar {
+  width: 8px; /* Đặt độ rộng của thanh cuộn */
+}
+
+/* Phần cuộn (thumb) */
+.content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3); /* Màu đen với độ trong suốt 30% */
+  border-radius: 4px; /* Làm tròn góc */
+}
+
+/* Khi di chuột qua thanh cuộn */
+.content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.6); /* Tăng độ đậm khi hover */
+}
