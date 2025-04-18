@@ -1,5 +1,9 @@
 ﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using WebAPI.Helpers;
 using WebAPI.Models;
 
 namespace WebAPI
@@ -26,12 +30,64 @@ namespace WebAPI
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyOrigin()   // Cho phép tất cả nguồn
+                    policy.WithOrigins("http://localhost:5173")   // Cho phép tất cả nguồn
                           .AllowAnyMethod()   // Cho phép tất cả phương thức HTTP (GET, POST, PUT, DELETE, ...)
-                          .AllowAnyHeader();  // Cho phép tất cả header
+                          .AllowAnyHeader()   // Cho phép tất cả header
+                          .AllowCredentials();  
                 });
             });
 
+
+            // JWT
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            builder.Services.Configure<JwtSettings>(jwtSettings);
+
+            var secretKey = jwtSettings["SecretKey"];
+            var key = Encoding.UTF8.GetBytes(secretKey);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Lấy token từ Cookie
+                        var token = context.Request.Cookies["accessToken"];
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])
+                    )
+                };
+            });
+
+            // Thêm các dịch vụ cần thiết
+            builder.Services.AddControllers();
+
+
+     
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -47,6 +103,7 @@ namespace WebAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
