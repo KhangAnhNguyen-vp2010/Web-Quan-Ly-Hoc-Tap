@@ -26,11 +26,16 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
       return toast.error("Password cannot be empty!");
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/login", loginForm);
+      const res = await axios.post(
+        "https://localhost:7233/api/Auth/login",
+        loginForm,
+        { withCredentials: true }
+      );
       toast.success("Login successful!");
       setLoginForm({ username: "", password: "" });
       onSuccessLogin?.(res.data);
     } catch (error) {
+      console.error("Error Response:", error.response);
       toast.error(error.response?.data?.detail || "Login failed!");
     }
   };
@@ -45,12 +50,10 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
       return toast.error("Email is required!");
 
     try {
-      await axios.post("http://127.0.0.1:8000/add_user", {
-        ...registerForm,
-        full_name: "Học Viên Mới",
-        role: "Student",
-        password_hash: registerForm.password,
-      });
+      await axios.post(
+        "https://localhost:7233/api/Auth/register",
+        registerForm
+      );
       toast.success("Register successful! Please login.");
       setRegisterForm({ username: "", password: "", email: "" });
       onSwitchToLogin?.();
