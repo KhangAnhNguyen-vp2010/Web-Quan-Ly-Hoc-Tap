@@ -17,6 +17,10 @@ public partial class User
 
     public string? Role { get; set; }
 
+    public string? RefreshToken { get; set; }
+
+    public DateTime? RefreshTokenExpiryTime { get; set; }
+
     public virtual ICollection<AssignmentsCompleted> AssignmentsCompleteds { get; set; } = new List<AssignmentsCompleted>();
 
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
