@@ -21,6 +21,8 @@ public partial class User
 
     public DateTime? RefreshTokenExpiryTime { get; set; }
 
+    public string? SessionId { get; set; }
+
     public virtual ICollection<AssignmentsCompleted> AssignmentsCompleteds { get; set; } = new List<AssignmentsCompleted>();
 
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();

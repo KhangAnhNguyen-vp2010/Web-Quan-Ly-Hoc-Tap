@@ -143,10 +143,16 @@ namespace WebAPI.Controllers
             var accessToken = GenerateJwtToken(u);
             var refreshToken = GenerateRefreshToken();
 
+            // Tạo sessionId duy nhất cho mỗi phiên đăng nhập
+            var sessionId = Guid.NewGuid().ToString();
+
             // Lưu refresh token vào DB
             u.RefreshToken = refreshToken;
+            u.SessionId = sessionId;
             u.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _context.SaveChangesAsync();
+
+            
 
             // Gửi Access Token vào HttpOnly Cookie
             var cookieOptions = new CookieOptions
@@ -160,7 +166,9 @@ namespace WebAPI.Controllers
             Response.Cookies.Append("accessToken", accessToken, cookieOptions);
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
             Response.Cookies.Append("username", u.Username, cookieOptions);
+            Response.Cookies.Append("sessionId", sessionId, cookieOptions);
 
+            
 
             // Gửi Refresh Token trong body response
             return Ok(new
@@ -169,8 +177,59 @@ namespace WebAPI.Controllers
                 token = accessToken,
                 refresh_Token = refreshToken,
                 username = u.Username,
-                role = u.Role
+                role = u.Role,
+                session = sessionId
             });
         }
+
+
+        // Log Out
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return Unauthorized();
+
+                var user = await _context.Users.FindAsync(int.Parse(userId));
+                if (user == null) return NotFound("Người dùng không tồn tại.");
+
+                // Kiểm tra và thay thế RefreshTokenExpiryTime nếu nó là DateTime.MinValue
+                if (user.RefreshTokenExpiryTime == DateTime.MinValue)
+                {
+                    user.RefreshTokenExpiryTime = DateTime.Now; // Hoặc có thể là một giá trị khác hợp lệ
+                }
+
+                // Xóa refresh token và session trong DB
+                user.RefreshToken = null;
+                user.SessionId = null;
+                await _context.SaveChangesAsync();
+
+                // Xóa cookies ở phía client bằng cách ghi đè với cùng cấu hình và hết hạn
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.UtcNow.AddDays(-1) // Hết hạn ngay lập tức
+                };
+
+                Response.Cookies.Append("accessToken", "", cookieOptions);
+                Response.Cookies.Append("refreshToken", "", cookieOptions);
+                Response.Cookies.Append("username", "", cookieOptions);
+                Response.Cookies.Append("sessionId", "", cookieOptions);
+
+                return Ok(new { message = "Đăng xuất thành công." });
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi chi tiết
+                Console.WriteLine($"Lỗi khi đăng xuất: {ex.Message}");
+                return StatusCode(500, "Đã xảy ra lỗi khi đăng xuất.");
+            }
+        }
+
     }
 }
