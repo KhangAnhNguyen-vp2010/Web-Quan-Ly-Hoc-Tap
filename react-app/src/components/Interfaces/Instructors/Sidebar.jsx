@@ -2,7 +2,8 @@ import { useState } from "react";
 import clsx from "clsx";
 import styles from "../../../assets/css/Instructor/Sidebar.module.css";
 import logo_img from "../../../assets/img/about.jpg";
-
+import { useLogout } from "../../../Hooks/useLogout";
+import { useNavigate } from "react-router-dom";
 const Sidebar = ({
   activeIndex,
   onLinkClick,
@@ -10,6 +11,7 @@ const Sidebar = ({
   onClickOpenProfile,
 }) => {
   const [isOpen, setOpen] = useState(true);
+  const navigate = useNavigate();
 
   const handleOpenClick = () => {
     setOpen(!isOpen);
@@ -19,6 +21,12 @@ const Sidebar = ({
     e.preventDefault();
     onLinkClick(index);
   };
+
+  const handleSuccessLogout = () => {
+    navigate("/signup");
+  };
+
+  const { handleLogout } = useLogout(handleSuccessLogout);
 
   return (
     <div className={clsx(styles.body)} data-aos="zoom-in" data-aos-delay="1000">
@@ -92,11 +100,11 @@ const Sidebar = ({
           <h4>Setting</h4>
           <li>
             <span className="material-symbols-outlined">ambient_screen</span>
-            <a href="#">Theme</a>
+            <a>Theme</a>
           </li>
           <li>
             <span className="material-symbols-outlined">logout</span>
-            <a href="#">Log Out</a>
+            <a onClick={handleLogout}>Log Out</a>
           </li>
         </ul>
       </aside>

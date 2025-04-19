@@ -6,7 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
 import Index from "./components/index/Index"; // Đường dẫn đến file Index.jsx của bạn
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
 import MainLayout from "./layouts/MainLayout";
@@ -77,37 +77,36 @@ function App() {
         </div>
       ) : (
         <>
-          <Router>
-            <ScrollToTop />
-            <Routes>
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-              </Route>
+          <ScrollToTop />
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+            </Route>
 
-              <Route element={<LoginLayout />}>
-                <Route path="/signup" element={<Login />} />
-                <Route
-                  path="/instructor"
-                  element={
-                    <ProtectedRoute>
-                      <Instructor />
-                    </ProtectedRoute>
-                  }
-                />
+            <Route element={<LoginLayout />}>
+              <Route path="/signup" element={<Login />} />
+              <Route
+                path="/instructor"
+                element={
+                  <ProtectedRoute>
+                    <Instructor />
+                  </ProtectedRoute>
+                }
+              />
 
-                <Route
-                  path="/student"
-                  element={
-                    <ProtectedRoute>
-                      <Student />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route>
-            </Routes>
-          </Router>
+              <Route
+                path="/student"
+                element={
+                  <ProtectedRoute>
+                    <Student />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+          </Routes>
+
           {showScrollTop && (
             <button
               onClick={scrollToTop}
