@@ -1,0 +1,42 @@
+.input {
+  display: block;
+  width: 100%;
+  margin: 8px 0 16px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.saveBtn,
+.cancelBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.saveBtn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.saveBtn:hover {
+  background-color: #1976d2;
+}
+
+.cancelBtn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.cancelBtn:hover {
+  background-color: #c2c2c2;
+}

@@ -17,6 +17,7 @@ import "./App.css";
 import Instructor from "./pages/Instructor";
 import Student from "./pages/Student";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
 
 const user = JSON.parse(localStorage.getItem("user")); // lấy thông tin người dùng
 const isAuthenticated = !!user;
@@ -137,6 +138,7 @@ function App() {
           )}
         </>
       )}
+      <ToastContainer />
     </div>
   );
 }

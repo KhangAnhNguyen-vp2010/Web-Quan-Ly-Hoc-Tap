@@ -6,9 +6,9 @@ export const useLogout = (onSuccessLogout) => {
       await axios.post("https://localhost:7233/api/Auth/logout", null, {
         withCredentials: true,
       });
-      localStorage.removeItem("Temp");
-      localStorage.removeItem("Session-ne-ku-em");
       toast.success("Logout successful!");
+      localStorage.removeItem("prev-username");
+      localStorage.removeItem("current-username");
       onSuccessLogout?.();
     } catch (error) {
       console.error("Đăng xuất thất bại:", error);

@@ -1,5 +1,5 @@
 // src/components/ProtectedRoute.jsx
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -7,6 +7,7 @@ function ProtectedRoute({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false); // tránh gọi refresh nhiều lần
+  const location = useLocation();
 
   const fetchUser = async () => {
     try {
@@ -14,6 +15,15 @@ function ProtectedRoute({ children }) {
         withCredentials: true,
       });
       setUser(res.data);
+      if (res.data.role === "Student" && location.pathname !== "/student") {
+        return window.location.replace("/student");
+      }
+      if (
+        res.data.role === "Instructor" &&
+        location.pathname !== "/instructor"
+      ) {
+        return window.location.replace("/instructor");
+      }
     } catch (error) {
       if (error.response?.status === 401 && !refreshing) {
         console.log("Access token hết hạn. Đang làm mới...");
