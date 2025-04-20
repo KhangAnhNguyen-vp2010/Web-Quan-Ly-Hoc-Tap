@@ -44,5 +44,28 @@ namespace WebAPI.Controllers
         }
 
 
+        [Authorize]
+        [HttpPut("userEdit")]
+        public async Task<IActionResult> EditUserInfo([FromBody] EditUserDto editDto)
+        {
+            var username = User.Identity?.Name;
+            if (username == null)
+                return Unauthorized("Không tìm thấy tên người dùng.");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+                return NotFound("Không tìm thấy người dùng.");
+
+            // Cập nhật thông tin
+            user.FullName = editDto.FullName;
+            user.Email = editDto.Email;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Cập nhật thông tin thành công.");
+        }
+
+
+
     }
 }

@@ -120,7 +120,7 @@ namespace WebAPI.Controllers
             {
                 Username = dto.Username,
                 Email = dto.Email,
-                PasswordHash = dto.Password,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Role = "Student",
                 FullName = "Học Viên Mới",
             };
@@ -135,9 +135,9 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var u = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == dto.Username && u.PasswordHash == dto.Password);
-
-            if (u == null)
+                .FirstOrDefaultAsync(u => u.Username == dto.Username);
+           
+            if (u == null || !BCrypt.Net.BCrypt.Verify(dto.Password, u.PasswordHash))
                 return Unauthorized("Sai tài khoản hoặc mật khẩu.");
 
             var accessToken = GenerateJwtToken(u);
@@ -231,5 +231,81 @@ namespace WebAPI.Controllers
             }
         }
 
+        // Change Password
+        [Authorize]
+        [HttpPut("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var username = User.Identity?.Name;
+            if (username == null)
+                return Unauthorized("Không tìm thấy tên người dùng.");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+                return NotFound("Không tìm thấy người dùng.");
+
+            // Kiểm tra mật khẩu cũ (nếu dùng hash, cần so sánh hash)
+            if (!BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash))
+            {
+                return BadRequest("Mật khẩu hiện tại không đúng.");
+            }
+
+            // Hash mật khẩu mới và cập nhật
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok("Đổi mật khẩu thành công.");
+        }
+
+
+        // Forgot Password
+        [HttpPost("forgot-password/request")]
+        public async Task<IActionResult> RequestPasswordReset([FromBody] ForgotPasswordRequestDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Username == dto.Username && u.Email == dto.Email);
+
+            if (user == null)
+                return NotFound("Thông tin không đúng.");
+
+            // Tạo mã OTP ngẫu nhiên
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            // Lưu OTP và thời gian hết hạn vào DB (hoặc cache)
+            user.ResetPasswordOtp = otp;
+            user.ResetPasswordExpiry = DateTime.UtcNow.AddMinutes(5);
+            await _context.SaveChangesAsync();
+
+            // Gửi OTP đến email (ví dụ dùng SendGrid, MailKit hoặc SMTP)
+            await _emailService.SendEmailAsync(user.Email, "Mã OTP đặt lại mật khẩu", $"Mã OTP của bạn là: {otp}");
+
+            return Ok("Đã gửi mã OTP đến email.");
+        }
+
+        [HttpPost("forgot-password/reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.Username);
+
+            if (user == null || user.ResetPasswordOtp != dto.Otp || user.ResetPasswordExpiry < DateTime.UtcNow)
+                return BadRequest("Mã OTP không hợp lệ hoặc đã hết hạn.");
+
+            // Đổi mật khẩu mới (hash lại bằng BCrypt)
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            // Xóa OTP để không tái sử dụng
+            user.ResetPasswordOtp = null;
+            user.ResetPasswordExpiry = null;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Đặt lại mật khẩu thành công.");
+        }
+
+
+
     }
 }
+
+
+
