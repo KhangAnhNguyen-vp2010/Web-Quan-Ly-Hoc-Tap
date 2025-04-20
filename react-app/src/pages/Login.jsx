@@ -24,14 +24,13 @@ function Login() {
   // Gọi khi login thành công
   const handleSuccessLogin = (data) => {
     setIsLoggedIn(true);
-    console.log("Login thành công:", data);
-    let prev_session = null;
-    prev_session = localStorage.getItem("Session-ne-ku-em", data.session);
-    if (prev_session === null) {
-      localStorage.setItem("Temp-session", data.session);
-      localStorage.setItem("Session-ne-ku-em", data.session);
+    let prev_username = null;
+    prev_username = localStorage.getItem("current-username", data.username);
+    if (prev_username === null) {
+      localStorage.setItem("prev-username", data.username);
+      localStorage.setItem("current-username", data.username);
     } else {
-      localStorage.setItem("Session-ne-ku-em", data.session);
+      localStorage.setItem("current-username", data.username);
     }
 
     setTimeout(() => {
@@ -91,7 +90,6 @@ function Login() {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 }

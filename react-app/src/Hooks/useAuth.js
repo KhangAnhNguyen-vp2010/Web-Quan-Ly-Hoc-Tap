@@ -35,8 +35,7 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
       setLoginForm({ username: "", password: "" });
       onSuccessLogin?.(res.data);
     } catch (error) {
-      console.error("Error Response:", error.response);
-      toast.error(error.response?.data?.detail || "Login failed!");
+      toast.error(error.response?.data || "Login failed!");
     }
   };
 
@@ -58,7 +57,7 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
       setRegisterForm({ username: "", password: "", email: "" });
       onSwitchToLogin?.();
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Register failed!");
+      toast.error(error.response?.data || "Register failed!");
     }
   };
 

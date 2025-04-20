@@ -112,7 +112,11 @@ function Dashboard({ isCollapsed }) {
   ];
 
   return (
-    <main className={clsx(styles["main-container"])}>
+    <main
+      className={clsx(styles["main-container"])}
+      data-aos="zoom-in"
+      data-aos-delay="1500"
+    >
       <div className={clsx(styles["main-title"])}>
         <h2>DASHBOARD</h2>
       </div>
