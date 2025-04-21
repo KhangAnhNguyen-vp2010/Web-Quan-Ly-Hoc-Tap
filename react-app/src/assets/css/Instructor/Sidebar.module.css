@@ -8,7 +8,7 @@
   background-size: cover;
 }
 
-.sidebar {
+.sidebar-app {
   position: fixed;
   top: 0;
   left: 0;
@@ -24,26 +24,26 @@
   transition: width 0.5s ease;
 }
 
-.sidebar.collapsed {
+.sidebar-app.collapsed {
   width: 110px;
 }
 
-.sidebar.collapsed .logo h2,
-.sidebar.collapsed .links h4,
-.sidebar.collapsed .links li a {
+.sidebar-app.collapsed .logo h2,
+.sidebar-app.collapsed .links h4,
+.sidebar-app.collapsed .links li a {
   display: none;
 }
 
-.sidebar.collapsed .logo button {
+.sidebar-app.collapsed .logo button {
   transform: translateX(-25%);
 }
 
-.sidebar.collapsed .links hr {
+.sidebar-app-app.collapsed .links hr {
   border-color: black;
   margin: 10px 8px;
 }
 
-.sidebar .logo {
+.sidebar-app .logo {
   display: flex;
   align-items: center;
   padding: 25px 10px 15px;
@@ -82,7 +82,7 @@
   opacity: 0.7;
 }
 
-.sidebar .links {
+.sidebar-app .links {
   height: calc(100% - 140px);
   overflow-y: auto;
   scrollbar-width: none;
@@ -93,11 +93,11 @@
   scroll-behavior: smooth;
 }
 
-.sidebar .links::-webkit-scrollbar {
+.sidebar-app .links::-webkit-scrollbar {
   display: none;
 }
 
-.sidebar .links h4 {
+.sidebar-app .links h4 {
   color: #222;
   font-weight: 500;
   font-size: 1rem;
@@ -140,24 +140,24 @@
 
 /* Thêm media query cho màn hình nhỏ hơn 768px */
 @media (max-width: 768px) {
-  .sidebar {
+  .sidebar-app {
     position: fixed;
-    width: 60px;
+    width: 60px !important;
   }
 
-  .sidebar .logo h2,
-  .sidebar .links h4,
-  .sidebar .links li a,
-  .sidebar .logo button {
+  .sidebar-app .logo h2,
+  .sidebar-app .links h4,
+  .sidebar-app .links li a,
+  .sidebar-app .logo button {
     display: none;
   }
 }
 
 /* Thêm media query cho màn hình nhỏ hơn 768px */
 @media (max-width: 1024px) {
-  .sidebar {
+  .sidebar-app {
     position: fixed;
-    width: 200px;
+    width: 180px;
     transition: all 0.5s ease;
   }
 }

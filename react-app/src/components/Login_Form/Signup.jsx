@@ -1,8 +1,9 @@
 import styles from "../../assets/css/Login_Form/Login.module.css";
 import clsx from "clsx";
 import "boxicons/css/boxicons.min.css";
+import { useState } from "react";
 
-function Signup({ formData, onChange, onSubmit }) {
+function Signup({ formData, onChange, onSubmit, showForgot }) {
   return (
     <div className={clsx(styles["form-box"], styles.login)}>
       <form onSubmit={onSubmit}>
@@ -30,7 +31,7 @@ function Signup({ formData, onChange, onSubmit }) {
           <i className="bx bxs-lock-alt"></i>
         </div>
         <div className={clsx(styles["forgot-link"])}>
-          <a href="#">Forgot Password?</a>
+          <a onClick={showForgot}>Forgot Password?</a>
         </div>
         <button type="submit" className={clsx(styles.btn)}>
           Login
