@@ -1,9 +1,8 @@
 ﻿namespace WebAPI.DTOs
 {
-    public class ResetPasswordDto
+    public class otpDto
     {
         public string? Username { get; set; }
-        public string? NewPassword { get; set; }
-
+        public string? Otp { get; set; }
     }
 }
