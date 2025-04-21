@@ -31,7 +31,7 @@ const Sidebar = ({
   return (
     <div className={clsx(styles.body)} data-aos="zoom-in" data-aos-delay="1000">
       <aside
-        className={clsx(styles.sidebar, {
+        className={clsx(styles["sidebar-app"], {
           [styles.collapsed]: !isOpen, // toggle class
         })}
       >

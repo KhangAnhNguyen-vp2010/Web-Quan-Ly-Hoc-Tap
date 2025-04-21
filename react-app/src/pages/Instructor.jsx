@@ -14,7 +14,7 @@ function Instructor(params) {
   useEffect(() => {
     const intervalId = setInterval(() => {
       window.location.reload(); // Tự động tải lại trang sau 10 phút
-    }, 310000); // 300000ms = 5 phút
+    }, 300000); // 300000ms = 5 phút
 
     return () => clearInterval(intervalId);
   }, []);

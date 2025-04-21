@@ -1,15 +1,19 @@
 import clsx from "clsx";
 import styles from "../assets/css/Login_Form/Login.module.css";
 import { useRef, useState } from "react";
-import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 import LoginForm from "../components/Login_Form/Signup";
 import RegisterForm from "../components/Login_Form/Register";
 import { useAuthForm } from "../Hooks/useAuth";
+import ForgotPassword from "../components/Login_Form/ForgotPassword/ForgotPassword";
 
 function Login() {
+  const [showForgot, setShowForgot] = useState(false);
+  const toggleForgot = () => {
+    setShowForgot(!showForgot);
+  };
   const containerRef = useRef(null);
 
   const handleRegister = () =>
@@ -61,6 +65,7 @@ function Login() {
           formData={loginForm}
           onChange={handleLoginChange}
           onSubmit={handleLoginSubmit}
+          showForgot={() => setShowForgot(!showForgot)}
         />
         <RegisterForm
           formData={registerForm}
@@ -90,6 +95,7 @@ function Login() {
           </div>
         </div>
       </div>
+      {showForgot && <ForgotPassword onBack={toggleForgot} />}
     </>
   );
 }
