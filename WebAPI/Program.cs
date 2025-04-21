@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.Helpers;
 using WebAPI.Models;
+using WebAPI.Services.Interfaces;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -88,6 +90,10 @@ namespace WebAPI
      
 
             builder.Services.AddAuthorization();
+
+            // Đăng ký mailkit để gửi mail
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
 
             var app = builder.Build();
 

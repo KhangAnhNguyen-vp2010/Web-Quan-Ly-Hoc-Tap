@@ -11,6 +11,7 @@ using System.Text;
 using WebAPI.DTOs;
 using WebAPI.Helpers;
 using WebAPI.Models;
+using WebAPI.Services.Interfaces;
 
 namespace WebAPI.Controllers
 {
@@ -20,11 +21,13 @@ namespace WebAPI.Controllers
     {
         private readonly QuanLyHocTapContext _context;
         private readonly JwtSettings _jwtSettings;
+        private readonly IEmailService _emailService;
 
-        public AuthController(QuanLyHocTapContext context, IOptions<JwtSettings> jwtOptions)
+        public AuthController(QuanLyHocTapContext context, IOptions<JwtSettings> jwtOptions, IEmailService emailService)
         {
             _context = context;
             _jwtSettings = jwtOptions.Value;
+            _emailService = emailService;
         }
 
         // JWT
@@ -136,7 +139,7 @@ namespace WebAPI.Controllers
         {
             var u = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == dto.Username);
-           
+
             if (u == null || !BCrypt.Net.BCrypt.Verify(dto.Password, u.PasswordHash))
                 return Unauthorized("Sai tài khoản hoặc mật khẩu.");
 
@@ -152,7 +155,7 @@ namespace WebAPI.Controllers
             u.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _context.SaveChangesAsync();
 
-            
+
 
             // Gửi Access Token vào HttpOnly Cookie
             var cookieOptions = new CookieOptions
@@ -168,7 +171,7 @@ namespace WebAPI.Controllers
             Response.Cookies.Append("username", u.Username, cookieOptions);
             Response.Cookies.Append("sessionId", sessionId, cookieOptions);
 
-            
+
 
             // Gửi Refresh Token trong body response
             return Ok(new
@@ -282,13 +285,26 @@ namespace WebAPI.Controllers
             return Ok("Đã gửi mã OTP đến email.");
         }
 
-        [HttpPost("forgot-password/reset")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        [HttpPost("forgot-password/verify-otp")]
+        public async Task<IActionResult> sendOTP([FromBody] otpDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.Username);
 
             if (user == null || user.ResetPasswordOtp != dto.Otp || user.ResetPasswordExpiry < DateTime.UtcNow)
                 return BadRequest("Mã OTP không hợp lệ hoặc đã hết hạn.");
+
+
+            return Ok("OTP đã được xác nhận thành công.");
+        }
+
+
+        [HttpPost("forgot-password/reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.Username);
+
+            if (user == null)
+                return BadRequest("Người dùng không tồn tại.");
 
             // Đổi mật khẩu mới (hash lại bằng BCrypt)
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
@@ -301,9 +317,6 @@ namespace WebAPI.Controllers
 
             return Ok("Đặt lại mật khẩu thành công.");
         }
-
-
-
     }
 }
 
