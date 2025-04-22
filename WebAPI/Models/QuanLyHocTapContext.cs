@@ -77,6 +77,9 @@ public partial class QuanLyHocTapContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
                 .HasColumnName("_Description");
+            entity.Property(e => e.Img)
+                .HasMaxLength(255)
+                .HasColumnName("img");
             entity.Property(e => e.InstructorId).HasColumnName("InstructorID");
 
             entity.HasOne(d => d.Instructor).WithMany(p => p.Courses)
