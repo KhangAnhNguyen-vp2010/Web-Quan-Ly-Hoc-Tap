@@ -103,6 +103,11 @@ form {
   font-size: 14.5px;
   color: #333;
   text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+}
+.forgot-link a:hover {
+  opacity: 0.5;
 }
 
 .btn {
