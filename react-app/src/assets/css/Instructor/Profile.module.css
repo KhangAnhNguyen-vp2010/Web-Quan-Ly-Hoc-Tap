@@ -106,3 +106,50 @@
     transform: translateY(0);
   }
 }
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 20px; /* Giảm padding trên màn hình nhỏ */
+    width: 90%; /* Đảm bảo modal không quá rộng */
+  }
+
+  .profileContainer {
+    flex-direction: column; /* Đặt avatar và thông tin người dùng xếp theo chiều dọc */
+    align-items: center;
+    gap: 16px;
+  }
+
+  .avatar {
+    margin-bottom: 20px; /* Giảm khoảng cách dưới avatar */
+  }
+
+  .buttonGroup {
+    flex-direction: column; /* Xếp các nút theo chiều dọc trên màn hình nhỏ */
+    gap: 10px;
+    width: 100%; /* Các nút chiếm chiều rộng đầy đủ */
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 15px; /* Giảm padding cho màn hình rất nhỏ */
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px; /* Thu nhỏ avatar để tiết kiệm không gian */
+  }
+
+  .profileInfo p {
+    font-size: 14px; /* Giảm kích thước font chữ */
+  }
+
+  .profileInfo strong {
+    font-size: 15px; /* Giảm kích thước chữ cho strong */
+  }
+
+  .editBtn {
+    padding: 10px 14px; /* Điều chỉnh kích thước nút cho phù hợp */
+  }
+}
