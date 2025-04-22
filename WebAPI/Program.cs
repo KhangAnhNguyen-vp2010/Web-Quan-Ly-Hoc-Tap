@@ -7,6 +7,9 @@ using WebAPI.Helpers;
 using WebAPI.Models;
 using WebAPI.Services.Interfaces;
 using WebAPI.Services;
+using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+
 
 namespace WebAPI
 {
@@ -21,7 +24,15 @@ namespace WebAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.MapType<IFormFile>(() => new OpenApiSchema
+                {
+                    Type = "string",
+                    Format = "binary"
+                });
+
+            });
 
             // Thêm DbContext vào DI container
             builder.Services.AddDbContext<QuanLyHocTapContext>(options =>
@@ -104,6 +115,8 @@ namespace WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStaticFiles();
 
             app.UseCors("AllowAll");
 

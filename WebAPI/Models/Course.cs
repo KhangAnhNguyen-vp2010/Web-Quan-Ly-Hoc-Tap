@@ -13,6 +13,8 @@ public partial class Course
 
     public string? Description { get; set; }
 
+    public string? Img { get; set; }
+
     public virtual ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
 
     public virtual User? Instructor { get; set; }

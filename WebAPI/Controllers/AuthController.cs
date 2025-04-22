@@ -163,7 +163,7 @@ namespace WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true, // Set to true when using HTTPS
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddMinutes(7)
+                Expires = DateTime.UtcNow.AddDays(7)
             };
 
             Response.Cookies.Append("accessToken", accessToken, cookieOptions);
