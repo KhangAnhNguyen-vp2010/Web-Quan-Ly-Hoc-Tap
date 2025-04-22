@@ -7,6 +7,7 @@ import styles from "../assets/css/Instructor/Instructor.module.css";
 import Courses from "../components/Interfaces/Instructors/Courses";
 import { useRefreshToken } from "../Hooks/Auth/useRefresh-Token";
 import { useUsernameWatcher } from "../Hooks/Auth/useUsernameWatcher";
+import UploadCourseImage from "../components/Interfaces/Instructors/Temp/UploadCourseImage";
 
 function Instructor(params) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -32,6 +33,7 @@ function Instructor(params) {
   const rightComponents = [
     <Dashboard key="0" isCollapsed={collapsed} />,
     <Courses key="1" />,
+    <UploadCourseImage key="2" />,
   ];
 
   return (

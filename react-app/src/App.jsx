@@ -6,7 +6,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
 import Index from "./components/index/Index"; // Đường dẫn đến file Index.jsx của bạn
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
 import MainLayout from "./layouts/MainLayout";
@@ -18,9 +18,6 @@ import Instructor from "./pages/Instructor";
 import Student from "./pages/Student";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
-
-const user = JSON.parse(localStorage.getItem("user")); // lấy thông tin người dùng
-const isAuthenticated = !!user;
 
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -37,17 +34,6 @@ function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    AOS.init({ duration: 1000, once: true });
-
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000); // giả lập loading trong 1s
-    return () => clearTimeout(timer);
-  }, []);
-
   useEffect(() => {
     AOS.init({
       duration: 1000, // thời gian animation (ms)
@@ -56,88 +42,67 @@ function App() {
   }, []);
   return (
     <div className="App">
-      {loading ? (
-        <div
-          id="preloader"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "#fff",
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        <>
-          <ScrollToTop />
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-            </Route>
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
 
-            <Route element={<LoginLayout />}>
-              <Route path="/signup" element={<Login />} />
-              <Route
-                path="/instructor"
-                element={
-                  <ProtectedRoute>
-                    <Instructor />
-                  </ProtectedRoute>
-                }
-              />
+          <Route element={<LoginLayout />}>
+            <Route path="/signup" element={<Login />} />
+            <Route
+              path="/instructor"
+              element={
+                <ProtectedRoute>
+                  <Instructor />
+                </ProtectedRoute>
+              }
+            />
 
-              <Route
-                path="/student"
-                element={
-                  <ProtectedRoute>
-                    <Student />
-                  </ProtectedRoute>
-                }
-              />
-            </Route>
-          </Routes>
+            <Route
+              path="/student"
+              element={
+                <ProtectedRoute>
+                  <Student />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+        </Routes>
 
-          {showScrollTop && (
-            <button
-              onClick={scrollToTop}
-              className="scroll-top d-flex align-items-center justify-content-center"
-              style={{
-                position: "fixed",
-                right: "20px",
-                bottom: "20px",
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                border: "none",
-                backgroundColor: "#7494ec",
-                color: "#fff",
-                zIndex: "9999",
-                transition: "opacity 0.5s",
-              }}
-              data-aos="fade-up"
-              data-aos-duration="500"
-              data-aos-delay="100"
-              data-aos-once="true"
-            >
-              <i
-                className="bi bi-arrow-up-short"
-                style={{ fontSize: "1.5rem" }}
-              ></i>
-            </button>
-          )}
-        </>
-      )}
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="scroll-top d-flex align-items-center justify-content-center"
+            style={{
+              position: "fixed",
+              right: "20px",
+              bottom: "20px",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              border: "none",
+              backgroundColor: "#7494ec",
+              color: "#fff",
+              zIndex: "9999",
+              transition: "opacity 0.5s",
+            }}
+            data-aos="fade-up"
+            data-aos-duration="500"
+            data-aos-delay="100"
+            data-aos-once="true"
+          >
+            <i
+              className="bi bi-arrow-up-short"
+              style={{ fontSize: "1.5rem" }}
+            ></i>
+          </button>
+        )}
+      </>
+
       <ToastContainer />
     </div>
   );

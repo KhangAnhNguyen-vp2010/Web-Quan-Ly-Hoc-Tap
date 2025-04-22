@@ -1,7 +1,6 @@
 import styles from "../../assets/css/Login_Form/Login.module.css";
 import clsx from "clsx";
 import "boxicons/css/boxicons.min.css";
-import { useState } from "react";
 
 function Signup({ formData, onChange, onSubmit, showForgot }) {
   return (

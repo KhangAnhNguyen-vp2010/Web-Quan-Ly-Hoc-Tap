@@ -6,8 +6,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 export const useAuthCheck = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(true); // state mới để kiểm soát loading
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Đảm bảo loading hiển thị ít nhất 3 giây
+    const timer = setTimeout(() => {
+      setShowLoading(false);
+    }, 1500); // Đặt delay là 3000ms (3 giây)
+
+    return () => clearTimeout(timer); // Dọn dẹp timer khi component unmount
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -38,5 +48,9 @@ export const useAuthCheck = () => {
     fetchUser();
   }, [location.pathname, navigate]);
 
-  return { user, loading };
+  if (loading || showLoading) {
+    return { user: null, loading: true }; // Trả về loading nếu chưa xong
+  }
+
+  return { user, loading }; // Trả về thông tin người dùng khi đã xong
 };
