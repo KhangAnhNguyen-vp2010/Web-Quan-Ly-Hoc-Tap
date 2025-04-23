@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.DTOs;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
@@ -23,13 +24,53 @@ namespace WebAPI.Controllers
             _env = env;
         }
 
-        // GET: api/Courses
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        public async Task<ActionResult> GetCourses(
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 6,
+    [FromQuery] string search = "",
+    [FromQuery] string sort = "")
         {
-            return await _context.Courses.ToListAsync();
+            if (page <= 0 || pageSize <= 0)
+                return BadRequest("Page and pageSize must be greater than 0.");
+
+            var query = _context.Courses.AsQueryable();
+
+            // Search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(c => c.CourseName.Contains(search));
+            }
+
+            // Sort
+            query = sort switch
+            {
+                "name-asc" => query.OrderBy(c => c.CourseName),
+                "name-desc" => query.OrderByDescending(c => c.CourseName),
+                _ => query.OrderByDescending(c => c.CourseId)               // mặc định
+            };
+
+            // Total count và phân trang
+            var totalItems = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var data = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                currentPage = page,
+                totalPages,
+                pageSize,
+                totalItems,
+                data
+            });
         }
+
+
 
         // GET: api/Courses/5
         [HttpGet("{id}")]
@@ -48,33 +89,26 @@ namespace WebAPI.Controllers
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<IActionResult> PutCourse(int id, CourseUpdateDto course)
         {
-            if (id != course.CourseId)
+            var _course = await _context.Courses.FindAsync(id);
+            if (_course == null)
             {
-                return BadRequest();
+                return NotFound(new { message = "Không tìm thấy khóa học" });
             }
 
-            _context.Entry(course).State = EntityState.Modified;
+            _course.CourseName = course.CourseName;
+            _course.Description = course.Description;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CourseExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Cập nhật thành công",
+                _id = id
+            });
         }
+
 
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -117,9 +151,17 @@ namespace WebAPI.Controllers
                 return BadRequest("Không có file được gửi lên.");
             }
 
+            // Kiểm tra định dạng file ảnh (chỉ cho phép ảnh)
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                return BadRequest("Chỉ chấp nhận các file hình ảnh (.jpg, .jpeg, .png, .gif).");
+            }
+
             // Tạo đường dẫn để lưu ảnh
             var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-            var uploadPath = Path.Combine(_env.WebRootPath, "images", "courses");  // Thư mục 'uploads' trong 'wwwroot'
+            var uploadPath = Path.Combine(_env.WebRootPath, "images", "courses");
 
             // Tạo thư mục nếu chưa tồn tại
             if (!Directory.Exists(uploadPath))
@@ -143,11 +185,23 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
+            // Xóa ảnh cũ (nếu có)
+            if (!string.IsNullOrEmpty(course.Img))
+            {
+                var oldImagePath = Path.Combine(_env.WebRootPath, course.Img.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+            }
+
+
             course.Img = "/images/courses/" + fileName;  // Lưu đường dẫn ảnh (public path)
             await _context.SaveChangesAsync();
 
             return Ok(course);  // Trả về thông tin khóa học cùng với đường dẫn ảnh
         }
+
 
     }
 }
