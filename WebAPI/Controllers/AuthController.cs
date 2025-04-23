@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None, // quan trọng nếu frontend ở domain khác
-                Expires = DateTime.UtcNow.AddMinutes(10)
+                Expires = DateTime.UtcNow.AddDays(7)
             };
 
             Response.Cookies.Append("accessToken", newAccessToken, cookieOptions);
