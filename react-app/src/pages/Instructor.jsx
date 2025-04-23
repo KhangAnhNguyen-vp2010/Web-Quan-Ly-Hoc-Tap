@@ -8,11 +8,15 @@ import Courses from "../components/Interfaces/Instructors/Courses";
 import { useRefreshToken } from "../Hooks/Auth/useRefresh-Token";
 import { useUsernameWatcher } from "../Hooks/Auth/useUsernameWatcher";
 import UploadCourseImage from "../components/Interfaces/Instructors/Temp/UploadCourseImage";
+import EditCourse from "../components/Interfaces/Instructors/Courses/EditCourse";
+import { CourseProvider } from "../contexts/CourseContext";
 
 function Instructor(params) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [course, setCourse] = useState({});
 
   useRefreshToken();
 
@@ -32,28 +36,40 @@ function Instructor(params) {
 
   const rightComponents = [
     <Dashboard key="0" isCollapsed={collapsed} />,
-    <Courses key="1" />,
+    <Courses
+      key="1"
+      onCloseEditForm={() => setShowEditForm(!showEditForm)}
+      course={(obj) => setCourse(obj)}
+    />,
     <UploadCourseImage key="2" />,
   ];
 
   return (
     <>
-      <Sidebar
-        activeIndex={activeIndex}
-        onLinkClick={handleNext}
-        onClickCollapsed={handleCollapsed}
-        onClickOpenProfile={handleOpenProfile}
-      />
-      <div
-        className={
-          !collapsed
-            ? clsx(styles.content)
-            : clsx(styles.content, styles["sidebar-collapsed"])
-        }
-      >
-        {rightComponents[activeIndex]}
-      </div>
-      {showProfile && <Profile onClose={() => setShowProfile(false)} />}
+      <CourseProvider>
+        <Sidebar
+          activeIndex={activeIndex}
+          onLinkClick={handleNext}
+          onClickCollapsed={handleCollapsed}
+          onClickOpenProfile={handleOpenProfile}
+        />
+        <div
+          className={
+            !collapsed
+              ? clsx(styles.content)
+              : clsx(styles.content, styles["sidebar-collapsed"])
+          }
+        >
+          {rightComponents[activeIndex]}
+        </div>
+        {showProfile && <Profile onClose={() => setShowProfile(false)} />}
+        {showEditForm && (
+          <EditCourse
+            courseObject={course}
+            onClose={() => setShowEditForm(!showEditForm)}
+          />
+        )}
+      </CourseProvider>
     </>
   );
 }
