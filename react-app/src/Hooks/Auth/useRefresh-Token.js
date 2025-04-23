@@ -16,7 +16,7 @@ export const useRefreshToken = () => {
       } catch (refreshErr) {
         console.log("Refresh token thất bại:", refreshErr);
       }
-    }, 1700000); // 1800000ms = 30 phút
+    }, 1700000); // 30 phút (1800000 ms)
 
     return () => clearInterval(intervalId);
   }, []);
