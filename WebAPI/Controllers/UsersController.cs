@@ -31,6 +31,7 @@ namespace WebAPI.Controllers
                 .Where(u => u.Username == username)
                 .Select(u => new UserInfoDto
                 {
+                    id = u.UserId,
                     FullName = u.FullName,
                     Email = u.Email,
                     Role = u.Role
