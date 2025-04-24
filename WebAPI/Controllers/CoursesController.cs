@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs;
+using WebAPI.DTOs.Course;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
@@ -88,6 +89,7 @@ namespace WebAPI.Controllers
 
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCourse(int id, CourseUpdateDto course)
         {
@@ -112,16 +114,40 @@ namespace WebAPI.Controllers
 
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<Course>> PostCourse([FromBody] CourseDto course)
         {
-            _context.Courses.Add(course);
+
+            var newCourse = new Course
+            {
+                CourseName = course.Name,
+                Description = course.Description,
+                InstructorId = course.instructorId,
+            };
+
+            _context.Courses.Add(newCourse);
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);
+            return Ok("Thêm thành công");
         }
 
+        [HttpGet("LastId")]
+        public async Task<ActionResult<int>> layLastID()
+        {
+            var lastId = await _context.Courses
+                .OrderByDescending(c => c.CourseId)
+                .Select(c => c.CourseId)
+                .FirstOrDefaultAsync(); // Lấy ID lớn nhất (hoặc 0 nếu không có khóa học)
+
+            // Trả về lastId, nếu không có khóa học sẽ trả về 0
+            return Ok(lastId);
+        }
+
+
         // DELETE: api/Courses/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
@@ -137,47 +163,12 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        private bool CourseExists(int id)
-        {
-            return _context.Courses.Any(e => e.CourseId == id);
-        }
 
+        // Upload Image
+        [Authorize]
         [HttpPost("upload/{id}")]
-        public async Task<ActionResult<Course>> UploadCourseImage(int id, IFormFile file)
+        public async Task<ActionResult<Course>> UploadCourseImage(int id, IFormFile? file)
         {
-            // Kiểm tra nếu file không null và có kích thước hợp lệ
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("Không có file được gửi lên.");
-            }
-
-            // Kiểm tra định dạng file ảnh (chỉ cho phép ảnh)
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-            var fileExtension = Path.GetExtension(file.FileName).ToLower();
-            if (!allowedExtensions.Contains(fileExtension))
-            {
-                return BadRequest("Chỉ chấp nhận các file hình ảnh (.jpg, .jpeg, .png, .gif).");
-            }
-
-            // Tạo đường dẫn để lưu ảnh
-            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-            var uploadPath = Path.Combine(_env.WebRootPath, "images", "courses");
-
-            // Tạo thư mục nếu chưa tồn tại
-            if (!Directory.Exists(uploadPath))
-            {
-                Directory.CreateDirectory(uploadPath);
-            }
-
-            // Đường dẫn đầy đủ của ảnh
-            var filePath = Path.Combine(uploadPath, fileName);
-
-            // Lưu file ảnh vào thư mục
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
             // Cập nhật đường dẫn ảnh trong cơ sở dữ liệu
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
@@ -185,18 +176,47 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            // Xóa ảnh cũ (nếu có)
-            if (!string.IsNullOrEmpty(course.Img))
+            // Kiểm tra nếu file không null và có kích thước hợp lệ
+            if (file != null && file.Length > 0)
             {
-                var oldImagePath = Path.Combine(_env.WebRootPath, course.Img.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
-                if (System.IO.File.Exists(oldImagePath))
+                // Kiểm tra định dạng file ảnh (chỉ cho phép ảnh)
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (!allowedExtensions.Contains(fileExtension))
                 {
-                    System.IO.File.Delete(oldImagePath);
+                    return BadRequest("Chỉ chấp nhận các file hình ảnh (.jpg, .jpeg, .png, .gif).");
                 }
+
+                // Tạo đường dẫn để lưu ảnh
+                var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+                var uploadPath = Path.Combine(_env.WebRootPath, "images", "courses");
+
+                // Tạo thư mục nếu chưa tồn tại
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
+                // Đường dẫn đầy đủ của ảnh
+                var filePath = Path.Combine(uploadPath, fileName);
+                // Lưu file ảnh vào thư mục
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Xóa ảnh cũ (nếu có)
+                if (!string.IsNullOrEmpty(course.Img))
+                {
+                    var oldImagePath = Path.Combine(_env.WebRootPath, course.Img.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+                course.Img = "/images/courses/" + fileName;  // Lưu đường dẫn ảnh (public path)
             }
 
-
-            course.Img = "/images/courses/" + fileName;  // Lưu đường dẫn ảnh (public path)
             await _context.SaveChangesAsync();
 
             return Ok(course);  // Trả về thông tin khóa học cùng với đường dẫn ảnh

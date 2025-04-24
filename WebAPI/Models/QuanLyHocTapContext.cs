@@ -21,6 +21,8 @@ public partial class QuanLyHocTapContext : DbContext
 
     public virtual DbSet<Course> Courses { get; set; }
 
+    public virtual DbSet<Enrollment> Enrollments { get; set; }
+
     public virtual DbSet<Prediction> Predictions { get; set; }
 
     public virtual DbSet<Test> Tests { get; set; }
@@ -85,6 +87,23 @@ public partial class QuanLyHocTapContext : DbContext
             entity.HasOne(d => d.Instructor).WithMany(p => p.Courses)
                 .HasForeignKey(d => d.InstructorId)
                 .HasConstraintName("FK__Courses__Instruc__00200768");
+        });
+
+        modelBuilder.Entity<Enrollment>(entity =>
+        {
+            entity.HasKey(e => e.EnrollmentId).HasName("PK__Enrollme__7F6877FB6C7EB54B");
+
+            entity.Property(e => e.EnrollmentId).HasColumnName("EnrollmentID");
+            entity.Property(e => e.CourseId).HasColumnName("CourseID");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+
+            entity.HasOne(d => d.Course).WithMany(p => p.Enrollments)
+                .HasForeignKey(d => d.CourseId)
+                .HasConstraintName("FK__Enrollmen__Cours__17036CC0");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Enrollments)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__Enrollmen__UserI__160F4887");
         });
 
         modelBuilder.Entity<Prediction>(entity =>
