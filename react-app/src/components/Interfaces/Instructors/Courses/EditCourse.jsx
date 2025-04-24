@@ -21,30 +21,25 @@ function EditCourse({ onClose, courseObject }) {
         {
           courseName: formData.courseName,
           description: formData.courseDescription,
-        }
+        },
+        { withCredentials: true }
+      );
+
+      const form = new FormData();
+      if (selectedImage) {
+        form.append("file", selectedImage);
+      }
+      await axios.post(
+        `https://localhost:7233/api/Courses/upload/${courseObject.courseId}`,
+        form,
+        { withCredentials: true }
       );
     } catch (error) {
       console.error("Error updating course:", error);
       return;
     }
+    toast.success("Course updated successfully!");
     onClose();
-    const form = new FormData();
-    if (selectedImage) {
-      form.append("file", selectedImage);
-    } else {
-      const fullPath = courseObject.img;
-      const fullFileName = fullPath.split("/").pop();
-      const originalName = fullFileName.split("_").pop();
-      form.append("file", originalName);
-    }
-    try {
-      await axios.post(
-        `https://localhost:7233/api/Courses/upload/${courseObject.courseId}`,
-        form
-      );
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
     setLoad(true);
   };
 
