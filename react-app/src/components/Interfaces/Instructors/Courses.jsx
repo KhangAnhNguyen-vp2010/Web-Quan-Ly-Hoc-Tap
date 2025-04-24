@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import styles from "../../../assets/css/Instructor/Courses.module.css";
 import { useCourse } from "../../../contexts/CourseContext";
 
-function Courses({ onCloseEditForm, course }) {
+function Courses({ onCloseEditForm, course, onCloseAddForm }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -62,6 +61,10 @@ function Courses({ onCloseEditForm, course }) {
   const handleEdit = (obj) => {
     onCloseEditForm();
     course(obj);
+  };
+
+  const handleAdd = () => {
+    onCloseAddForm();
   };
 
   const handleDelete = (courseId) => {
@@ -129,7 +132,7 @@ function Courses({ onCloseEditForm, course }) {
         <div className={styles.loadingSpinner}>
           <div className={styles.loadingCircle}></div>
         </div>
-        <p className={styles.loadingText}>Đang tải dữ liệu...</p>
+        <p className={styles.loadingText}>Loading data...</p>
       </div>
     );
   }
@@ -139,18 +142,18 @@ function Courses({ onCloseEditForm, course }) {
       <div className={styles.coursesContainer}>
         <div className={styles.pageHeader}>
           <h2 className={styles.pageTitle}>
-            <span className={styles.pageIcon}>📚</span> Quản lý khóa học
+            <span className={styles.pageIcon}>📚</span> Course Management
           </h2>
           <p className={styles.pageDescription}>
-            Xem và quản lý tất cả các khóa học trong hệ thống
+            View and manage all courses in the system
           </p>
         </div>
 
         <div className={styles.actionBar}>
           <div className={styles.leftActions}>
-            <button className={styles.addButton}>
+            <button className={styles.addButton} onClick={handleAdd}>
               <span className={styles.buttonIcon}>➕</span>
-              <span>Thêm khóa học</span>
+              <span>Add new course</span>
             </button>
             <button
               className={`${styles.refreshButton} ${
@@ -160,7 +163,7 @@ function Courses({ onCloseEditForm, course }) {
               disabled={isRefreshing}
             >
               <span className={styles.buttonIcon}>🔄</span>
-              <span>{isRefreshing ? "Đang làm mới..." : "Làm mới"}</span>
+              <span>{isRefreshing ? "Updating..." : "Refresh"}</span>
             </button>
           </div>
           <div className={styles.rightActions}>
@@ -169,7 +172,7 @@ function Courses({ onCloseEditForm, course }) {
                 <input
                   type="text"
                   className={styles.searchInput}
-                  placeholder="Tìm kiếm khóa học..."
+                  placeholder="Search for courses..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -185,9 +188,9 @@ function Courses({ onCloseEditForm, course }) {
               value={sortOption}
               onChange={handleSort}
             >
-              <option value="">Sắp xếp theo</option>
-              <option value="name-asc">Tên A → Z</option>
-              <option value="name-desc">Tên Z → A</option>
+              <option value="">Sort by</option>
+              <option value="name-asc">Name A → Z</option>
+              <option value="name-desc">Name Z → A</option>
             </select>
           </div>
         </div>
@@ -195,8 +198,10 @@ function Courses({ onCloseEditForm, course }) {
         {courses.length === 0 ? (
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}>📋</div>
-            <h3>Không tìm thấy khóa học nào</h3>
-            <p>Hãy thêm khóa học mới hoặc thử tìm kiếm với từ khóa khác</p>
+            <h3>No courses found</h3>
+            <p>
+              Please add a new course or try searching with different keywords
+            </p>
           </div>
         ) : (
           <ul className={styles.coursesList}>
@@ -223,16 +228,17 @@ function Courses({ onCloseEditForm, course }) {
                     </h3>
                   </div>
                   <p className={styles.courseDescription}>
-                    {course.description || "Không có mô tả cho khóa học này"}
+                    {course.description ||
+                      "There is no description for this course."}
                   </p>
                   <div className={styles.courseDetails}>
                     <div className={styles.detailItem}>
                       <span className={styles.detailIcon}>👨‍🏫</span>
-                      <span>{course.instructorId || "Chưa có giảng viên"}</span>
+                      <span>{course.instructorId || "No instructor yet"}</span>
                     </div>
                     <div className={styles.detailItem}>
                       <span className={styles.detailIcon}>👥</span>
-                      <span>{(course.studentCount || 0) + " học viên"}</span>
+                      <span>{(course.studentCount || 0) + " student"}</span>
                     </div>
                   </div>
                 </div>
@@ -240,18 +246,18 @@ function Courses({ onCloseEditForm, course }) {
                   <button
                     className={styles.editButton}
                     onClick={() => handleEdit(course)}
-                    title="Chỉnh sửa khóa học"
+                    title="Edit course"
                   >
                     <span className={styles.buttonIcon}>✏️</span>
-                    <span className={styles.buttonText}>Sửa</span>
+                    <span className={styles.buttonText}>Edit</span>
                   </button>
                   <button
-                    className={styles.deleteButton}
+                    className={styles.detailButton}
                     onClick={() => handleDelete(course.id)}
-                    title="Xóa khóa học"
+                    title="Course details"
                   >
-                    <span className={styles.buttonIcon}>🗑️</span>
-                    <span className={styles.buttonText}>Xóa</span>
+                    <span className={styles.buttonIcon}>📄</span>
+                    <span className={styles.buttonText}>Detail</span>
                   </button>
                 </div>
               </li>

@@ -10,12 +10,14 @@ import { useUsernameWatcher } from "../Hooks/Auth/useUsernameWatcher";
 import UploadCourseImage from "../components/Interfaces/Instructors/Temp/UploadCourseImage";
 import EditCourse from "../components/Interfaces/Instructors/Courses/EditCourse";
 import { CourseProvider } from "../contexts/CourseContext";
+import AddCourseForm from "../components/Interfaces/Instructors/Courses/AddCourse";
 
-function Instructor(params) {
+function Instructor() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
   const [course, setCourse] = useState({});
 
   useRefreshToken();
@@ -40,6 +42,7 @@ function Instructor(params) {
       key="1"
       onCloseEditForm={() => setShowEditForm(!showEditForm)}
       course={(obj) => setCourse(obj)}
+      onCloseAddForm={() => setShowAddForm(!showAddForm)}
     />,
     <UploadCourseImage key="2" />,
   ];
@@ -68,6 +71,11 @@ function Instructor(params) {
             courseObject={course}
             onClose={() => setShowEditForm(!showEditForm)}
           />
+        )}
+        {showAddForm && (
+          <AddCourseForm
+            onClose={() => setShowAddForm(!showAddForm)}
+          ></AddCourseForm>
         )}
       </CourseProvider>
     </>
