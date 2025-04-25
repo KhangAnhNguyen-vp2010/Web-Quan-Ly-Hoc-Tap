@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.DTOs
+namespace WebAPI.DTOs.Password
 {
     public class ChangePasswordDto
     {

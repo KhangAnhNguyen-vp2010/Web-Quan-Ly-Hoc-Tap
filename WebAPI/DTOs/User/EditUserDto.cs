@@ -1,4 +1,4 @@
-﻿namespace WebAPI.DTOs
+﻿namespace WebAPI.DTOs.User
 {
     public class EditUserDto
     {

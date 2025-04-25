@@ -1,9 +1,8 @@
-﻿namespace WebAPI.DTOs
+﻿namespace WebAPI.DTOs.Password
 {
-    public class RegisterDto
+    public class ForgotPasswordRequestDto
     {
         public string? Username { get; set; }
         public string? Email { get; set; }
-        public string? Password { get; set; }
     }
 }

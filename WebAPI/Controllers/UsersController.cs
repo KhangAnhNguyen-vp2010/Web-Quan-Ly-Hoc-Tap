@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs;
+using WebAPI.DTOs.User;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers

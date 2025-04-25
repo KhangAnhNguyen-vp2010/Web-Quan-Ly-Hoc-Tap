@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.DTOs;
 using WebAPI.DTOs.Course;
 using WebAPI.Models;
 
@@ -25,6 +25,8 @@ namespace WebAPI.Controllers
             _env = env;
         }
 
+
+        //////////////////////////////////////////////////////// GET LIST COURSE /////////////////////////////////////////////////////////////////////////
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> GetCourses(
@@ -70,23 +72,10 @@ namespace WebAPI.Controllers
                 data
             });
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-        // GET: api/Courses/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
-        {
-            var course = await _context.Courses.FindAsync(id);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-
-            return course;
-        }
-
+        ////////////////////////////////////////////////////////// EDIT COURSE ////////////////////////////////////////////////////////////////////////
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
@@ -110,8 +99,10 @@ namespace WebAPI.Controllers
                 _id = id
             });
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+        ////////////////////////////////////////////////////////// ADD NEW COURSE ////////////////////////////////////////////////////////////////////////
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
@@ -132,7 +123,10 @@ namespace WebAPI.Controllers
 
             return Ok("Thêm thành công");
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
 
+        ///////////////////////////////////////////////////GET LAST ID/////////////////////////////////////////////////////////////////
         [HttpGet("LastId")]
         public async Task<ActionResult<int>> layLastID()
         {
@@ -144,26 +138,23 @@ namespace WebAPI.Controllers
             // Trả về lastId, nếu không có khóa học sẽ trả về 0
             return Ok(lastId);
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        // DELETE: api/Courses/5
-        [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCourse(int id)
+
+        //////////////////////////////////////////////////////////GET THE NUMBER OF STUDENTS////////////////////////////////////////////////////////////
+        [HttpGet("StudentCount/{id}")]
+        public async Task<ActionResult<int>> GetStudentCount(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+            var studentCount = await _context.Enrollments.Where(e => e.CourseId == id).CountAsync();
 
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(studentCount);
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+        ////////////////////////////////////////////////////////// UPLOAD IMAGE ////////////////////////////////////////////////////////////////////////
         // Upload Image
         [Authorize]
         [HttpPost("upload/{id}")]
@@ -221,7 +212,30 @@ namespace WebAPI.Controllers
 
             return Ok(course);  // Trả về thông tin khóa học cùng với đường dẫn ảnh
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        ///////////////////////////////////////////////////////GET STUDENT LIST/////////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpGet("StudentList/{id}")]
+        public async Task<IActionResult> GetStudentsByCourse(int id, string searchTerm = "")
+        {
+            var students = await _context.Enrollments
+                .Where(e => e.CourseId == id)
+                .Join(_context.Users,
+                      e => e.UserId,
+                      u => u.UserId,
+                      (e, u) => new { u.UserId, u.Username, u.FullName, u.Email, u.Role })
+                .Where(x => x.Role == "Student")
+                .Where(x => string.IsNullOrEmpty(searchTerm) ||
+                             x.FullName.ToLower().Contains(searchTerm.ToLower()) ||
+                             x.Username.ToLower().Contains(searchTerm.ToLower()) ||
+                             x.Email.ToLower().Contains(searchTerm.ToLower()))
+                .ToListAsync();
+
+            return Ok(students);
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     }
 }
