@@ -1,0 +1,152 @@
+/* Overlay toàn màn hình */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Mờ nền */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Khung modal */
+.modal {
+  background-color: rgb(212, 218, 212);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 2000px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: fadeInUp 0.4s ease;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal::-webkit-scrollbar {
+  width: 8px; /* Chiều rộng thanh scrollbar */
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Animation cho modal */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.closeButton {
+  position: fixed;
+  top: 30px;
+  right: 80px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 999;
+  animation: fadeInUp 0.4s ease;
+}
+
+.closeButton:hover {
+  color: red;
+}
+
+.card {
+  background-color: rgb(212, 218, 212);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageWrapper {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.cardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: 1rem 0;
+}
+
+.courseName {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.instructor {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.studentSection {
+  margin-top: 1.5rem;
+}
+
+/* Container for search input and button */
+.search-container {
+  display: flex;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 5px 10px;
+  margin-left: 100px;
+}
+
+/* Input style */
+.search-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}

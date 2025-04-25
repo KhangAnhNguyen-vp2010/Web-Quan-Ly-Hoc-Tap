@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../../assets/css/Instructor/Courses.module.css";
 import { useCourse } from "../../../contexts/CourseContext";
+import { useGetUser } from "../../../Hooks/useGetUser";
+import axios from "axios";
 
-function Courses({ onCloseEditForm, course, onCloseAddForm }) {
+function Courses({
+  onCloseEditForm,
+  course,
+  onCloseAddForm,
+  onCloseDetailForm,
+}) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -10,8 +17,10 @@ function Courses({ onCloseEditForm, course, onCloseAddForm }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [studentCounts, setStudentCounts] = useState({});
   const pageSize = 6;
   const { getListCourses, load, setLoad } = useCourse();
+  const { user } = useGetUser();
 
   const fetchCourses = async (page, query = "", sort = "") => {
     setLoading(true);
@@ -21,11 +30,31 @@ function Courses({ onCloseEditForm, course, onCloseAddForm }) {
       if (result) {
         setCourses(result.data);
         setTotalPages(result.totalPages);
+
+        // Fetch student count for each course and update state
+        const counts = {};
+        for (const course of result.data) {
+          const count = await GetStudentCount(course.courseId); // Assuming 'id' is the unique identifier for a course
+          counts[course.courseId] = count;
+        }
+        setStudentCounts(counts);
       }
     } catch (err) {
       console.error("Lỗi khi lấy danh sách khoá học:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const GetStudentCount = async (id) => {
+    try {
+      const res = await axios.get(
+        `https://localhost:7233/api/Courses/StudentCount/${id}`
+      );
+      return res.data;
+    } catch (error) {
+      console.log("Error by get count student: " + error);
+      return 0;
     }
   };
 
@@ -67,10 +96,9 @@ function Courses({ onCloseEditForm, course, onCloseAddForm }) {
     onCloseAddForm();
   };
 
-  const handleDelete = (courseId) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa khóa học này không?")) {
-      console.log("Xóa khóa học với ID:", courseId);
-    }
+  const handleDetail = (obj) => {
+    onCloseDetailForm();
+    course(obj);
   };
 
   const handlePageClick = (pageNumber) => {
@@ -234,11 +262,13 @@ function Courses({ onCloseEditForm, course, onCloseAddForm }) {
                   <div className={styles.courseDetails}>
                     <div className={styles.detailItem}>
                       <span className={styles.detailIcon}>👨‍🏫</span>
-                      <span>{course.instructorId || "No instructor yet"}</span>
+                      <span>{user.fullName || "No instructor yet"}</span>
                     </div>
                     <div className={styles.detailItem}>
                       <span className={styles.detailIcon}>👥</span>
-                      <span>{(course.studentCount || 0) + " student"}</span>
+                      <span>
+                        {studentCounts[course.courseId] + " students"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -253,7 +283,7 @@ function Courses({ onCloseEditForm, course, onCloseAddForm }) {
                   </button>
                   <button
                     className={styles.detailButton}
-                    onClick={() => handleDelete(course.id)}
+                    onClick={() => handleDetail(course)}
                     title="Course details"
                   >
                     <span className={styles.buttonIcon}>📄</span>
