@@ -1,7 +1,7 @@
 import Dashboard from "../components/Interfaces/Instructors/Dashboard";
 import Profile from "../components/Interfaces/Instructors/Profile";
 import Sidebar from "../components/Interfaces/Instructors/Sidebar";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import clsx from "clsx";
 import styles from "../assets/css/Instructor/Instructor.module.css";
 import Courses from "../components/Interfaces/Instructors/Courses";
@@ -11,6 +11,7 @@ import UploadCourseImage from "../components/Interfaces/Instructors/Temp/UploadC
 import EditCourse from "../components/Interfaces/Instructors/Courses/EditCourse";
 import { CourseProvider } from "../contexts/CourseContext";
 import AddCourseForm from "../components/Interfaces/Instructors/Courses/AddCourse";
+import DetailCourse from "../components/Interfaces/Instructors/Courses/DetailCourse";
 
 function Instructor() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -18,6 +19,7 @@ function Instructor() {
   const [showProfile, setShowProfile] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showDetailForm, setShowDetailForm] = useState(false);
   const [course, setCourse] = useState({});
 
   useRefreshToken();
@@ -43,6 +45,7 @@ function Instructor() {
       onCloseEditForm={() => setShowEditForm(!showEditForm)}
       course={(obj) => setCourse(obj)}
       onCloseAddForm={() => setShowAddForm(!showAddForm)}
+      onCloseDetailForm={() => setShowDetailForm(!showDetailForm)}
     />,
     <UploadCourseImage key="2" />,
   ];
@@ -73,9 +76,13 @@ function Instructor() {
           />
         )}
         {showAddForm && (
-          <AddCourseForm
-            onClose={() => setShowAddForm(!showAddForm)}
-          ></AddCourseForm>
+          <AddCourseForm onClose={() => setShowAddForm(!showAddForm)} />
+        )}
+        {showDetailForm && (
+          <DetailCourse
+            course={course}
+            onClose={() => setShowDetailForm(!showDetailForm)}
+          />
         )}
       </CourseProvider>
     </>
