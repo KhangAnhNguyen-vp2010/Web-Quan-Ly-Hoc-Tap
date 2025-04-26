@@ -3,6 +3,7 @@ import styles from "../../../assets/css/Instructor/Courses.module.css";
 import { useCourse } from "../../../contexts/CourseContext";
 import { useGetUser } from "../../../Hooks/useGetUser";
 import axios from "axios";
+import Pagination from "./Pagination";
 
 function Courses({
   onCloseEditForm,
@@ -99,29 +100,6 @@ function Courses({
   const handleDetail = (obj) => {
     onCloseDetailForm();
     course(obj);
-  };
-
-  const handlePageClick = (pageNumber) => {
-    setPage(pageNumber);
-  };
-
-  const renderPageNumbers = () => {
-    const maxPagesToShow = 5;
-    let pagesToShow = [];
-    if (totalPages <= maxPagesToShow) {
-      pagesToShow = Array.from({ length: totalPages }, (_, i) => i + 1);
-    } else {
-      const start = Math.max(1, page - 2);
-      const end = Math.min(totalPages, page + 2);
-      if (start > 1) pagesToShow.push(1);
-      if (start > 2) pagesToShow.push("...");
-      for (let i = start; i <= end; i++) {
-        pagesToShow.push(i);
-      }
-      if (end < totalPages - 1) pagesToShow.push("...");
-      if (end < totalPages) pagesToShow.push(totalPages);
-    }
-    return pagesToShow;
   };
 
   const getStatusBadge = (status) => {
@@ -294,58 +272,11 @@ function Courses({
             ))}
           </ul>
         )}
-
-        {totalPages > 1 && (
-          <div className={styles.pagination}>
-            <button
-              className={`${styles.paginationButton} ${styles.paginationArrow}`}
-              onClick={() => handlePageClick(1)}
-              disabled={page === 1}
-            >
-              «
-            </button>
-            <button
-              className={`${styles.paginationButton} ${styles.paginationArrow}`}
-              onClick={() => handlePageClick(Math.max(1, page - 1))}
-              disabled={page === 1}
-            >
-              ‹
-            </button>
-
-            {renderPageNumbers().map((number, index) =>
-              number === "..." ? (
-                <span key={index} className={styles.paginationEllipsis}>
-                  …
-                </span>
-              ) : (
-                <button
-                  key={number}
-                  className={`${styles.paginationButton} ${
-                    number === page ? styles.paginationActive : ""
-                  }`}
-                  onClick={() => handlePageClick(number)}
-                >
-                  {number}
-                </button>
-              )
-            )}
-
-            <button
-              className={`${styles.paginationButton} ${styles.paginationArrow}`}
-              onClick={() => handlePageClick(Math.min(totalPages, page + 1))}
-              disabled={page === totalPages}
-            >
-              ›
-            </button>
-            <button
-              className={`${styles.paginationButton} ${styles.paginationArrow}`}
-              onClick={() => handlePageClick(totalPages)}
-              disabled={page === totalPages}
-            >
-              »
-            </button>
-          </div>
-        )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
     </>
   );

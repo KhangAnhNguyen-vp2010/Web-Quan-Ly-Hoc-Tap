@@ -2,6 +2,7 @@ import StudentList from "./Detail/StudentList";
 import styles from "../../../../assets/css/Instructor/Courses/DetailCourse.module.css";
 import { useState, useEffect } from "react";
 import { useGetUser } from "../../../../Hooks/useGetUser";
+import Pagination from "../Pagination";
 
 function DetailCourse({ onClose, course }) {
   const [search, setSearch] = useState({
@@ -9,6 +10,8 @@ function DetailCourse({ onClose, course }) {
     debounce: "",
   });
   const { user } = useGetUser();
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -63,6 +66,13 @@ function DetailCourse({ onClose, course }) {
           <StudentList
             courseId={course.courseId}
             searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+          />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage)}
           />
         </div>
       </div>
