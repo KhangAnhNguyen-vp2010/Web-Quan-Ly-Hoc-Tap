@@ -3,18 +3,22 @@ import axios from "axios";
 import styles from "../../../../../assets/css/Instructor/Courses/Detail/StudentList.module.css";
 import { FaSadTear } from "react-icons/fa";
 
-const StudentList = ({ courseId, searchTerm }) => {
+const StudentList = ({ courseId, searchTerm, page, SetTotalPages }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const handleSetTotalPages = (data) => {
+    SetTotalPages(data);
+  };
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7233/api/Courses/StudentList/${courseId}?searchTerm=${searchTerm}`,
+          `https://localhost:7233/api/Courses/StudentList/${courseId}?searchTerm=${searchTerm}&page=${page}`,
           { withCredentials: true }
         );
-        setStudents(response.data);
+        setStudents(response.data.students);
+        handleSetTotalPages(response.data.total_Pages);
       } catch (error) {
         console.error("Error fetching students:", error);
       } finally {
@@ -23,7 +27,7 @@ const StudentList = ({ courseId, searchTerm }) => {
     };
 
     fetchStudents();
-  }, [courseId, searchTerm]);
+  }, [courseId, searchTerm, page]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -45,6 +49,9 @@ const StudentList = ({ courseId, searchTerm }) => {
                 <h5 className={styles.studentName}>{student.fullName}</h5>
                 <p className={styles.studentEmail}>{student.email}</p>
               </div>
+              <span className={styles.studentRole}>
+                Mã học sinh: {student.userId}
+              </span>
               <span className={styles.studentRole}>{student.role}</span>
             </div>
           ))
