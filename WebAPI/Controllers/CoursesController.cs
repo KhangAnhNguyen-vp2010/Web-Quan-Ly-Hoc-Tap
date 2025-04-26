@@ -218,23 +218,43 @@ namespace WebAPI.Controllers
         ///////////////////////////////////////////////////////GET STUDENT LIST/////////////////////////////////////////////////////////////
         [Authorize]
         [HttpGet("StudentList/{id}")]
-        public async Task<IActionResult> GetStudentsByCourse(int id, string searchTerm = "")
+        public async Task<IActionResult> GetStudentsByCourse(int id, [FromQuery] string searchTerm = "", [FromQuery] int page = 1)
         {
-            var students = await _context.Enrollments
+            int pageSize = 5;
+
+            var query = _context.Enrollments
                 .Where(e => e.CourseId == id)
                 .Join(_context.Users,
                       e => e.UserId,
                       u => u.UserId,
                       (e, u) => new { u.UserId, u.Username, u.FullName, u.Email, u.Role })
-                .Where(x => x.Role == "Student")
-                .Where(x => string.IsNullOrEmpty(searchTerm) ||
-                             x.FullName.ToLower().Contains(searchTerm.ToLower()) ||
-                             x.Username.ToLower().Contains(searchTerm.ToLower()) ||
-                             x.Email.ToLower().Contains(searchTerm.ToLower()))
+                .Where(x => x.Role == "Student");
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var lowerTerm = searchTerm.ToLower();
+                query = query.Where(x =>
+                    x.FullName.ToLower().Contains(lowerTerm) ||
+                    x.Username.ToLower().Contains(lowerTerm) ||
+                    x.Email.ToLower().Contains(lowerTerm));
+            }
+
+            var totalItems = await query.CountAsync();
+            var students = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
-            return Ok(students);
+            return Ok(new
+            {
+                currentPage = page,
+                page_Size = pageSize,
+                total_Items = totalItems,
+                total_Pages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Students = students
+            });
         }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     }
