@@ -116,6 +116,14 @@
   margin-top: 1.5rem;
 }
 
+.header-container {
+  display: flex;
+  justify-content: space-between; /* search bên trái, tab bên phải */
+  align-items: center; /* canh giữa theo chiều cao */
+  padding: 10px 20px; /* padding cho đẹp */
+  gap: 20px;
+}
+
 /* Container for search input and button */
 .search-container {
   display: flex;
@@ -149,4 +157,10 @@
 .search-input:focus {
   border-color: #007bff;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.tab-container {
+  margin-right: 100px;
+  justify-content: space-around;
+  flex-shrink: 0;
 }
