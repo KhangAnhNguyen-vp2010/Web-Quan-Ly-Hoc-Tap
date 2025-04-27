@@ -13,6 +13,8 @@ public partial class Assignment
 
     public DateOnly? DueDate { get; set; }
 
+    public string? ExerciseContent { get; set; }
+
     public virtual ICollection<AssignmentsCompleted> AssignmentsCompleteds { get; set; } = new List<AssignmentsCompleted>();
 
     public virtual Course? Course { get; set; }
