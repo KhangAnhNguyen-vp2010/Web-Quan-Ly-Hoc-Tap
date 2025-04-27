@@ -3,6 +3,8 @@ import styles from "../../../../assets/css/Instructor/Courses/DetailCourse.modul
 import { useState, useEffect } from "react";
 import { useGetUser } from "../../../../Hooks/useGetUser";
 import Pagination from "../Pagination";
+import TabSelector from "./Detail/TabSelector";
+import Assignments from "./Detail/Assignments";
 
 function DetailCourse({ onClose, course }) {
   const [search, setSearch] = useState({
@@ -12,6 +14,7 @@ function DetailCourse({ onClose, course }) {
   const { user } = useGetUser();
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -20,6 +23,23 @@ function DetailCourse({ onClose, course }) {
 
     return () => clearTimeout(handler);
   }, [search.text]);
+
+  const selectTab = [
+    <StudentList
+      key="0"
+      courseId={course.courseId}
+      searchTerm={search.debounce}
+      page={page}
+      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+    />,
+    <Assignments
+      key="1"
+      courseId={course.courseId}
+      searchTerm={search.debounce}
+      page={page}
+      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+    />,
+  ];
 
   return (
     <div className={styles.overlay}>
@@ -51,24 +71,31 @@ function DetailCourse({ onClose, course }) {
           </div>
         </div>
 
-        <div className={styles["search-container"]}>
-          <input
-            type="text"
-            className={styles["search-input"]}
-            placeholder="🔍Search..."
-            value={search.text}
-            onChange={(e) =>
-              setSearch((prev) => ({ ...prev, text: e.target.value }))
-            }
-          />
+        <div className={styles["header-container"]}>
+          <div className={styles["search-container"]}>
+            <input
+              type="text"
+              className={styles["search-input"]}
+              placeholder="🔍Search..."
+              value={search.text}
+              onChange={(e) =>
+                setSearch((prev) => ({ ...prev, text: e.target.value }))
+              }
+            />
+          </div>
+          <div className={styles["tab-container"]}>
+            <TabSelector
+              tabs={["Students", "Assignments", "Tests"]}
+              onTabChange={(index) => {
+                setTabIndex(index);
+                setPage(1);
+                setSearch({ text: "", debounce: "" });
+              }}
+            />
+          </div>
         </div>
         <div className={styles.studentSection}>
-          <StudentList
-            courseId={course.courseId}
-            searchTerm={search.debounce}
-            page={page}
-            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
-          />
+          {selectTab[tabIndex]}
           <Pagination
             page={page}
             totalPages={totalPages}
