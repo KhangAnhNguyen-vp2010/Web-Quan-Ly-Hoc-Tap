@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  gap: 20px; /* Khoảng cách giữa các item */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-right: 50px;
+  padding: 20px;
+}
+
+.item {
+  text-align: center;
+}
+
+.number {
+  font-size: 2em; /* Kích thước chữ số lớn hơn */
+  font-weight: bold;
+  color: #333; /* Màu chữ đậm */
+  display: block; /* Để label xuống dòng */
+}
+
+.label {
+  font-size: 0.9em;
+  color: #777; /* Màu chữ nhạt hơn cho label */
+}
