@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
+using MailKit.Search;
 
 namespace WebAPI.Controllers
 {
@@ -20,7 +22,8 @@ namespace WebAPI.Controllers
             _context = context;
         }
 
-        //[Authorize]
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [Authorize]
         [HttpGet("Course/{id}")]
         public async Task<IActionResult> GetAssignmentsByCourse(int id, [FromQuery] string? search, [FromQuery] int page = 1)
         {
@@ -30,7 +33,10 @@ namespace WebAPI.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(a => a.AssignmentName.Contains(search));
+                var lowerSearch = search.ToLower();
+                query = query.Where(a => a.AssignmentName.Contains(lowerSearch) ||
+                                         a.ExerciseContent.Contains(lowerSearch) ||
+                                         a.DueDate.ToString().Contains(lowerSearch));
             }
 
             var totalItems = await query.CountAsync();
@@ -44,9 +50,6 @@ namespace WebAPI.Controllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            if (list == null || list.Count == 0)
-                return NotFound();
-
             return Ok(new
             {
                 currentPage = page,
@@ -55,6 +58,58 @@ namespace WebAPI.Controllers
                 items = list
             });
         }
-        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////////////////////////LIST COMPLETED/////////////////////////////////////////////////
+        [Authorize]
+        [HttpGet("completed/{id}")]
+        public async Task<IActionResult> GetCompletedAssignments(int id)
+        {
+            var result = await _context.Users
+                .Join(_context.AssignmentsCompleteds,
+                      user => user.UserId,
+                      ac => ac.UserId,
+                      (user, ac) => new { user, ac })
+                .Where(joined => joined.ac.AssignmentId == id && joined.ac.CompletionDate != null)
+                .Select(joined => new
+                {
+                    UserID = joined.user.UserId,
+                    UserName = joined.user.Username,
+                    Full_Name = joined.user.FullName,
+                    AssignmentID = joined.ac.AssignmentId,
+                    Completion_Date = joined.ac.CompletionDate
+                })
+                .ToListAsync();
+
+            return Ok(result);
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////////LIST UNCOMPLETED/////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpGet("uncompleted/{id}")]
+        public async Task<IActionResult> GetUncompletedAssignments(int id)
+        {
+            var result = await _context.Users
+                .Join(_context.AssignmentsCompleteds,
+                      user => user.UserId,
+                      ac => ac.UserId,
+                      (user, ac) => new { user, ac })
+                .Where(joined => joined.ac.AssignmentId == id && joined.ac.CompletionDate == null)
+                .Select(joined => new
+                {
+                    UserID = joined.user.UserId,
+                    UserName = joined.user.Username,
+                    Full_Name = joined.user.FullName,
+                    AssignmentID = joined.ac.AssignmentId,
+                    Completion_Date = joined.ac.CompletionDate
+                })
+                .ToListAsync();
+
+            return Ok(result);
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 }
