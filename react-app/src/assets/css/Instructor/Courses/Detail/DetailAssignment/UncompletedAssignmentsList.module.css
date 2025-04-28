@@ -1,0 +1,97 @@
+/* UncompletedAssignmentsList.module.css */
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #343a40;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: #dc3545;
+  text-align: center;
+  font-weight: bold;
+}
+
+.assignmentList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.assignmentItem {
+  background-color: #fff3cd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.assignmentItem:hover {
+  background-color: #ffeeba;
+}
+
+.assignmentText {
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.statusText {
+  font-size: 0.9rem;
+  color: #856404;
+}
+
+.congratulationsWrapper {
+  display: flex;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  height: 300px; /* Chiều cao của phần tử chiếm toàn bộ màn hình */
+}
+
+.congratulationsMessage {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #c3e6cb;
+  width: 60%; /* Đặt chiều rộng phần tử thông báo, có thể thay đổi theo ý muốn */
+  max-width: 500px; /* Đảm bảo thông báo không rộng quá */
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .assignmentItem {
+    padding: 10px;
+  }
+}
