@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using MailKit.Search;
+using WebAPI.DTOs.Assignment;
 
 namespace WebAPI.Controllers
 {
@@ -111,5 +112,86 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////////////////ADD ASSIGNMENT//////////////////////////////////////////////////////
+        [Authorize]
+        [HttpPost("AddAssignment")]
+        public async Task<IActionResult> CreateAssignment([FromBody] CreateAssignmentDto request)
+        {
+            // Bước 1: Tạo Assignment mới
+            var assignment = new Assignment
+            {
+                CourseId = request.CourseID,
+                AssignmentName = request.AssignmentName,
+                DueDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                ExerciseContent = request.AssignmentContent,
+            };
+
+            _context.Assignments.Add(assignment);
+            await _context.SaveChangesAsync();
+
+            // Bước 2: Lấy tất cả UserID từ bảng Enrollments đang học CourseID này
+            var enrolledUsers = await _context.Enrollments
+                .Where(e => e.CourseId == request.CourseID)
+                .Select(e => e.UserId)
+                .ToListAsync();
+
+            if (enrolledUsers.Count == 0)
+            {
+                return Ok(new
+                {
+                    message = "Assignment created, but no users enrolled in this course.",
+                    assignmentId = assignment.AssignmentId
+                });
+            }
+
+            // Bước 3: Tạo bản ghi AssignmentsCompleted cho các user
+            var assignmentCompletedList = enrolledUsers.Select(userId => new AssignmentsCompleted
+            {
+                UserId = userId,
+                AssignmentId = assignment.AssignmentId,
+                CompletionDate = null,
+                Grade = null
+            });
+
+            _context.AssignmentsCompleteds.AddRange(assignmentCompletedList);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Assignment created and AssignmentsCompleted generated for enrolled users.",
+                assignmentId = assignment.AssignmentId
+            });
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        //////////////////////////////////////////////////////////////////////EDIT ASSIGNMENT///////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpPut("EditAssignment/{id}")]
+        public async Task<IActionResult> UpdateAssignment(int id, [FromBody] UpdateAssignmentDto request)
+        {
+            var assignment = await _context.Assignments.FindAsync(id);
+
+            if (assignment == null)
+                return NotFound(new { message = "Assignment not found" });
+
+            // Cập nhật nếu có
+            assignment.AssignmentName = request.AssignmentName;
+            assignment.ExerciseContent = request.AssignmentContent;
+
+            if (request.DueDate.HasValue)
+            {
+                assignment.DueDate = request.DueDate.Value;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Assignment updated successfully" });
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 }
