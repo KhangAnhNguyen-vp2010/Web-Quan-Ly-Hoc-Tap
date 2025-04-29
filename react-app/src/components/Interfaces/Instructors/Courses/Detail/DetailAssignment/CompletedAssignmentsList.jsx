@@ -13,7 +13,8 @@ const CompletedAssignmentsList = ({ assignmentId, countCompleted }) => {
     const fetchCompletedAssignments = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7233/api/Assignments/completed/${assignmentId}`
+          `https://localhost:7233/api/Assignments/completed/${assignmentId}`,
+          { withCredentials: true }
         );
         setCompletedUsers({
           list: response.data && response.data,

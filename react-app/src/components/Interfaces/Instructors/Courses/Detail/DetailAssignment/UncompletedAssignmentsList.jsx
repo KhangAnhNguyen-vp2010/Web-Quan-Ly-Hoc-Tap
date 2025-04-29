@@ -13,7 +13,8 @@ const UncompletedAssignmentsList = ({ assignmentId, countUncompleted }) => {
     const fetchUncompletedAssignments = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7233/api/Assignments/uncompleted/${assignmentId}`
+          `https://localhost:7233/api/Assignments/uncompleted/${assignmentId}`,
+          { withCredentials: true }
         );
         setUncompletedUsers({
           list: response.data && response.data,
