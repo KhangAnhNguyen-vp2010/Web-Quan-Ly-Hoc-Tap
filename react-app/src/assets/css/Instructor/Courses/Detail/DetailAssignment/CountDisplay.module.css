@@ -4,6 +4,9 @@
   align-items: center; /* Căn giữa theo chiều dọc */
   margin-right: 50px;
   padding: 20px;
+  border: 2px solid;
+  border-radius: 15px;
+  background-color: rgb(181, 251, 251);
 }
 
 .item {
