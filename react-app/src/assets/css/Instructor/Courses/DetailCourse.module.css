@@ -14,6 +14,7 @@
 
 /* Khung modal */
 .modal {
+  position: relative;
   background-color: rgb(212, 218, 212);
   border-radius: 12px;
   padding: 2rem;
@@ -21,7 +22,6 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative;
   animation: fadeInUp 0.4s ease;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
 }
@@ -53,9 +53,9 @@
 }
 
 .closeButton {
-  position: fixed;
-  top: 30px;
-  right: 80px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
   font-size: 24px;
   background: none;
   border: none;
@@ -122,6 +122,8 @@
   align-items: center; /* canh giữa theo chiều cao */
   padding: 10px 20px; /* padding cho đẹp */
   gap: 20px;
+  max-width: 1000px;
+  margin: auto;
 }
 
 /* Container for search input and button */

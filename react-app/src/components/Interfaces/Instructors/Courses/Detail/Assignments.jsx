@@ -44,12 +44,12 @@ const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
     <>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h4 className={styles.title}>List of Assignments</h4>
+          <h4 className={styles.title}>📙List of Assignments</h4>
           <button
             className={styles["btn-addAssignment"]}
             onClick={() => setShowAddAssignment(!showAddAssignment)}
           >
-            📙 Add Exercises 📙
+            📙Add Exercises
           </button>
         </div>
 
@@ -71,10 +71,10 @@ const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
               >
                 <div className={styles.assignmentInfo}>
                   <h5 className={styles.assignmentName}>
-                    {assignment.assignmentName}
+                    📖{assignment.assignmentName}
                   </h5>
                   <p className={styles.assignmentDescription}>
-                    {assignment.exerciseContent}
+                    📋{assignment.exerciseContent}
                   </p>
                 </div>
                 <span className={styles.assignmentDueDate}>

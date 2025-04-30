@@ -35,7 +35,7 @@ const StudentList = ({ courseId, searchTerm, page, SetTotalPages }) => {
 
   return (
     <div className={styles.container}>
-      <h4 className={styles.title}>List of students (Course ID: {courseId})</h4>
+      <h4 className={styles.title}>🧑‍🎓List of students</h4>
       <div className={styles.studentList}>
         {students.length === 0 ? (
           <div className={styles.noStudents}>
@@ -46,8 +46,8 @@ const StudentList = ({ courseId, searchTerm, page, SetTotalPages }) => {
           students.map((student, index) => (
             <div key={index} className={styles.studentCard}>
               <div className={styles.studentInfo}>
-                <h5 className={styles.studentName}>{student.fullName}</h5>
-                <p className={styles.studentEmail}>{student.email}</p>
+                <h5 className={styles.studentName}>🧑‍💻{student.fullName}</h5>
+                <p className={styles.studentEmail}>📧{student.email}</p>
               </div>
               <span className={styles.studentRole}>
                 Mã học sinh: {student.userId}

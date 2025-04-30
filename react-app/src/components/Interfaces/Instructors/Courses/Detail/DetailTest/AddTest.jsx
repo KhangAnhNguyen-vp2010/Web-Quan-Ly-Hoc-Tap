@@ -41,7 +41,8 @@ const AddTest = ({ courseId, onClose }) => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
+        { withCredentials: true }
       );
       onClose();
       toast.success("Updated!!!");
