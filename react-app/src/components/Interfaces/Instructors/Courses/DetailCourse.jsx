@@ -5,6 +5,7 @@ import { useGetUser } from "../../../../Hooks/useGetUser";
 import Pagination from "../Pagination";
 import TabSelector from "./Detail/TabSelector";
 import Assignments from "./Detail/Assignments";
+import Tests from "./Detail/Test";
 
 function DetailCourse({ onClose, course }) {
   const [search, setSearch] = useState({
@@ -34,6 +35,13 @@ function DetailCourse({ onClose, course }) {
     />,
     <Assignments
       key="1"
+      courseId={course.courseId}
+      searchTerm={search.debounce}
+      page={page}
+      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+    />,
+    <Tests
+      key="2"
       courseId={course.courseId}
       searchTerm={search.debounce}
       page={page}

@@ -1,0 +1,109 @@
+/* DetailAssignment.module.css */
+
+.assignmentDetails {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Overlay background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: -1;
+}
+
+.content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 1200px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.content::-webkit-scrollbar {
+  width: 6px; /* Điều chỉnh độ rộng của thanh cuộn */
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: #888; /* Màu sắc của phần thanh cuộn */
+  border-radius: 5px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Màu sắc nền của thanh cuộn */
+}
+
+.closeButton {
+  position: fixed;
+  top: 30px;
+  right: 50px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.closeButton:hover {
+  color: red;
+}
+
+.assignmentTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.assignmentDueDate,
+.assignmentContent {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.assignmentDueDate strong,
+.assignmentContent strong {
+  font-weight: bold;
+}
+
+.assignments-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  height: 400px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-edit {
+  background-color: #007bff; /* Màu xanh dương hiện đại */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}

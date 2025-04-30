@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailAssignment/EditAssignment.module.css";
 
-function EditAssignment({ assignment, onClose }) {
+function EditAssignment({ assignment, onUpdate, onClose }) {
   const [form, setForm] = useState(assignment);
 
   const handleChange = (e) => {
@@ -49,7 +49,8 @@ function EditAssignment({ assignment, onClose }) {
       );
 
       toast.success("Updated exercises");
-      onClose(form);
+      onUpdate(form);
+      onClose();
     } catch (err) {
       toast.error(err || "Update failed");
     }
@@ -58,7 +59,7 @@ function EditAssignment({ assignment, onClose }) {
   return (
     <div className={styles.overlay}>
       <div className={styles.container}>
-        <button className={styles.closeButton} onClick={() => onClose(form)}>
+        <button className={styles.closeButton} onClick={() => onClose()}>
           &times;
         </button>
         <form onSubmit={handleUpdate} className={styles["form-container"]}>

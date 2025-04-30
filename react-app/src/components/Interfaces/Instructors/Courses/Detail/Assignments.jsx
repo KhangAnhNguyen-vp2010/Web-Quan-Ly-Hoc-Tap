@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "../../../../../assets/css/Instructor/Courses/Detail/Assignments.module.css";
 import { FaSadTear } from "react-icons/fa";
-import DetailAssignment from "./DetailAssignment";
+import DetailAssignment from "./DetailAssignment/DetailAssignment";
 import AddAssignment from "./DetailAssignment/AddAssignment";
 
 const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
