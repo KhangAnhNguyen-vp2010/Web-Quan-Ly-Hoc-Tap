@@ -46,7 +46,8 @@ namespace WebAPI
                     policy.WithOrigins("http://localhost:5173")   // Cho phép tất cả nguồn
                           .AllowAnyMethod()   // Cho phép tất cả phương thức HTTP (GET, POST, PUT, DELETE, ...)
                           .AllowAnyHeader()   // Cho phép tất cả header
-                          .AllowCredentials();  
+                          .AllowCredentials()
+                          .WithExposedHeaders("Content-Disposition"); // Cho phép đọc tên file tải về
                 });
             });
 
@@ -116,9 +117,11 @@ namespace WebAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseStaticFiles();
+            
 
             app.UseCors("AllowAll");
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

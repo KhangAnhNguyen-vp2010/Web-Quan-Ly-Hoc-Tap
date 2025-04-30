@@ -13,7 +13,11 @@ public partial class Test
 
     public DateOnly? TestDate { get; set; }
 
+    public string? TestContent { get; set; }
+
     public virtual Course? Course { get; set; }
+
+    public virtual ICollection<TestFile> TestFiles { get; set; } = new List<TestFile>();
 
     public virtual ICollection<TestScore> TestScores { get; set; } = new List<TestScore>();
 }
