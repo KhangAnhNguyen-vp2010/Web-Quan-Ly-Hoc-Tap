@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs.Test;
@@ -20,6 +21,7 @@ namespace WebAPI.Controllers
         }
 
         ///////////////////////////////////////////////////GET TESTS BY COURSE///////////////////////////////////////
+        [Authorize]
         [HttpGet("Course/{id}")]
         public async Task<IActionResult> GetTestsByCourse(int id, [FromQuery] string? search, [FromQuery] int page = 1)
         {
@@ -58,6 +60,7 @@ namespace WebAPI.Controllers
 
 
         /////////////////////////////////////////////////////////ADD NEW TEST////////////////////////////
+        [Authorize]
         [HttpPost("with-files")]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(50_000_000)] // Giới hạn 50MB
@@ -125,6 +128,28 @@ namespace WebAPI.Controllers
 
             await _context.SaveChangesAsync();
 
+            var enrolledStudentIds = await _context.Enrollments
+                                        .Where(e => e.CourseId == newTest.CourseId)
+                                        .Select(e => e.UserId)
+                                        .ToListAsync();
+
+            foreach (var studentId in enrolledStudentIds)
+            {
+                var testScore = new TestScore
+                {
+                    UserId = studentId,
+                    TestId = newTest.TestId,
+                    Score = null, // hoặc null nếu bạn muốn cập nhật sau
+                    CompletedDate = null, // hoặc DateTime.Now nếu muốn mặc định có
+                    StartDate = null,
+                    EndDate = null,
+                };
+
+                _context.TestScores.Add(testScore);
+            }
+
+            await _context.SaveChangesAsync();
+
             return Ok(new { message = "Thêm bài kiểm tra kèm file thành công", testID = newTest.TestId });
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +157,7 @@ namespace WebAPI.Controllers
 
 
         /////////////////////////////////////////////////////////EDIT TEST////////////////////////////////
+        [Authorize]
         [HttpPut("{id}/with-files")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateTestWithFiles(
@@ -202,6 +228,7 @@ namespace WebAPI.Controllers
 
 
         ////////////////////////////////////////////////////////////////////DELETE FILE////////////////////
+        [Authorize]
         [HttpDelete("file/{fileId}")]
         public async Task<IActionResult> DeleteSingleFile(int fileId)
         {
@@ -219,8 +246,11 @@ namespace WebAPI.Controllers
 
             return Ok(new { message = "File deleted successfully." });
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+        //////////////////////////////////////////////GET TETS FILE/////////////////////////////////////////
+        [Authorize]
         [HttpGet("{testId}/files")]
         public async Task<IActionResult> GetTestFiles(int testId)
         {
@@ -243,6 +273,26 @@ namespace WebAPI.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        [HttpGet("course/{courseId}/test/{testId}/scores")]
+        public async Task<IActionResult> GetTestScores(int courseId, int testId)
+        {
+            var scores = await _context.TestScores
+                .Where(ts => ts.TestId == testId && ts.Test.CourseId == courseId)
+                .Include(ts => ts.User)
+                .Select(ts => new
+                {
+                    ts.UserId,
+                    Full_Name = ts.User.FullName,
+                    ts.Score,
+                    ts.CompletedDate,
+                    ts.StartDate,
+                    ts.EndDate
+                })
+                .ToListAsync();
+
+            return Ok(scores);
+        }
 
     }
 }

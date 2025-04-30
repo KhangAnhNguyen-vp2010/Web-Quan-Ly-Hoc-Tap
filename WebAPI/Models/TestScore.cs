@@ -13,6 +13,12 @@ public partial class TestScore
 
     public decimal? Score { get; set; }
 
+    public DateTime? CompletedDate { get; set; }
+
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
+
     public virtual Test? Test { get; set; }
 
     public virtual User? User { get; set; }

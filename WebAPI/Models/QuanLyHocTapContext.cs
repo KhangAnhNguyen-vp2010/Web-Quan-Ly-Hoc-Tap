@@ -161,7 +161,10 @@ public partial class QuanLyHocTapContext : DbContext
             entity.HasKey(e => e.ScoreId).HasName("PK__TestScor__7DD229F10EDFB922");
 
             entity.Property(e => e.ScoreId).HasColumnName("ScoreID");
+            entity.Property(e => e.CompletedDate).HasColumnType("datetime");
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.Score).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.TestId).HasColumnName("TestID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
