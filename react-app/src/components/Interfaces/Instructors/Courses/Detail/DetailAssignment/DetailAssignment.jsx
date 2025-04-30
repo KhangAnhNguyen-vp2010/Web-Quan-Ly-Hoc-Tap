@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import styles from "../../../../../assets/css/Instructor/Courses/Detail/DetailAssignment.module.css";
-import CompletedAssignmentsList from "./DetailAssignment/CompletedAssignmentsList";
-import UncompletedAssignmentsList from "./DetailAssignment/UncompletedAssignmentsList";
-import CountDisplay from "./DetailAssignment/CountDisplay";
-import EditAssignment from "./DetailAssignment/EditAssignment";
+import React, { useState } from "react";
+import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailAssignment/DetailAssignment.module.css";
+import CompletedAssignmentsList from "./CompletedAssignmentsList";
+import UncompletedAssignmentsList from "./UncompletedAssignmentsList";
+import CountDisplay from "./CountDisplay";
+import EditAssignment from "./EditAssignment";
 
 function DetailAssignment({ assignment, onClose }) {
   const [showEditAssignment, setShowEditAssignment] = useState(false);
@@ -77,7 +77,8 @@ function DetailAssignment({ assignment, onClose }) {
         {showEditAssignment === true && (
           <EditAssignment
             assignment={Assignment}
-            onClose={(obj) => handleOncloseEdit(obj)}
+            onUpdate={(obj) => handleOncloseEdit(obj)}
+            onClose={() => setShowEditAssignment(!showEditAssignment)}
           />
         )}
       </div>
