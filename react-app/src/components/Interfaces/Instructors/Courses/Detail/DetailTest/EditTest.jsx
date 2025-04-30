@@ -64,7 +64,8 @@ const EditTest = ({ courseId, initialTest, onUpdate, onClose }) => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
+        { withCredentials: true }
       );
       onUpdate(test);
       onClose();

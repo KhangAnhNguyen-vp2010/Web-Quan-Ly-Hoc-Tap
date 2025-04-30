@@ -17,7 +17,9 @@ const TestFilesList = ({ testId, loadingFile }) => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/Tests/${testId}/files`);
+      const response = await axios.get(`${baseUrl}/api/Tests/${testId}/files`, {
+        withCredentials: true,
+      });
       setFiles(response.data);
       setError("");
     } catch (err) {
@@ -62,7 +64,9 @@ const TestFilesList = ({ testId, loadingFile }) => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`https://localhost:7233/api/Tests/file/${fileId}`);
+      await axios.delete(`https://localhost:7233/api/Tests/file/${fileId}`, {
+        withCredentials: true,
+      });
       fetchFiles();
     } catch (error) {
       console.log("Error " + error);

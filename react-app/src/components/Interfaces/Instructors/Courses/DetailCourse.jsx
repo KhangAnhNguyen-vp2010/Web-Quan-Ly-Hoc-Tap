@@ -51,14 +51,14 @@ function DetailCourse({ onClose, course }) {
 
   return (
     <div className={styles.overlay}>
-      <button
-        className={styles.closeButton}
-        onClick={onClose}
-        aria-label="Close"
-      >
-        &times;
-      </button>
       <div className={styles.modal}>
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="Close"
+        >
+          &times;
+        </button>
         <div className={styles.card}>
           <div className={styles.imageWrapper}>
             <img
@@ -71,10 +71,10 @@ function DetailCourse({ onClose, course }) {
           <div className={styles.cardContent}>
             <h2 className={styles.courseName}>{course.courseName}</h2>
             <p className={styles.description}>
-              <strong>Description:</strong> {course.description}
+              <strong>📜Description:</strong> {course.description}
             </p>
             <p className={styles.instructor}>
-              <strong>Lecturer:</strong> {user ? user.fullName : "Loading..."}
+              <strong>🧑‍🏫Lecturer:</strong> {user ? user.fullName : "Loading..."}
             </p>
           </div>
         </div>

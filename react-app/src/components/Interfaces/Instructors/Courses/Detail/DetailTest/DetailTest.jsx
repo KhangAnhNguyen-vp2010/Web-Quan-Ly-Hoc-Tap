@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/DetailTest.module.css";
 import EditTest from "./EditTest";
 import TestFilesList from "./TestFilesList";
+import TestScoreList from "./TestScoreList";
 
 const DetailTest = ({ test, courseId, onClose }) => {
   const [showEditTest, setShowEditTest] = useState(false);
@@ -26,23 +27,24 @@ const DetailTest = ({ test, courseId, onClose }) => {
           <div>
             <h2 className={styles.assignmentTitle}>{Test.testName}</h2>
             <div className={styles.testDate}>
-              <strong>Test Date:</strong>{" "}
+              <strong>🗓️Test Date:</strong>{" "}
               {new Date(Test.testDate).toLocaleDateString()}
             </div>
             <div className={styles.testContent}>
-              <strong>Content:</strong> {Test.testContent}
+              <strong>📋Content:</strong> {Test.testContent}
             </div>
             <button
               className={styles["btn-edit"]}
               onClick={() => setShowEditTest(!showEditTest)}
             >
-              Edit test or adding file
+              ✏️Edit Test or Adding File
             </button>
           </div>
         </div>
         <hr />
         <TestFilesList testId={Test.testId} loadingFile={loadListFile} />
         <hr />
+        <TestScoreList testId={Test.testId} courseId={courseId} />
       </div>
       {showEditTest && (
         <EditTest

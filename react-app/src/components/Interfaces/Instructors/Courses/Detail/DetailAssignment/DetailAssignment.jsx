@@ -34,17 +34,18 @@ function DetailAssignment({ assignment, onClose }) {
                 {Assignment.assignmentName}
               </h2>
               <div className={styles.assignmentDueDate}>
-                <strong>Due Date:</strong>{" "}
+                <strong>⏰Due Date:</strong>{" "}
                 {new Date(Assignment.dueDate).toLocaleDateString()}
               </div>
               <div className={styles.assignmentContent}>
-                <strong>Exercise Content:</strong> {Assignment.exerciseContent}
+                <strong>📋Exercise Content:</strong>{" "}
+                {Assignment.exerciseContent}
               </div>
               <button
                 className={styles["btn-edit"]}
                 onClick={() => setShowEditAssignment(!showEditAssignment)}
               >
-                Edit Exercises
+                ✏️Edit Exercises
               </button>
             </div>
             <CountDisplay

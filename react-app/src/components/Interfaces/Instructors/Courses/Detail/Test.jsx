@@ -44,12 +44,12 @@ const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
     <>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h4 className={styles.title}>List of Tests</h4>
+          <h4 className={styles.title}>📝List of Tests</h4>
           <button
             className={styles["btn-addTest"]}
             onClick={() => setShowAddTest(!showAddTest)}
           >
-            📙 Add Test 📙
+            📝Add Test
           </button>
         </div>
 
@@ -70,9 +70,9 @@ const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
                 }}
               >
                 <div className={styles.testInfo}>
-                  <h5 className={styles.testName}>{test.testName}</h5>
+                  <h5 className={styles.testName}>📃{test.testName}</h5>
                   <p className={styles.testDescription}>
-                    {test.testContent || "Chưa có"}
+                    📋{test.testContent || "Chưa có"}
                   </p>
                 </div>
                 <span className={styles.testDueDate}>
