@@ -21,5 +21,7 @@ public partial class Course
 
     public virtual User? Instructor { get; set; }
 
+    public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+
     public virtual ICollection<Test> Tests { get; set; } = new List<Test>();
 }
