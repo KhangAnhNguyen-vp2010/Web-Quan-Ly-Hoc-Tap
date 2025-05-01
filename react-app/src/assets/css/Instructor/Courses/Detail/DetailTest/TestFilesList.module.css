@@ -15,6 +15,24 @@
   font-weight: 600;
 }
 
+.title input[type="file"] {
+  display: none;
+}
+
+.title label {
+  background-color: rgb(203, 202, 202);
+  padding: 0px 5px;
+  font-size: medium;
+  border: none;
+  border-radius: 5px;
+  transition: opacity 0.5s ease;
+}
+
+.title label:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
 /* Grid layout cho danh sách file */
 .fileGrid {
   display: grid;
