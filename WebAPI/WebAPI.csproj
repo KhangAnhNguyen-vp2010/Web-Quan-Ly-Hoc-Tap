@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\assignments\files\excel\" />
+    <Folder Include="wwwroot\assignments\files\others\" />
+    <Folder Include="wwwroot\assignments\files\pdf\" />
+    <Folder Include="wwwroot\assignments\files\word\" />
     <Folder Include="wwwroot\files\excel\" />
     <Folder Include="wwwroot\files\word\" />
     <Folder Include="wwwroot\images\courses\" />

@@ -17,6 +17,8 @@ public partial class QuanLyHocTapContext : DbContext
 
     public virtual DbSet<Assignment> Assignments { get; set; }
 
+    public virtual DbSet<AssignmentFile> AssignmentFiles { get; set; }
+
     public virtual DbSet<AssignmentsCompleted> AssignmentsCompleteds { get; set; }
 
     public virtual DbSet<Course> Courses { get; set; }
@@ -50,6 +52,25 @@ public partial class QuanLyHocTapContext : DbContext
             entity.HasOne(d => d.Course).WithMany(p => p.Assignments)
                 .HasForeignKey(d => d.CourseId)
                 .HasConstraintName("FK__Assignmen__Cours__02FC7413");
+        });
+
+        modelBuilder.Entity<AssignmentFile>(entity =>
+        {
+            entity.HasKey(e => e.FileId).HasName("PK__Assignme__6F0F989F288326BE");
+
+            entity.Property(e => e.FileId).HasColumnName("FileID");
+            entity.Property(e => e.AssignmentId).HasColumnName("AssignmentID");
+            entity.Property(e => e.FileName).HasMaxLength(255);
+            entity.Property(e => e.FilePath).HasMaxLength(500);
+            entity.Property(e => e.FileType).HasMaxLength(50);
+            entity.Property(e => e.UploadDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Assignment).WithMany(p => p.AssignmentFiles)
+                .HasForeignKey(d => d.AssignmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Assignmen__Assig__3D2915A8");
         });
 
         modelBuilder.Entity<AssignmentsCompleted>(entity =>
