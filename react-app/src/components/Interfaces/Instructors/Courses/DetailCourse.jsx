@@ -6,6 +6,7 @@ import Pagination from "../Pagination";
 import TabSelector from "./Detail/TabSelector";
 import Assignments from "./Detail/Assignments";
 import Tests from "./Detail/Test";
+import Lessons from "./Detail/Lessons";
 
 function DetailCourse({ onClose, course }) {
   const [search, setSearch] = useState({
@@ -33,15 +34,22 @@ function DetailCourse({ onClose, course }) {
       page={page}
       SetTotalPages={(totalPages) => setTotalPages(totalPages)}
     />,
-    <Assignments
+    <Lessons
       key="1"
       courseId={course.courseId}
       searchTerm={search.debounce}
       page={page}
       SetTotalPages={(totalPages) => setTotalPages(totalPages)}
     />,
-    <Tests
+    <Assignments
       key="2"
+      courseId={course.courseId}
+      searchTerm={search.debounce}
+      page={page}
+      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+    />,
+    <Tests
+      key="3"
       courseId={course.courseId}
       searchTerm={search.debounce}
       page={page}
@@ -93,7 +101,7 @@ function DetailCourse({ onClose, course }) {
           </div>
           <div className={styles["tab-container"]}>
             <TabSelector
-              tabs={["Students", "Assignments", "Tests"]}
+              tabs={["Students", "Lessons", "Assignments", "Tests"]}
               onTabChange={(index) => {
                 setTabIndex(index);
                 setPage(1);
