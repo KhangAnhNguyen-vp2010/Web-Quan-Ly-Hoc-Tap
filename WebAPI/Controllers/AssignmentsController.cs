@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using MailKit.Search;
 using WebAPI.DTOs.Assignment;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI.Controllers
 {
@@ -17,10 +18,12 @@ namespace WebAPI.Controllers
     public class AssignmentsController : ControllerBase
     {
         private readonly QuanLyHocTapContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public AssignmentsController(QuanLyHocTapContext context)
+        public AssignmentsController(QuanLyHocTapContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,9 +118,11 @@ namespace WebAPI.Controllers
 
 
         ////////////////////////////////////////////////////////////////////////////ADD ASSIGNMENT//////////////////////////////////////////////////////
-        [Authorize]
+        //[Authorize]
         [HttpPost("AddAssignment")]
-        public async Task<IActionResult> CreateAssignment([FromBody] CreateAssignmentDto request)
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(50_000_000)] // Giới hạn 50MB
+        public async Task<IActionResult> CreateAssignment([FromForm] CreateAssignmentDto request, [FromForm] List<IFormFile> files)
         {
             // Bước 1: Tạo Assignment mới
             var assignment = new Assignment
@@ -158,6 +163,51 @@ namespace WebAPI.Controllers
             _context.AssignmentsCompleteds.AddRange(assignmentCompletedList);
             await _context.SaveChangesAsync();
 
+            var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assignments","files");
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    string extension = Path.GetExtension(file.FileName)?.ToLower();
+                    string subFolder = extension switch
+                    {
+                        ".pdf" => "pdf",
+                        ".doc" or ".docx" => "word",
+                        ".xls" or ".xlsx" => "excel",
+                        _ => "others"
+                    };
+
+                    // 4. Tạo thư mục nếu chưa có
+                    string targetFolder = Path.Combine(rootPath, subFolder);
+                    if (!Directory.Exists(targetFolder))
+                        Directory.CreateDirectory(targetFolder);
+
+                    // 5. Tạo tên file duy nhất và lưu
+                    string uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                    string filePath = Path.Combine(targetFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    // 6. Ghi thông tin vào CSDL
+                    var assignmentFile = new AssignmentFile
+                    {
+                        AssignmentId = assignment.AssignmentId,
+                        FileName = file.FileName,
+                        FileType = extension,
+                        FilePath = $"/assignments/files/{subFolder}/{uniqueFileName}",
+                        UploadDate = DateTime.Now
+                    };
+
+                    _context.AssignmentFiles.Add(assignmentFile);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
             return Ok(new
             {
                 message = "Assignment created and AssignmentsCompleted generated for enrolled users.",
@@ -172,7 +222,8 @@ namespace WebAPI.Controllers
         //////////////////////////////////////////////////////////////////////EDIT ASSIGNMENT///////////////////////////////////////////////////////////
         [Authorize]
         [HttpPut("EditAssignment/{id}")]
-        public async Task<IActionResult> UpdateAssignment(int id, [FromBody] UpdateAssignmentDto request)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateAssignment(int id, [FromForm] UpdateAssignmentDto request, [FromForm] List<IFormFile>? files)
         {
             var assignment = await _context.Assignments.FindAsync(id);
 
@@ -190,7 +241,153 @@ namespace WebAPI.Controllers
 
             await _context.SaveChangesAsync();
 
+            if (files != null && files.Any())
+            {
+                var uploadDate = DateTime.Now;
+                string wwwRootPath = _env.WebRootPath;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                        string subFolder = extension switch
+                        {
+                            ".pdf" => "pdf",
+                            ".doc" or ".docx" => "word",
+                            ".xls" or ".xlsx" => "excel",
+                            _ => "others"
+                        };
+
+                        var uploadPath = Path.Combine(wwwRootPath, "assignments", "files", subFolder);
+                        Directory.CreateDirectory(uploadPath);
+
+                        var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                        var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        var assignmentFile = new AssignmentFile
+                        {
+                            AssignmentId = assignment.AssignmentId,
+                            FileName = file.FileName,
+                            FileType = extension,
+                            FilePath = $"/assignments/files/{subFolder}/{uniqueFileName}",
+                            UploadDate = uploadDate
+                        };
+
+                        _context.AssignmentFiles.Add(assignmentFile);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
             return Ok(new { message = "Assignment updated successfully" });
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        /////////////////////////////////////////////////////////////////DELETE FILE/////////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpDelete("file/{fileId}")]
+        public async Task<IActionResult> DeleteSingleFile(int fileId)
+        {
+            var file = await _context.AssignmentFiles.FindAsync(fileId);
+            if (file == null)
+                return NotFound(new { message = "File not found." });
+
+            // Xoá file vật lý
+            var fullPath = Path.Combine(_env.WebRootPath, "assignments", file.FilePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+            if (System.IO.File.Exists(fullPath))
+                System.IO.File.Delete(fullPath);
+
+            _context.AssignmentFiles.Remove(file);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "File deleted successfully." });
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //////////////////////////////////////////////////////////////////////////////GET FILE BY ASSIGNMENT////////////////////////////////////////////////
+        [Authorize]
+        [HttpGet("{assignmentId}/files")]
+        public async Task<IActionResult> GetAssignmentFiles(int assignmentId)
+        {
+            var files = await _context.AssignmentFiles
+                .Where(f => f.AssignmentId == assignmentId)
+                .Select(f => new
+                {
+                    f.FileId,
+                    f.FileName,
+                    f.FileType,
+                    f.FilePath,
+                    f.UploadDate
+                })
+                .ToListAsync();
+
+            if (!files.Any())
+                return NotFound(new { message = "No files found for this test." });
+
+            return Ok(files);
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////////ADDING FILE/////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpPost("AddFile/{assignmentId}")]
+        public async Task<IActionResult> AddingFile(int assignmentId, [FromForm] List<IFormFile>? files)
+        {
+            if (files != null && files.Any())
+            {
+                var uploadDate = DateTime.Now;
+                string wwwRootPath = _env.WebRootPath;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                        string subFolder = extension switch
+                        {
+                            ".pdf" => "pdf",
+                            ".doc" or ".docx" => "word",
+                            ".xls" or ".xlsx" => "excel",
+                            _ => "others"
+                        };
+
+                        var uploadPath = Path.Combine(wwwRootPath, "assignments", "files", subFolder);
+                        Directory.CreateDirectory(uploadPath);
+
+                        var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                        var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        var assignmentFile = new AssignmentFile
+                        {
+                            AssignmentId = assignmentId,
+                            FileName = file.FileName,
+                            FileType = extension,
+                            FilePath = $"/assignments/files/{subFolder}/{uniqueFileName}",
+                            UploadDate = uploadDate
+                        };
+
+                        _context.AssignmentFiles.Add(assignmentFile);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Adding successfully." });
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }

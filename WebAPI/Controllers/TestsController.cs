@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs.Test;
 using WebAPI.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI.Controllers
 {
@@ -274,6 +275,8 @@ namespace WebAPI.Controllers
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+        //////////////////////////////////////////////////////GET TESTSCORE BY TEST//////////////////////////////////
+        [Authorize]
         [HttpGet("course/{courseId}/test/{testId}/scores")]
         public async Task<IActionResult> GetTestScores(int courseId, int testId)
         {
@@ -293,6 +296,61 @@ namespace WebAPI.Controllers
 
             return Ok(scores);
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////////////ADDING FILE/////////////////////////
+        [Authorize]
+        [HttpPost("AddFile/{testId}")]
+        public async Task<IActionResult> AddingFile(int testId, [FromForm] List<IFormFile>? files)
+        {
+            if (files != null && files.Any())
+            {
+                var uploadDate = DateTime.Now;
+                string wwwRootPath = _env.WebRootPath;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                        string subFolder = extension switch
+                        {
+                            ".pdf" => "pdf",
+                            ".doc" or ".docx" => "word",
+                            ".xls" or ".xlsx" => "excel",
+                            _ => "others"
+                        };
+
+                        var uploadPath = Path.Combine(wwwRootPath, "files", subFolder);
+                        Directory.CreateDirectory(uploadPath);
+
+                        var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                        var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        var testFile = new TestFile
+                        {
+                            TestId = testId,
+                            FileName = file.FileName,
+                            FileType = extension,
+                            FilePath = $"/files/{subFolder}/{uniqueFileName}",
+                            UploadDate = uploadDate
+                        };
+
+                        _context.TestFiles.Add(testFile);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Adding successfully." });
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////
 
     }
 }

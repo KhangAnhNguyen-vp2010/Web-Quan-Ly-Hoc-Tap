@@ -117,7 +117,7 @@ namespace WebAPI
                 app.UseSwaggerUI();
             }
 
-            
+
 
             app.UseCors("AllowAll");
 
@@ -126,6 +126,7 @@ namespace WebAPI
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
 
