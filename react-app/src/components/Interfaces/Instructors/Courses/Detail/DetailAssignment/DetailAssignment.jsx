@@ -4,10 +4,12 @@ import CompletedAssignmentsList from "./CompletedAssignmentsList";
 import UncompletedAssignmentsList from "./UncompletedAssignmentsList";
 import CountDisplay from "./CountDisplay";
 import EditAssignment from "./EditAssignment";
+import AssignmentFilesList from "./AssignmentFilesList";
 
 function DetailAssignment({ assignment, onClose }) {
   const [showEditAssignment, setShowEditAssignment] = useState(false);
   const [Assignment, setAssignment] = useState(assignment);
+  const [loadListFile, setLoadListFile] = useState(false);
 
   const [count, setCount] = useState({
     completed: 0,
@@ -17,6 +19,7 @@ function DetailAssignment({ assignment, onClose }) {
   const handleOncloseEdit = (obj) => {
     setAssignment(obj);
     setShowEditAssignment(!showEditAssignment);
+    setLoadListFile(!loadListFile);
   };
 
   return (
@@ -53,6 +56,11 @@ function DetailAssignment({ assignment, onClose }) {
               countUncompleted={count.unCompleted}
             />
           </div>
+          <hr />
+          <AssignmentFilesList
+            assignmentId={Assignment.assignmentId}
+            loadingFile={loadListFile}
+          />
           <hr />
           <div className={styles["assignments-container"]}>
             <CompletedAssignmentsList

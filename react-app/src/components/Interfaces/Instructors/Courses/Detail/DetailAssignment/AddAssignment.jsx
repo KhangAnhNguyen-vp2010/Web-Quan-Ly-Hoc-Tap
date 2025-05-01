@@ -8,6 +8,10 @@ function AddAssignment({ courseId, onClose }) {
     assignmentName: "",
     assignmentContent: "",
   });
+  const [files, setFiles] = useState([]);
+  const handleFileChange = (e) => {
+    setFiles([...e.target.files]);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,22 +29,28 @@ function AddAssignment({ courseId, onClose }) {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("courseID", courseId);
+    formData.append("assignmentName", form.assignmentName);
+    formData.append("assignmentContent", form.assignmentContent);
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+
     try {
       const response = await axios.post(
         "https://localhost:7233/api/Assignments/AddAssignment",
+        formData,
         {
-          courseID: courseId,
-          assignmentName: form.assignmentName,
-          assignmentContent: form.assignmentContent,
-        },
-        { withCredentials: true }
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       toast.success("Create a successful exercise");
-      setForm({
-        assignmentName: "",
-        assignmentContent: "",
-      });
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message || "Error creating exercise");
@@ -73,6 +83,10 @@ function AddAssignment({ courseId, onClose }) {
               onChange={handleChange}
               required
             />
+          </div>
+          <div>
+            <label>File đính kèm</label>
+            <input type="file" multiple onChange={handleFileChange} />
           </div>
           <button type="submit" className={styles["btn-submit"]}>
             Create exercise

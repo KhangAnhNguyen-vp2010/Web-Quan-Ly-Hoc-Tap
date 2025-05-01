@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestFilesList.module.css";
 
-const TestFilesList = ({ testId, loadingFile }) => {
+const AssignmentFilesList = ({ assignmentId, loadingFile }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -30,9 +30,11 @@ const TestFilesList = ({ testId, loadingFile }) => {
     }
 
     try {
-      await axios.post(`${baseUrl}/api/Tests/AddFile/${testId}`, formData, {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${baseUrl}/api/Assignments/AddFile/${assignmentId}`,
+        formData,
+        { withCredentials: true }
+      );
       fetchFiles();
     } catch (error) {
       console.log("Error " + error);
@@ -45,9 +47,12 @@ const TestFilesList = ({ testId, loadingFile }) => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/Tests/${testId}/files`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${baseUrl}/api/Assignments/${assignmentId}/files`,
+        {
+          withCredentials: true,
+        }
+      );
       setFiles(response.data);
       setError("");
     } catch (err) {
@@ -63,13 +68,13 @@ const TestFilesList = ({ testId, loadingFile }) => {
   };
 
   useEffect(() => {
-    if (testId) {
+    if (assignmentId) {
       fetchFiles();
     } else {
       setError("ID bài kiểm tra không hợp lệ");
       setLoading(false);
     }
-  }, [testId, loadingFile]);
+  }, [assignmentId, loadingFile]);
 
   const getFileExtension = (fileName) => {
     return fileName.substring(fileName.lastIndexOf("."));
@@ -92,9 +97,12 @@ const TestFilesList = ({ testId, loadingFile }) => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`https://localhost:7233/api/Tests/file/${fileId}`, {
-        withCredentials: true,
-      });
+      await axios.delete(
+        `https://localhost:7233/api/Assignments/file/${fileId}`,
+        {
+          withCredentials: true,
+        }
+      );
       fetchFiles();
     } catch (error) {
       console.log("Error " + error);
@@ -452,7 +460,7 @@ const TestFilesList = ({ testId, loadingFile }) => {
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>
-        Đề bài <label htmlFor="fileUpload">+</label>
+        File Bài Tập <label htmlFor="fileUpload">+</label>
         <input
           id="fileUpload"
           type="file"
@@ -495,4 +503,4 @@ const TestFilesList = ({ testId, loadingFile }) => {
   );
 };
 
-export default TestFilesList;
+export default AssignmentFilesList;

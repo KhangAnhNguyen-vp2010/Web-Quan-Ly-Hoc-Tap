@@ -38,11 +38,11 @@ const AddTest = ({ courseId, onClose }) => {
         `https://localhost:7233/api/Tests/with-files`,
         formData,
         {
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        },
-        { withCredentials: true }
+        }
       );
       onClose();
       toast.success("Updated!!!");

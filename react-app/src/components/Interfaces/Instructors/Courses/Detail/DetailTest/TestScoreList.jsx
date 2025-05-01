@@ -11,7 +11,10 @@ const TestScoreList = ({ courseId, testId }) => {
     const fetchScores = async () => {
       try {
         const response = await axios.get(
-          `https://localhost:7233/api/Tests/course/${courseId}/test/${testId}/scores`
+          `https://localhost:7233/api/Tests/course/${courseId}/test/${testId}/scores`,
+          {
+            withCredentials: true,
+          }
         );
         setScores(response.data);
       } catch (error) {
