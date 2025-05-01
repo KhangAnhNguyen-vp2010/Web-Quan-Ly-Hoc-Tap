@@ -25,6 +25,8 @@ public partial class QuanLyHocTapContext : DbContext
 
     public virtual DbSet<Enrollment> Enrollments { get; set; }
 
+    public virtual DbSet<Lesson> Lessons { get; set; }
+
     public virtual DbSet<Prediction> Predictions { get; set; }
 
     public virtual DbSet<Test> Tests { get; set; }
@@ -127,6 +129,20 @@ public partial class QuanLyHocTapContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Enrollments)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__Enrollmen__UserI__160F4887");
+        });
+
+        modelBuilder.Entity<Lesson>(entity =>
+        {
+            entity.HasKey(e => e.LessonId).HasName("PK__Lessons__B084ACB032A9DF3E");
+
+            entity.Property(e => e.LessonId).HasColumnName("LessonID");
+            entity.Property(e => e.CourseId).HasColumnName("CourseID");
+            entity.Property(e => e.LessonName).HasMaxLength(255);
+
+            entity.HasOne(d => d.Course).WithMany(p => p.Lessons)
+                .HasForeignKey(d => d.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Lessons__CourseI__4F47C5E3");
         });
 
         modelBuilder.Entity<Prediction>(entity =>
