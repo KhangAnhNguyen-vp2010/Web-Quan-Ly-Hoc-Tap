@@ -1,44 +1,8 @@
-import React, { useState } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/EditTest.module.css";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { useAddLesson } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailLesson/useAddLesson";
 
 const AddLesson = ({ courseId, onClose }) => {
-  const [lesson, setLesson] = useState({
-    lessonName: "",
-    linkYoutube: "",
-  });
-
-  const handleChange = (e) => {
-    setLesson({
-      ...lesson,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleAdd = async (e) => {
-    e.preventDefault();
-
-    try {
-      await axios.post(
-        `https://localhost:7233/api/Lessons`,
-        {
-          courseID: courseId,
-          lessonName: lesson.lessonName,
-          linkYoutube: lesson.linkYoutube,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      onClose();
-      toast.success("Added!!!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Lỗi khi thêm");
-    }
-  };
-
+  const { lesson, handleChange, handleAdd } = useAddLesson(courseId, onClose);
   return (
     <div className={styles.overlay}>
       <div className={styles.container}>

@@ -1,55 +1,13 @@
-import { useState } from "react";
-import axios from "axios";
 import styles from "../../../assets/css/Instructor/ChangePassword.module.css";
-import { toast } from "react-toastify";
+import useChangePassword from "../../../Hooks/instructor/useChangePassword";
 
 function ChangePassword({ setIsChangingPassword }) {
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
+  const { formData, handleChange, handleSubmit } = useChangePassword(
+    setIsChangingPassword
+  );
 
   const handleCancel = () => {
     setIsChangingPassword(false);
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("New password and confirmation do not match.");
-      return;
-    }
-
-    try {
-      await axios.put(
-        "https://localhost:7233/api/Auth/changepassword",
-        {
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword,
-        },
-        { withCredentials: true }
-      );
-      toast.success("Password changed successfully!");
-      setFormData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      setIsChangingPassword(false);
-    } catch (err) {
-      toast.error(
-        err.response?.data || "An error occurred while changing password."
-      );
-    }
   };
 
   return (
@@ -83,7 +41,11 @@ function ChangePassword({ setIsChangingPassword }) {
           <button type="submit" className={styles.saveBtn}>
             Change Password
           </button>
-          <button className={styles.cancelBtn} onClick={handleCancel}>
+          <button
+            type="button"
+            className={styles.cancelBtn}
+            onClick={handleCancel}
+          >
             Cancel
           </button>
         </div>

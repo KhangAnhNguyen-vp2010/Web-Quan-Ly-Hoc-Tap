@@ -1,75 +1,10 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
+import React from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailAssignment/EditAssignment.module.css";
+import { useEditAssignment } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailAssignment/useEditAssignment";
 
 function EditAssignment({ assignment, onUpdate, onClose }) {
-  const [form, setForm] = useState(assignment);
-  const [files, setFiles] = useState([]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
-  };
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-
-    function isValidDate(dateStr) {
-      const regex = /^\d{4}-\d{2}-\d{2}$/;
-      if (!regex.test(dateStr)) return false;
-
-      const date = new Date(dateStr);
-      const [year, month, day] = dateStr.split("-").map(Number);
-
-      return (
-        date.getFullYear() === year &&
-        date.getMonth() + 1 === month &&
-        date.getDate() === day
-      );
-    }
-
-    if (form.dueDate === "" || !isValidDate(form.dueDate)) {
-      toast.error("Invalid submission deadline");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("courseID", form.courseId);
-    formData.append("assignmentName", form.assignmentName);
-    formData.append("dueDate", form.dueDate);
-    formData.append("assignmentContent", form.exerciseContent);
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-
-    try {
-      await axios.put(
-        `https://localhost:7233/api/Assignments/EditAssignment/${form.assignmentId}`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      toast.success("Updated exercises");
-      onUpdate(form);
-      onClose();
-    } catch (err) {
-      toast.error(err || "Update failed");
-    }
-  };
+  const { form, files, loading, handleChange, handleFileChange, handleUpdate } =
+    useEditAssignment(assignment, onUpdate, onClose);
 
   return (
     <div className={styles.overlay}>
@@ -115,7 +50,9 @@ function EditAssignment({ assignment, onUpdate, onClose }) {
             <input type="file" multiple onChange={handleFileChange} />
           </div>
 
-          <button type="submit">Update</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Updating..." : "Update"}
+          </button>
         </form>
       </div>
     </div>

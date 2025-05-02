@@ -1,40 +1,12 @@
-import React, { useState } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/EditTest.module.css";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { useEditLesson } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailLesson/useEditLesson";
 
-const EditLesson = ({ lesson, onUpdate, onClose }) => {
-  const [Lesson, setLesson] = useState(lesson);
-
-  const handleChange = (e) => {
-    setLesson({
-      ...lesson,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleEdit = async (e) => {
-    e.preventDefault();
-
-    try {
-      await axios.put(
-        `https://localhost:7233/api/Lessons/${Lesson.lessonId}`,
-        {
-          lessonName: Lesson.lessonName,
-          linkYoutube: Lesson.linkYoutube,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      onUpdate(Lesson);
-      onClose();
-      toast.success("Updated!!!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Lỗi khi update");
-    }
-  };
+const EditLesson = ({ lesson: initialLesson, onUpdate, onClose }) => {
+  const { lesson, handleChange, handleEdit } = useEditLesson(
+    initialLesson,
+    onUpdate,
+    onClose
+  );
 
   return (
     <div className={styles.overlay}>
@@ -48,7 +20,7 @@ const EditLesson = ({ lesson, onUpdate, onClose }) => {
             <input
               type="text"
               name="lessonName"
-              value={Lesson.lessonName}
+              value={lesson.lessonName}
               onChange={handleChange}
               required
             />
@@ -59,7 +31,7 @@ const EditLesson = ({ lesson, onUpdate, onClose }) => {
             <input
               type="text"
               name="linkYoutube"
-              value={Lesson.linkYoutube}
+              value={lesson.linkYoutube}
               onChange={handleChange}
               required
             />

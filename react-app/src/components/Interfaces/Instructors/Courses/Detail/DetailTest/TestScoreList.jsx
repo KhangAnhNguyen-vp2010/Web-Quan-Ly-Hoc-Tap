@@ -1,32 +1,8 @@
-import React, { useEffect, useState } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestScoreList.module.css";
-import axios from "axios";
+import { useTestScores } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailTest/useTestScores";
 
 const TestScoreList = ({ courseId, testId }) => {
-  const [scores, setScores] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchScores = async () => {
-      try {
-        const response = await axios.get(
-          `https://localhost:7233/api/Tests/course/${courseId}/test/${testId}/scores`,
-          {
-            withCredentials: true,
-          }
-        );
-        setScores(response.data);
-      } catch (error) {
-        console.error("Lỗi khi tải danh sách điểm:", error);
-        setError("Không thể tải dữ liệu điểm. Vui lòng thử lại sau.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchScores();
-  }, [courseId, testId]);
+  const { scores, loading, error } = useTestScores(courseId, testId);
 
   if (loading) {
     return <div className={styles.loading}>Đang tải dữ liệu...</div>;
@@ -97,16 +73,3 @@ const TestScoreList = ({ courseId, testId }) => {
 };
 
 export default TestScoreList;
-
-{
-  /* <td>{s.score ?? "Chưa có"}</td>
-              <td>
-                {s.startDate ? new Date(s.startDate).toLocaleString() : "-"}
-              </td>
-              <td>{s.endDate ? new Date(s.endDate).toLocaleString() : "-"}</td>
-              <td>
-                {s.completedDate
-                  ? new Date(s.completedDate).toLocaleDateString()
-                  : "-"}
-              </td> */
-}

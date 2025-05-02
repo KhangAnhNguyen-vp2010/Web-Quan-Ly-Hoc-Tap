@@ -1,19 +1,17 @@
-import React, { useState } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/DetailTest.module.css";
+import { useDetailTest } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailTest/useDetailTest";
 import EditTest from "./EditTest";
 import TestFilesList from "./TestFilesList";
 import TestScoreList from "./TestScoreList";
 
 const DetailTest = ({ test, courseId, onClose }) => {
-  const [showEditTest, setShowEditTest] = useState(false);
-  const [Test, setTest] = useState(test);
-  const [loadListFile, setLoadListFile] = useState(false);
-
-  const handleOncloseEdit = (obj) => {
-    setTest(obj);
-    setShowEditTest(!showEditTest);
-    setLoadListFile(!loadListFile);
-  };
+  const {
+    test: currentTest,
+    showEditTest,
+    loadListFile,
+    toggleEditTest,
+    handleOnCloseEdit,
+  } = useDetailTest(test);
 
   return (
     <div className={styles.testDetails}>
@@ -25,33 +23,30 @@ const DetailTest = ({ test, courseId, onClose }) => {
         </button>
         <div className={styles["header-container"]}>
           <div>
-            <h2 className={styles.assignmentTitle}>{Test.testName}</h2>
+            <h2 className={styles.assignmentTitle}>{currentTest.testName}</h2>
             <div className={styles.testDate}>
-              <strong>🗓️Test Date:</strong>{" "}
-              {new Date(Test.testDate).toLocaleDateString()}
+              <strong>🗓️Created at:</strong>{" "}
+              {new Date(currentTest.testDate).toLocaleDateString()}
             </div>
             <div className={styles.testContent}>
-              <strong>📋Content:</strong> {Test.testContent}
+              <strong>📋Content:</strong> {currentTest.testContent}
             </div>
-            <button
-              className={styles["btn-edit"]}
-              onClick={() => setShowEditTest(!showEditTest)}
-            >
+            <button className={styles["btn-edit"]} onClick={toggleEditTest}>
               ✏️Edit Test or Adding File
             </button>
           </div>
         </div>
         <hr />
-        <TestFilesList testId={Test.testId} loadingFile={loadListFile} />
+        <TestFilesList testId={currentTest.testId} loadingFile={loadListFile} />
         <hr />
-        <TestScoreList testId={Test.testId} courseId={courseId} />
+        <TestScoreList testId={currentTest.testId} courseId={courseId} />
       </div>
       {showEditTest && (
         <EditTest
           courseId={courseId}
-          initialTest={Test}
-          onUpdate={(obj) => handleOncloseEdit(obj)}
-          onClose={() => setShowEditTest(!showEditTest)}
+          initialTest={currentTest}
+          onUpdate={handleOnCloseEdit}
+          onClose={toggleEditTest}
         />
       )}
     </div>

@@ -7,7 +7,6 @@ import styles from "../assets/css/Instructor/Instructor.module.css";
 import Courses from "../components/Interfaces/Instructors/Courses";
 import { useRefreshToken } from "../Hooks/Auth/useRefresh-Token";
 import { useUsernameWatcher } from "../Hooks/Auth/useUsernameWatcher";
-import UploadCourseImage from "../components/Interfaces/Instructors/Temp/UploadCourseImage";
 import EditCourse from "../components/Interfaces/Instructors/Courses/EditCourse";
 import { CourseProvider } from "../contexts/CourseContext";
 import AddCourseForm from "../components/Interfaces/Instructors/Courses/AddCourse";
@@ -47,7 +46,6 @@ function Instructor() {
       onCloseAddForm={() => setShowAddForm(!showAddForm)}
       onCloseDetailForm={() => setShowDetailForm(!showDetailForm)}
     />,
-    <UploadCourseImage key="2" />,
   ];
 
   return (

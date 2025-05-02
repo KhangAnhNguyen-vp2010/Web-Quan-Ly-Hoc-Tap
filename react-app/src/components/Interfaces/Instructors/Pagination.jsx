@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "../../../assets/css/Instructor/Courses.module.css";
 
 const Pagination = ({ page, totalPages, onPageChange }) => {

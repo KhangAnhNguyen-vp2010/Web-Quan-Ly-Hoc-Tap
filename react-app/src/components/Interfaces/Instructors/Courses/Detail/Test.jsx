@@ -1,40 +1,21 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "../../../../../assets/css/Instructor/Courses/Detail/Tests.module.css";
 import { FaSadTear } from "react-icons/fa";
 import DetailTest from "./DetailTest/DetailTest";
 import AddTest from "./DetailTest/AddTest";
+import { useTests } from "../../../../../Hooks/instructor/Course/DetailCourse/useTests";
 
 const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
-  const [tests, setTests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [test, setTest] = useState(null);
-  const [showDetailTest, setShowDetailTest] = useState(false);
-  const [showAddTest, setShowAddTest] = useState(false);
-
-  const handleSetTotalPages = (data) => {
-    SetTotalPages(data);
-  };
-
-  const fetchTests = async () => {
-    try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Tests/Course/${courseId}?search=${searchTerm}&page=${page}`,
-        { withCredentials: true }
-      );
-
-      setTests(response.data.items);
-      handleSetTotalPages(response.data.totalPages);
-    } catch (error) {
-      console.error("Error fetching tests:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTests();
-  }, [courseId, searchTerm, page]);
+  const {
+    tests,
+    test,
+    setTest,
+    loading,
+    showDetailTest,
+    setShowDetailTest,
+    showAddTest,
+    setShowAddTest,
+    fetchTests,
+  } = useTests(courseId, searchTerm, page, SetTotalPages);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -76,7 +57,7 @@ const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
                   </p>
                 </div>
                 <span className={styles.testDueDate}>
-                  Due Date: {new Date(test.testDate).toLocaleDateString()}
+                  Created At: {new Date(test.testDate).toLocaleDateString()}
                 </span>
               </div>
             ))

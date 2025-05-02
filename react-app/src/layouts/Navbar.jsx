@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "../assets/css/Layout/Navbar.css"; // Import your CSS file for styling
 
-const Navbar = () => {
+const Navbar = ({ haveStudent }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -53,17 +53,22 @@ const Navbar = () => {
             Contact
           </NavLink>
         </li>
-        <li className="signup-not-active">
-          <NavLink
-            to="/signup"
-            onClick={closeMenu}
-            className={({ isActive }) =>
-              isActive ? "signup-btn active" : "signup-btn"
-            }
-          >
-            Sign Up
-          </NavLink>
-        </li>
+
+        {haveStudent ? (
+          <div>Hello student</div>
+        ) : (
+          <li className="signup-not-active">
+            <NavLink
+              to="/signup"
+              onClick={closeMenu}
+              className={({ isActive }) =>
+                isActive ? "signup-btn active" : "signup-btn"
+              }
+            >
+              Sign Up
+            </NavLink>
+          </li>
+        )}
       </ul>
     </nav>
   );

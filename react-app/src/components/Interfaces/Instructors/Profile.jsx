@@ -1,26 +1,23 @@
-import { useState } from "react";
 import styles from "../../../assets/css/Instructor/Profile.module.css";
-import { useGetUser } from "../../../hooks/useGetUser";
 import avatar from "../../../assets/img/about.jpg";
 import ChangePassword from "./ChangePassword";
 import EditProfile from "./EditProfile";
+import { useProfile } from "../../../Hooks/instructor/useProfile";
 
 function Profile({ onClose }) {
-  const { user, setUser, loading } = useGetUser();
-  const [isEditing, setIsEditing] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const {
+    user,
+    setUser,
+    loading,
+    isEditing,
+    isChangingPassword,
+    handleEdit,
+    handleChangePassword,
+    setIsEditing,
+    setIsChangingPassword,
+  } = useProfile();
 
-  const handleChangePassword = () => {
-    setIsChangingPassword(true);
-  };
-
-  // Gán dữ liệu người dùng vào formData khi bấm Edit
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  if (loading) return null;
-  if (!user) return null;
+  if (loading || !user) return null;
 
   return (
     <div className={styles.modalOverlay}>

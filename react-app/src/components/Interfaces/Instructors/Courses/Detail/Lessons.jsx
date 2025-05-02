@@ -1,40 +1,21 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "../../../../../assets/css/Instructor/Courses/Detail/Lessons.module.css";
 import { FaSadTear } from "react-icons/fa";
 import DetailLesson from "./DetailLesson/DetailLesson";
 import AddLesson from "./DetailLesson/AddLesson";
+import { useLessons } from "../../../../../Hooks/instructor/Course/DetailCourse/useLessons";
 
 const Lessons = ({ courseId, searchTerm, page, SetTotalPages }) => {
-  const [lessons, setLessons] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [lesson, setLesson] = useState(null);
-  const [showDetailLesson, setShowDetailLesson] = useState(false);
-  const [showAddLesson, setShowAddLesson] = useState(false);
-
-  const handleSetTotalPages = (data) => {
-    SetTotalPages(data);
-  };
-
-  const fetchLessons = async () => {
-    try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Lessons/by-course?courseId=${courseId}&search=${searchTerm}&page=${page}`,
-        { withCredentials: true }
-      );
-
-      setLessons(response.data.items);
-      handleSetTotalPages(response.data.totalPages);
-    } catch (error) {
-      console.error("Error fetching lessons:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchLessons();
-  }, [courseId, searchTerm, page]);
+  const {
+    lessons,
+    loading,
+    lesson,
+    setLesson,
+    showDetailLesson,
+    setShowDetailLesson,
+    showAddLesson,
+    setShowAddLesson,
+    refetch,
+  } = useLessons({ courseId, searchTerm, page, setTotalPages: SetTotalPages });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -104,7 +85,7 @@ const Lessons = ({ courseId, searchTerm, page, SetTotalPages }) => {
           lesson={lesson}
           courseId={courseId}
           onClose={() => {
-            fetchLessons();
+            refetch();
             setShowDetailLesson(!showDetailLesson);
           }}
         />
@@ -114,7 +95,7 @@ const Lessons = ({ courseId, searchTerm, page, SetTotalPages }) => {
         <AddLesson
           courseId={courseId}
           onClose={() => {
-            fetchLessons();
+            refetch();
             setShowAddLesson(!showAddLesson);
           }}
         />
