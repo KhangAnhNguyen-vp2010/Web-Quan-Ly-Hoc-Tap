@@ -1,58 +1,11 @@
-import React, { useState } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/EditTest.module.css";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { useAddTest } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailTest/useAddTest";
 
 const AddTest = ({ courseId, onClose }) => {
-  const [test, setTest] = useState({
-    testName: "",
-    testContent: "",
-  });
-
-  const [files, setFiles] = useState([]);
-  const handleChange = (e) => {
-    setTest({
-      ...test,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
-  };
-
-  const handleAdd = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("testName", test.testName);
-    formData.append("testContent", test.testContent);
-    formData.append("courseID", courseId);
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-
-    try {
-      await axios.post(
-        `https://localhost:7233/api/Tests/with-files`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      onClose();
-      toast.success("Added!!!");
-    } catch (error) {
-      console.error(error);
-      toast.error(
-        "Chỉ được phép up các file word, pdf, excel, img, video, csv"
-      );
-    }
-  };
+  const { test, files, handleChange, handleFileChange, handleAdd } = useAddTest(
+    courseId,
+    onClose
+  );
 
   return (
     <div className={styles.overlay}>

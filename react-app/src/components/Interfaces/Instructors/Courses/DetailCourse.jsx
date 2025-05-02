@@ -1,30 +1,27 @@
 import StudentList from "./Detail/StudentList";
 import styles from "../../../../assets/css/Instructor/Courses/DetailCourse.module.css";
-import { useState, useEffect } from "react";
-import { useGetUser } from "../../../../Hooks/useGetUser";
+import { useGetUser } from "../../../../hooks/useGetUser";
 import Pagination from "../Pagination";
 import TabSelector from "./Detail/TabSelector";
 import Assignments from "./Detail/Assignments";
 import Tests from "./Detail/Test";
 import Lessons from "./Detail/Lessons";
+import { useDetailCourse } from "../../../../Hooks/instructor/Course/useDetailCourse";
 
 function DetailCourse({ onClose, course }) {
-  const [search, setSearch] = useState({
-    text: "",
-    debounce: "",
-  });
   const { user } = useGetUser();
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [tabIndex, setTabIndex] = useState(0);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setSearch((prev) => ({ ...prev, debounce: prev.text }));
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [search.text]);
+  const {
+    search,
+    setSearch,
+    page,
+    setPage,
+    totalPages,
+    setTotalPages,
+    tabIndex,
+    setTabIndex,
+    resetSearchAndPage,
+  } = useDetailCourse();
 
   const selectTab = [
     <StudentList
@@ -104,8 +101,7 @@ function DetailCourse({ onClose, course }) {
               tabs={["Students", "Lessons", "Assignments", "Tests"]}
               onTabChange={(index) => {
                 setTabIndex(index);
-                setPage(1);
-                setSearch({ text: "", debounce: "" });
+                resetSearchAndPage();
               }}
             />
           </div>

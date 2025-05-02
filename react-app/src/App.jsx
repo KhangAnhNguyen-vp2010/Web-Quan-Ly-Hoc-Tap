@@ -5,19 +5,10 @@ import "boxicons/css/boxicons.min.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect, useState } from "react";
-import Index from "./components/index/Index"; // Đường dẫn đến file Index.jsx của bạn
-import { Routes, Route } from "react-router-dom";
-import About from "./components/about/About";
-import Contact from "./components/contact/Contact";
-import MainLayout from "./layouts/MainLayout";
-import LoginLayout from "./layouts/LoginLayout";
-import Login from "./pages/Login";
 import ScrollToTop from "./layouts/ScrollToTop";
 import "./App.css";
-import Instructor from "./pages/Instructor";
-import Student from "./pages/Student";
-import ProtectedRoute from "./routes/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -44,34 +35,7 @@ function App() {
     <div className="App">
       <>
         <ScrollToTop />
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-          </Route>
-
-          <Route element={<LoginLayout />}>
-            <Route path="/signup" element={<Login />} />
-            <Route
-              path="/instructor"
-              element={
-                <ProtectedRoute>
-                  <Instructor />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/student"
-              element={
-                <ProtectedRoute>
-                  <Student />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-        </Routes>
+        <AppRoutes />
 
         {showScrollTop && (
           <button

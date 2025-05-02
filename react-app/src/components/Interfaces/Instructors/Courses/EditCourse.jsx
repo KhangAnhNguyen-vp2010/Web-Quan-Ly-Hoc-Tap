@@ -1,47 +1,16 @@
-import { useState } from "react";
-import axios from "axios";
 import styles from "../../../../assets/css/Instructor/Courses/EditCourse.module.css";
-import { toast } from "react-toastify";
+import { useEditCourse } from "../../../../Hooks/instructor/Course/useEditCourse";
 import { useCourse } from "../../../../contexts/CourseContext";
-
 function EditCourse({ onClose, courseObject }) {
-  const [formData, setFormData] = useState({
-    courseName: courseObject.courseName,
-    courseDescription: courseObject.description,
-  });
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const { setLoad } = useCourse();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(
-        `https://localhost:7233/api/courses/${courseObject.courseId}`,
-        {
-          courseName: formData.courseName,
-          description: formData.courseDescription,
-        },
-        { withCredentials: true }
-      );
-
-      const form = new FormData();
-      if (selectedImage) {
-        form.append("file", selectedImage);
-      }
-      await axios.post(
-        `https://localhost:7233/api/Courses/upload/${courseObject.courseId}`,
-        form,
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.error("Error updating course:", error);
-      return;
-    }
-    toast.success("Course updated successfully!");
-    onClose();
-    setLoad(true);
-  };
+  const {
+    formData,
+    selectedImage,
+    handleChange,
+    handleImageChange,
+    handleSubmit,
+  } = useEditCourse(courseObject, setLoad, onClose);
 
   return (
     <div className={styles.overlay}>
@@ -64,10 +33,9 @@ function EditCourse({ onClose, courseObject }) {
             <input
               type="text"
               id="courseName"
+              name="courseName"
               value={formData.courseName}
-              onChange={(e) =>
-                setFormData({ ...formData, courseName: e.target.value })
-              }
+              onChange={handleChange}
             />
           </div>
 
@@ -75,10 +43,9 @@ function EditCourse({ onClose, courseObject }) {
             <label htmlFor="courseDescription">Course Description:</label>
             <textarea
               id="courseDescription"
+              name="courseDescription"
               value={formData.courseDescription}
-              onChange={(e) =>
-                setFormData({ ...formData, courseDescription: e.target.value })
-              }
+              onChange={handleChange}
             ></textarea>
           </div>
           <div className={styles["form-group"]}>
@@ -87,7 +54,7 @@ function EditCourse({ onClose, courseObject }) {
               type="file"
               id="courseImage"
               accept="image/*"
-              onChange={(e) => setSelectedImage(e.target.files[0])}
+              onChange={handleImageChange}
             />
           </div>
           <div className={styles["form-actions"]}>

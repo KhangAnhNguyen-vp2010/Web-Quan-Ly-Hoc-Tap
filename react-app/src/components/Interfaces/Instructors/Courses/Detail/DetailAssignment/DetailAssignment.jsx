@@ -5,22 +5,18 @@ import UncompletedAssignmentsList from "./UncompletedAssignmentsList";
 import CountDisplay from "./CountDisplay";
 import EditAssignment from "./EditAssignment";
 import AssignmentFilesList from "./AssignmentFilesList";
+import { useDetailAssignment } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailAssignment/useDetailAssignment";
 
 function DetailAssignment({ assignment, onClose }) {
-  const [showEditAssignment, setShowEditAssignment] = useState(false);
-  const [Assignment, setAssignment] = useState(assignment);
-  const [loadListFile, setLoadListFile] = useState(false);
-
-  const [count, setCount] = useState({
-    completed: 0,
-    unCompleted: 0,
-  });
-
-  const handleOncloseEdit = (obj) => {
-    setAssignment(obj);
-    setShowEditAssignment(!showEditAssignment);
-    setLoadListFile(!loadListFile);
-  };
+  const {
+    showEditAssignment,
+    currentAssignment,
+    loadListFile,
+    count,
+    handleOnCloseEdit,
+    toggleEditAssignment,
+    setCount,
+  } = useDetailAssignment(assignment, onClose);
 
   return (
     <>
@@ -34,19 +30,19 @@ function DetailAssignment({ assignment, onClose }) {
           <div className={styles["header-container"]}>
             <div>
               <h2 className={styles.assignmentTitle}>
-                {Assignment.assignmentName}
+                {currentAssignment.assignmentName}
               </h2>
               <div className={styles.assignmentDueDate}>
-                <strong>⏰Due Date:</strong>{" "}
-                {new Date(Assignment.dueDate).toLocaleDateString()}
+                <strong>⏰Deadline:</strong>{" "}
+                {new Date(currentAssignment.dueDate).toLocaleDateString()}
               </div>
               <div className={styles.assignmentContent}>
                 <strong>📋Exercise Content:</strong>{" "}
-                {Assignment.exerciseContent}
+                {currentAssignment.exerciseContent}
               </div>
               <button
                 className={styles["btn-edit"]}
-                onClick={() => setShowEditAssignment(!showEditAssignment)}
+                onClick={toggleEditAssignment}
               >
                 ✏️Edit Exercises
               </button>
@@ -58,13 +54,13 @@ function DetailAssignment({ assignment, onClose }) {
           </div>
           <hr />
           <AssignmentFilesList
-            assignmentId={Assignment.assignmentId}
+            assignmentId={currentAssignment.assignmentId}
             loadingFile={loadListFile}
           />
           <hr />
           <div className={styles["assignments-container"]}>
             <CompletedAssignmentsList
-              assignmentId={Assignment.assignmentId}
+              assignmentId={currentAssignment.assignmentId}
               countCompleted={(count) =>
                 setCount((prev) => ({
                   ...prev,
@@ -73,7 +69,7 @@ function DetailAssignment({ assignment, onClose }) {
               }
             />
             <UncompletedAssignmentsList
-              assignmentId={Assignment.assignmentId}
+              assignmentId={currentAssignment.assignmentId}
               countUncompleted={(count) =>
                 setCount((prev) => ({
                   ...prev,
@@ -85,9 +81,9 @@ function DetailAssignment({ assignment, onClose }) {
         </div>
         {showEditAssignment === true && (
           <EditAssignment
-            assignment={Assignment}
-            onUpdate={(obj) => handleOncloseEdit(obj)}
-            onClose={() => setShowEditAssignment(!showEditAssignment)}
+            assignment={currentAssignment}
+            onUpdate={(obj) => handleOnCloseEdit(obj)}
+            onClose={toggleEditAssignment}
           />
         )}
       </div>

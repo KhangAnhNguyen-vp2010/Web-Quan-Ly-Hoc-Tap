@@ -1,33 +1,14 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "../../../../../assets/css/Instructor/Courses/Detail/StudentList.module.css";
 import { FaSadTear } from "react-icons/fa";
+import { useStudents } from "../../../../../Hooks/instructor/Course/DetailCourse/useStudents";
 
 const StudentList = ({ courseId, searchTerm, page, SetTotalPages }) => {
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const handleSetTotalPages = (data) => {
-    SetTotalPages(data);
-  };
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get(
-          `https://localhost:7233/api/Courses/StudentList/${courseId}?searchTerm=${searchTerm}&page=${page}`,
-          { withCredentials: true }
-        );
-        setStudents(response.data.students);
-        handleSetTotalPages(response.data.total_Pages);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStudents();
-  }, [courseId, searchTerm, page]);
+  const { students, loading } = useStudents({
+    courseId,
+    searchTerm,
+    page,
+    setTotalPages: SetTotalPages,
+  });
 
   if (loading) {
     return <div>Loading...</div>;

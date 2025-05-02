@@ -1,26 +1,21 @@
-import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import styles from "../../../../assets/css/Instructor/Courses/AddCourse.module.css";
 import { useCourse } from "../../../../contexts/CourseContext";
 import { useGetUser } from "../../../../hooks/useGetUser";
+import { useAddCourse } from "../../../../Hooks/instructor/Course/useAddCourse";
 
-const AddCourseForm = ({ onClose }) => {
+const AddCourse = ({ onClose }) => {
   const { user } = useGetUser();
   const { load, setLoad } = useCourse();
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    image: null,
-  });
-  const [selectedImage, setSelectedImage] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const {
+    formData,
+    selectedImage,
+    handleChange,
+    handleImageChange,
+    resetForm,
+  } = useAddCourse();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +50,7 @@ const AddCourseForm = ({ onClose }) => {
     }
 
     toast.success("Course added successfully!");
-    setFormData({ title: "", description: "" });
+    resetForm(); // Reset form after successful submission
     onClose();
     setLoad(!load);
   };
@@ -96,7 +91,7 @@ const AddCourseForm = ({ onClose }) => {
               <input
                 type="file"
                 name="image"
-                onChange={(e) => setSelectedImage(e.target.files[0])}
+                onChange={handleImageChange}
                 className={styles.input}
                 accept="image/*"
                 required
@@ -131,4 +126,4 @@ const AddCourseForm = ({ onClose }) => {
   );
 };
 
-export default AddCourseForm;
+export default AddCourse;

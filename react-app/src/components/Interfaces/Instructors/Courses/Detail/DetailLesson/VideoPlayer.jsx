@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import ReactPlayer from "react-player";
 
 const VideoPlayer = ({ url }) => {

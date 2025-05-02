@@ -1,33 +1,17 @@
-import { useState } from "react";
 import clsx from "clsx";
 import styles from "../../../assets/css/Instructor/Sidebar.module.css";
 import logo_img from "../../../assets/img/about.jpg";
-import { useLogout } from "../../../Hooks/useLogout";
-import { useNavigate } from "react-router-dom";
+import { useSidebar } from "../../../Hooks/instructor/useSidebar";
 const Sidebar = ({
   activeIndex,
   onLinkClick,
   onClickCollapsed,
   onClickOpenProfile,
 }) => {
-  const [isOpen, setOpen] = useState(true);
-  const navigate = useNavigate();
-
-  const handleOpenClick = () => {
-    setOpen(!isOpen);
-  };
-
-  const handleOnClick = (e, index) => {
-    e.preventDefault();
-    onLinkClick(index);
-  };
-
-  const handleSuccessLogout = () => {
-    navigate("/signup");
-  };
-
-  const { handleLogout } = useLogout(handleSuccessLogout);
-
+  const { isOpen, handleOpenClick, handleOnClick, handleLogout } = useSidebar({
+    onLinkClick,
+    onClickCollapsed,
+  });
   return (
     <div className={clsx(styles.body)} data-aos="zoom-in" data-aos-delay="1000">
       <aside
@@ -79,21 +63,6 @@ const Sidebar = ({
               }}
             >
               Courses
-            </a>
-          </li>
-          <li className={clsx(activeIndex === 2 && styles.active)}>
-            <span
-              className="material-symbols-outlined"
-              onClick={(e) => handleOnClick(e, 2)}
-            >
-              group
-            </span>
-            <a
-              onClick={(e) => {
-                handleOnClick(e, 2);
-              }}
-            >
-              Users
             </a>
           </li>
           <hr />

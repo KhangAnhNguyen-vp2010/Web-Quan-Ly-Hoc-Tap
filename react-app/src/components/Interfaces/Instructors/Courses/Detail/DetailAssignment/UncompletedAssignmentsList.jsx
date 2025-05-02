@@ -1,38 +1,13 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailAssignment/UncompletedAssignmentsList.module.css"; // Import the CSS module
+import { useUncompletedAssignments } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailAssignment/useUncompletedAssignments";
 
 const UncompletedAssignmentsList = ({ assignmentId, countUncompleted }) => {
-  const [uncompletedUsers, setUncompletedUsers] = useState({
-    list: [],
-    count: 0,
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUncompletedAssignments = async () => {
-      try {
-        const response = await axios.get(
-          `https://localhost:7233/api/Assignments/uncompleted/${assignmentId}`,
-          { withCredentials: true }
-        );
-        setUncompletedUsers({
-          list: response.data && response.data,
-          count: response.data && response.data.length,
-        });
-      } catch (err) {
-        console.log("Error " + err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUncompletedAssignments();
-  }, [assignmentId]);
+  const { uncompletedUsers, loading } = useUncompletedAssignments(assignmentId);
 
   useEffect(() => {
     countUncompleted(uncompletedUsers.count);
-  }, [loading]);
+  }, [uncompletedUsers.count]);
 
   if (loading)
     return <p className={styles.loading}>Loading uncompleted assignments...</p>;

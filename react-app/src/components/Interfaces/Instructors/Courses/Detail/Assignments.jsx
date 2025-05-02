@@ -1,40 +1,21 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "../../../../../assets/css/Instructor/Courses/Detail/Assignments.module.css";
 import { FaSadTear } from "react-icons/fa";
 import DetailAssignment from "./DetailAssignment/DetailAssignment";
 import AddAssignment from "./DetailAssignment/AddAssignment";
+import { useAssignments } from "../../../../../Hooks/instructor/Course/DetailCourse/useAssignments";
 
 const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
-  const [assignments, setAssignments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [assignment, setAssignment] = useState(null);
-  const [showDetailAssignment, setShowDetailAssignment] = useState(false);
-  const [showAddAssignment, setShowAddAssignment] = useState(false);
-
-  const handleSetTotalPages = (data) => {
-    SetTotalPages(data);
-  };
-
-  const fetchAssignments = async () => {
-    try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Assignments/Course/${courseId}?search=${searchTerm}&page=${page}`,
-        { withCredentials: true }
-      );
-
-      setAssignments(response.data.items);
-      handleSetTotalPages(response.data.totalPages);
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAssignments();
-  }, [courseId, searchTerm, page]);
+  const {
+    assignments,
+    loading,
+    assignment,
+    setAssignment,
+    showDetailAssignment,
+    setShowDetailAssignment,
+    showAddAssignment,
+    setShowAddAssignment,
+    fetchAssignments,
+  } = useAssignments(courseId, searchTerm, page, SetTotalPages);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -78,7 +59,7 @@ const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
                   </p>
                 </div>
                 <span className={styles.assignmentDueDate}>
-                  Due Date: {new Date(assignment.dueDate).toLocaleDateString()}
+                  Deadline: {new Date(assignment.dueDate).toLocaleDateString()}
                 </span>
               </div>
             ))
