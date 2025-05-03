@@ -18,6 +18,14 @@ const AppRoutes = () => {
         <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute>
+              <Student />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       <Route element={<LoginLayout />}>
@@ -27,14 +35,6 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Instructor />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/student"
-          element={
-            <ProtectedRoute>
-              <Student />
             </ProtectedRoute>
           }
         />

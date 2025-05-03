@@ -1,5 +1,6 @@
 import styles from "../../../assets/css/Instructor/Profile.module.css";
 import avatar from "../../../assets/img/about.jpg";
+import student_avatar from "../../../assets/img/student/avatar.png";
 import ChangePassword from "./ChangePassword";
 import EditProfile from "./EditProfile";
 import { useProfile } from "../../../Hooks/instructor/useProfile";
@@ -45,7 +46,11 @@ function Profile({ onClose }) {
           ) : (
             <>
               <div className={styles.profileContainer}>
-                <img src={avatar} alt="Avatar" className={styles.avatar} />
+                <img
+                  src={user.role === "Student" ? student_avatar : avatar}
+                  alt="Avatar"
+                  className={styles.avatar}
+                />
 
                 <div className={styles.profileDetails}>
                   <p>
