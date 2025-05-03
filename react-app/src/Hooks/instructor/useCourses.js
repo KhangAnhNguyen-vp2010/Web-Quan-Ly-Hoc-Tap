@@ -35,6 +35,7 @@ export const useCourses = () => {
     try {
       const result = await getListCourses(page, pageSize, query, sort);
       if (result) {
+        console.log(result.data);
         setCourses(result.data);
         setTotalPages(result.totalPages);
 
