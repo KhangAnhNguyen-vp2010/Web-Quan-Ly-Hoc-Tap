@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { createContext, useContext, useState } from "react";
+import axiosClient from "../api/axiosClient";
 
 const CourseContext = createContext();
 
@@ -10,8 +10,8 @@ export const CourseProvider = ({ children }) => {
 
   const getListCourses = async (page, pageSize, query, sort) => {
     try {
-      const res = await axios.get(
-        `https://localhost:7233/api/Courses?page=${page}&pageSize=${pageSize}&search=${query}&sort=${sort}`,
+      const res = await axiosClient.get(
+        `/Courses?page=${page}&pageSize=${pageSize}&search=${query}&sort=${sort}`,
         { withCredentials: true }
       );
       return res.data;

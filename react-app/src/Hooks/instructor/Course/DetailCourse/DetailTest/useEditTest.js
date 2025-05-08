@@ -1,7 +1,7 @@
 // useEditTest.js
 import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 
 export const useEditTest = (initialTest, courseId, onUpdate, onClose) => {
   const [test, setTest] = useState({
@@ -65,16 +65,12 @@ export const useEditTest = (initialTest, courseId, onUpdate, onClose) => {
     }
 
     try {
-      await axios.put(
-        `https://localhost:7233/api/Tests/${test.testId}/with-files`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axiosClient.put(`/Tests/${test.testId}/with-files`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       onUpdate(test);
       onClose();
       toast.success("Updated!!!");

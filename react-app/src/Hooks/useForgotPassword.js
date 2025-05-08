@@ -1,6 +1,6 @@
 // hooks/useForgotPassword.js
+import axiosClient from "../api/axiosClient";
 import { useState, useRef } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 
 export const useForgotPassword = (onBack) => {
@@ -34,13 +34,10 @@ export const useForgotPassword = (onBack) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, sendMail: true }));
     try {
-      await axios.post(
-        "https://localhost:7233/api/Auth/forgot-password/request",
-        {
-          username: formData.username,
-          email: formData.email,
-        }
-      );
+      await axiosClient.post("/Auth/forgot-password/request", {
+        username: formData.username,
+        email: formData.email,
+      });
       toast.success("OTP has been sent to your email!");
       setStep(2);
     } catch (err) {
@@ -53,13 +50,10 @@ export const useForgotPassword = (onBack) => {
   const handleSubmitOTP = async (otpValues) => {
     setLoading((prev) => ({ ...prev, verifyOtp: true }));
     try {
-      await axios.post(
-        "https://localhost:7233/api/Auth/forgot-password/verify-otp",
-        {
-          username: formData.username,
-          otp: otpValues,
-        }
-      );
+      await axiosClient.post("/Auth/forgot-password/verify-otp", {
+        username: formData.username,
+        otp: otpValues,
+      });
       toast.success("OTP verification successful!");
       setStep(3);
     } catch (err) {
@@ -84,13 +78,10 @@ export const useForgotPassword = (onBack) => {
 
     setLoading((prev) => ({ ...prev, resetPassword: true }));
     try {
-      await axios.post(
-        "https://localhost:7233/api/Auth/forgot-password/reset-password",
-        {
-          username: formData.username,
-          newPassword: newPassword,
-        }
-      );
+      await axiosClient.post("/Auth/forgot-password/reset-password", {
+        username: formData.username,
+        newPassword: newPassword,
+      });
       toast.success("Password reset successfully!");
       onBack?.();
     } catch (err) {
@@ -103,13 +94,10 @@ export const useForgotPassword = (onBack) => {
   const handleResendOTP = async () => {
     setLoading((prev) => ({ ...prev, resendOtp: true }));
     try {
-      await axios.post(
-        "https://localhost:7233/api/Auth/forgot-password/request",
-        {
-          username: formData.username,
-          email: formData.email,
-        }
-      );
+      await axiosClient.post("/Auth/forgot-password/request", {
+        username: formData.username,
+        email: formData.email,
+      });
       toast.success("OTP resent successfully!");
     } catch (err) {
       toast.error(err.response?.data || "Failed to resend OTP.");

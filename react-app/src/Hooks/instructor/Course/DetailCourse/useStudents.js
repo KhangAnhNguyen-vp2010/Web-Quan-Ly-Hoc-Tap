@@ -1,6 +1,6 @@
 // useStudents.js
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../../../api/axiosClient";
 
 export const useStudents = ({ courseId, searchTerm, page, setTotalPages }) => {
   const [students, setStudents] = useState([]);
@@ -8,8 +8,8 @@ export const useStudents = ({ courseId, searchTerm, page, setTotalPages }) => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Courses/StudentList/${courseId}?searchTerm=${searchTerm}&page=${page}`,
+      const response = await axiosClient.get(
+        `/Courses/StudentList/${courseId}?searchTerm=${searchTerm}&page=${page}`,
         { withCredentials: true }
       );
       setStudents(response.data.students);

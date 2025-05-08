@@ -1,6 +1,6 @@
 // src/hooks/useTests.js
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../../../api/axiosClient";
 
 export const useTests = (courseId, searchTerm, page, SetTotalPages) => {
   const [tests, setTests] = useState([]);
@@ -11,8 +11,8 @@ export const useTests = (courseId, searchTerm, page, SetTotalPages) => {
 
   const fetchTests = async () => {
     try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Tests/Course/${courseId}?search=${searchTerm}&page=${page}`,
+      const response = await axiosClient.get(
+        `/Tests/Course/${courseId}?search=${searchTerm}&page=${page}`,
         { withCredentials: true }
       );
 

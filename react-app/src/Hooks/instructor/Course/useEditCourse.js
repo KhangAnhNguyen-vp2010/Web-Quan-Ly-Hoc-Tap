@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../api/axiosClient";
 import { toast } from "react-toastify";
 
 export const useEditCourse = (courseObject, setLoad, onClose) => {
@@ -21,8 +21,8 @@ export const useEditCourse = (courseObject, setLoad, onClose) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        `https://localhost:7233/api/courses/${courseObject.courseId}`,
+      await axiosClient.put(
+        `/courses/${courseObject.courseId}`,
         {
           courseName: formData.courseName,
           description: formData.courseDescription,
@@ -34,11 +34,9 @@ export const useEditCourse = (courseObject, setLoad, onClose) => {
       if (selectedImage) {
         form.append("file", selectedImage);
       }
-      await axios.post(
-        `https://localhost:7233/api/Courses/upload/${courseObject.courseId}`,
-        form,
-        { withCredentials: true }
-      );
+      await axiosClient.post(`/Courses/upload/${courseObject.courseId}`, form, {
+        withCredentials: true,
+      });
     } catch (error) {
       console.error("Error updating course:", error);
       return;

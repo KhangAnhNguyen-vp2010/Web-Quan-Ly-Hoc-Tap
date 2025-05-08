@@ -1,9 +1,10 @@
-import axios from "axios";
+import axiosClient from "../api/axiosClient";
 import { toast } from "react-toastify";
+
 export const useLogout = (onSuccessLogout) => {
   const handleLogout = async () => {
     try {
-      await axios.post("https://localhost:7233/api/Auth/logout", null, {
+      await axiosClient.post(`/Auth/logout`, null, {
         withCredentials: true,
       });
       toast.success("Logout successful!");

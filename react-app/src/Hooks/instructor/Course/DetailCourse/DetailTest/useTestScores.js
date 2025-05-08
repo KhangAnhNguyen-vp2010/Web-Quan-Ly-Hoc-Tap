@@ -1,6 +1,6 @@
 // useTestScores.js
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 
 export const useTestScores = (courseId, testId) => {
   const [scores, setScores] = useState([]);
@@ -10,8 +10,8 @@ export const useTestScores = (courseId, testId) => {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await axios.get(
-          `https://localhost:7233/api/Tests/course/${courseId}/test/${testId}/scores`,
+        const response = await axiosClient.get(
+          `/Tests/course/${courseId}/test/${testId}/scores`,
           {
             withCredentials: true,
           }

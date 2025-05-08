@@ -1,6 +1,6 @@
 // src/hooks/useChangePassword.js
 import { useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { toast } from "react-toastify";
 
 export default function useChangePassword(setIsChangingPassword) {
@@ -26,8 +26,8 @@ export default function useChangePassword(setIsChangingPassword) {
     }
 
     try {
-      await axios.put(
-        "https://localhost:7233/api/Auth/changepassword",
+      await axiosClient.put(
+        "/Auth/changepassword",
         {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 import { toast } from "react-toastify";
 
 export const useAddLesson = (courseId, onClose) => {
@@ -19,8 +19,8 @@ export const useAddLesson = (courseId, onClose) => {
     e.preventDefault();
 
     try {
-      await axios.post(
-        `https://localhost:7233/api/Lessons`,
+      await axiosClient.post(
+        `/Lessons`,
         {
           courseID: courseId,
           lessonName: lesson.lessonName,

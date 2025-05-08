@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 import { toast } from "react-toastify";
 
 export function useEditAssignment(assignment, onUpdate, onClose) {
@@ -54,8 +54,8 @@ export function useEditAssignment(assignment, onUpdate, onClose) {
     setLoading(true);
 
     try {
-      await axios.put(
-        `https://localhost:7233/api/Assignments/EditAssignment/${form.assignmentId}`,
+      await axiosClient.put(
+        `/Assignments/EditAssignment/${form.assignmentId}`,
         formData,
         {
           withCredentials: true,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../../../api/axiosClient";
 
 export function useAssignments(courseId, searchTerm, page, setTotalPages) {
   const [assignments, setAssignments] = useState([]);
@@ -10,8 +10,8 @@ export function useAssignments(courseId, searchTerm, page, setTotalPages) {
 
   const fetchAssignments = async () => {
     try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Assignments/Course/${courseId}?search=${searchTerm}&page=${page}`,
+      const response = await axiosClient.get(
+        `/Assignments/Course/${courseId}?search=${searchTerm}&page=${page}`,
         { withCredentials: true }
       );
       setAssignments(response.data.items);

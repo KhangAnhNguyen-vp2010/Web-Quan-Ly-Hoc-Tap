@@ -1,6 +1,6 @@
 // useLessons.js
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../../../api/axiosClient";
 
 export const useLessons = ({ courseId, searchTerm, page, setTotalPages }) => {
   const [lessons, setLessons] = useState([]);
@@ -11,8 +11,8 @@ export const useLessons = ({ courseId, searchTerm, page, setTotalPages }) => {
 
   const fetchLessons = async () => {
     try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Lessons/by-course?courseId=${courseId}&search=${searchTerm}&page=${page}`,
+      const response = await axiosClient.get(
+        `/Lessons/by-course?courseId=${courseId}&search=${searchTerm}&page=${page}`,
         { withCredentials: true }
       );
       setLessons(response.data.items);

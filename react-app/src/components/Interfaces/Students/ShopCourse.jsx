@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../api/axiosClient";
 import styles from "./ShopCourse.module.scss";
 import DetailCard from "./DetailCard/DetailCard";
 import { useJoinTheCourse } from "../../../Hooks/student/useJoinTheCourse";
@@ -22,8 +22,8 @@ const ShopCourse = ({ user }) => {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `https://localhost:7233/api/Students/unregistered?userId=${user.id}`,
+      const res = await axiosClient.get(
+        `/Students/unregistered?userId=${user.id}`,
         {
           params: { page, pageSize, search, sort },
           withCredentials: true,
@@ -88,7 +88,7 @@ const ShopCourse = ({ user }) => {
                 <div key={course.courseId} className={styles.card}>
                   <div className={styles.imageContainer}>
                     <img
-                      src={`https://localhost:7233${course.img}`}
+                      src={`${import.meta.env.VITE_PUBLIC_URL}${course.img}`}
                       alt={course.courseName}
                       className={styles.courseImage}
                     />

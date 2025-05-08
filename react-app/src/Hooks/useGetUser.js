@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../api/axiosClient";
 
 export const useGetUser = () => {
   const [user, setUser] = useState(null);
@@ -7,12 +7,9 @@ export const useGetUser = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(
-        "https://localhost:7233/api/Users/userinfo",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axiosClient.get("/Users/userinfo", {
+        withCredentials: true,
+      });
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);

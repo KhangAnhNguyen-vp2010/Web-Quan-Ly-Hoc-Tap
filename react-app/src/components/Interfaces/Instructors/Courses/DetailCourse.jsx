@@ -1,6 +1,6 @@
 import StudentList from "./Detail/StudentList";
 import styles from "../../../../assets/css/Instructor/Courses/DetailCourse.module.css";
-import { useGetUser } from "../../../../hooks/useGetUser";
+import { useGetUser } from "../../../../Hooks/useGetUser";
 import Pagination from "../Pagination";
 import TabSelector from "./Detail/TabSelector";
 import Assignments from "./Detail/Assignments";
@@ -67,7 +67,7 @@ function DetailCourse({ onClose, course }) {
         <div className={styles.card}>
           <div className={styles.imageWrapper}>
             <img
-              src={`https://localhost:7233${course.img}`}
+              src={`${import.meta.env.VITE_PUBLIC_URL}${course.img}`}
               className={styles.cardImg}
               alt={course.courseName}
             />

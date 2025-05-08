@@ -1,59 +1,22 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import axiosClient from "../../../../api/axiosClient";
 import styles from "../../../../assets/css/Instructor/Courses/AddCourse.module.css";
 import { useCourse } from "../../../../contexts/CourseContext";
-import { useGetUser } from "../../../../hooks/useGetUser";
+import { useGetUser } from "../../../../Hooks/useGetUser";
 import { useAddCourse } from "../../../../Hooks/instructor/Course/useAddCourse";
 
 const AddCourse = ({ onClose }) => {
   const { user } = useGetUser();
-  const { load, setLoad } = useCourse();
+  const { setLoad } = useCourse();
 
   const {
     formData,
     selectedImage,
     handleChange,
     handleImageChange,
-    resetForm,
-  } = useAddCourse();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(
-        "https://localhost:7233/api/courses",
-        {
-          name: formData.title,
-          description: formData.description,
-          instructorId: user.id,
-        },
-        { withCredentials: true }
-      );
-
-      const res_lastId = await axios.get(
-        `https://localhost:7233/api/Courses/LastId`
-      );
-
-      const form = new FormData();
-      if (selectedImage) {
-        form.append("file", selectedImage);
-      }
-      await axios.post(
-        `https://localhost:7233/api/Courses/upload/${res_lastId.data}`,
-        form,
-        { withCredentials: true }
-      );
-    } catch (err) {
-      toast.error("Error adding course.");
-      console.error(err);
-      return;
-    }
-
-    toast.success("Course added successfully!");
-    resetForm(); // Reset form after successful submission
-    onClose();
-    setLoad(!load);
-  };
+    handleSubmit,
+  } = useAddCourse(user, setLoad, onClose);
 
   return (
     <>

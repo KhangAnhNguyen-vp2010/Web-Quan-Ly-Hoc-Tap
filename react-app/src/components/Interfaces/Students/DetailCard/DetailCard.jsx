@@ -19,7 +19,7 @@ function DetailCard({ user, course, onClose, onJoin }) {
           ×
         </button>
         <img
-          src={`https://localhost:7233${course.img}`}
+          src={`${import.meta.env.VITE_PUBLIC_URL}${course.img}`}
           alt={course.img}
           className={styles.image}
         />

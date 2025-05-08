@@ -1,7 +1,7 @@
 // src/hooks/useEditProfile.js
 import { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
+import axiosClient from "../api/axiosClient";
 
 export const useEditProfile = ({ User, setUser, setIsEditing }) => {
   const [formData, setFormData] = useState(User);
@@ -35,11 +35,9 @@ export const useEditProfile = ({ User, setUser, setIsEditing }) => {
         role: User.role,
       };
 
-      await axios.put(
-        "https://localhost:7233/api/Users/userEdit",
-        updatedData,
-        { withCredentials: true }
-      );
+      await axiosClient.put("/Users/userEdit", updatedData, {
+        withCredentials: true,
+      });
       toast.success("Profile updated!");
       setUser(updatedData);
       setIsEditing(false);

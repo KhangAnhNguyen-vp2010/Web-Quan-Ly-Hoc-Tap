@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../api/axiosClient";
 import styles from "./MyCourse.module.scss";
 
 const MyCourse = ({ user }) => {
@@ -14,8 +14,8 @@ const MyCourse = ({ user }) => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://localhost:7233/api/Students/registered?userId=${user.id}`,
+      const response = await axiosClient.get(
+        `/Students/registered?userId=${user.id}`,
         {
           params: {
             search,
@@ -79,7 +79,7 @@ const MyCourse = ({ user }) => {
             <li key={course.courseId} className={styles.courseItem}>
               <img
                 src={
-                  `https://localhost:7233${course.img}` ||
+                  `${import.meta.env.VITE_PUBLIC_URL}${course.img}` ||
                   "https://via.placeholder.com/100x100?text=No+Image"
                 }
                 alt={course.courseName}
