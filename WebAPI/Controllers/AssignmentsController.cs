@@ -142,14 +142,7 @@ namespace WebAPI.Controllers
                 .Select(e => e.UserId)
                 .ToListAsync();
 
-            if (enrolledUsers.Count == 0)
-            {
-                return Ok(new
-                {
-                    message = "Assignment created, but no users enrolled in this course.",
-                    assignmentId = assignment.AssignmentId
-                });
-            }
+         
 
             // Bước 3: Tạo bản ghi AssignmentsCompleted cho các user
             var assignmentCompletedList = enrolledUsers.Select(userId => new AssignmentsCompleted
