@@ -1,8 +1,8 @@
 // src/hooks/useCourses.js
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useCourse } from "../../contexts/CourseContext";
 import { useGetUser } from "../useGetUser";
+import axiosClient from "../../api/axiosClient";
 
 export const useCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -20,9 +20,7 @@ export const useCourses = () => {
 
   const GetStudentCount = async (id) => {
     try {
-      const res = await axios.get(
-        `https://localhost:7233/api/Courses/StudentCount/${id}`
-      );
+      const res = await axiosClient.get(`/Courses/StudentCount/${id}`);
       return res.data;
     } catch (error) {
       console.log("Error by get count student: " + error);
@@ -35,7 +33,6 @@ export const useCourses = () => {
     try {
       const result = await getListCourses(page, pageSize, query, sort);
       if (result) {
-        console.log(result.data);
         setCourses(result.data);
         setTotalPages(result.totalPages);
 

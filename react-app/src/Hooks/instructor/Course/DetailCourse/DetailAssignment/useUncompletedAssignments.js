@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 
 export const useUncompletedAssignments = (assignmentId) => {
   const [uncompletedUsers, setUncompletedUsers] = useState({
@@ -12,8 +12,8 @@ export const useUncompletedAssignments = (assignmentId) => {
     const fetchUncompletedAssignments = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `https://localhost:7233/api/Assignments/uncompleted/${assignmentId}`,
+        const response = await axiosClient.get(
+          `/Assignments/uncompleted/${assignmentId}`,
           { withCredentials: true }
         );
         const list = response.data || [];

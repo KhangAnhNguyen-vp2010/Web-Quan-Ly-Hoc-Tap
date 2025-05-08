@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../../../../api/axiosClient";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import * as XLSX from "xlsx";
@@ -15,7 +15,7 @@ const TestFilesList = ({ testId, loadingFile }) => {
   const [loadAdding, setLoadAdding] = useState(false);
 
   // Base URL để dễ chỉnh sửa nếu cần
-  const baseUrl = "https://localhost:7233";
+  const baseUrl = import.meta.env.VITE_PUBLIC_URL;
 
   const handleAddingFiles = (e) => {
     setFilesAdding([...e.target.files]);
@@ -30,7 +30,7 @@ const TestFilesList = ({ testId, loadingFile }) => {
     }
 
     try {
-      await axios.post(`${baseUrl}/api/Tests/AddFile/${testId}`, formData, {
+      await axiosClient.post(`/Tests/AddFile/${testId}`, formData, {
         withCredentials: true,
       });
       fetchFiles();
@@ -45,7 +45,7 @@ const TestFilesList = ({ testId, loadingFile }) => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/Tests/${testId}/files`, {
+      const response = await axiosClient.get(`/Tests/${testId}/files`, {
         withCredentials: true,
       });
       setFiles(response.data);
@@ -92,7 +92,7 @@ const TestFilesList = ({ testId, loadingFile }) => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`https://localhost:7233/api/Tests/file/${fileId}`, {
+      await axiosClient.delete(`/Tests/file/${fileId}`, {
         withCredentials: true,
       });
       fetchFiles();

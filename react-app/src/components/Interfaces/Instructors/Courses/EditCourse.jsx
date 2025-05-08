@@ -21,7 +21,7 @@ function EditCourse({ onClose, courseObject }) {
           src={
             selectedImage
               ? URL.createObjectURL(selectedImage)
-              : `https://localhost:7233${courseObject.img}`
+              : `${import.meta.env.VITE_PUBLIC_URL}${courseObject.img}`
           }
           alt={courseObject.courseName}
           className={styles["edit-img"]}

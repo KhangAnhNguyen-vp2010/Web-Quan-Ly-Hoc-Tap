@@ -153,7 +153,7 @@ function Courses({
                 <div className={styles.courseImageContainer}>
                   {course.img ? (
                     <img
-                      src={`https://localhost:7233${course.img}`}
+                      src={`${import.meta.env.VITE_PUBLIC_URL}${course.img}`}
                       alt={course.courseName}
                       className={styles.courseImage}
                     />

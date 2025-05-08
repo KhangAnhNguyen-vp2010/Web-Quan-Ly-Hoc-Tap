@@ -1,6 +1,6 @@
 // src/hooks/useAuthCheck.js
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const useAuthCheck = () => {
@@ -22,12 +22,9 @@ export const useAuthCheck = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(
-          "https://localhost:7233/api/Users/userinfo",
-          {
-            withCredentials: true,
-          }
-        );
+        const res = await axiosClient.get("/Users/userinfo", {
+          withCredentials: true,
+        });
         const data = res.data;
         setUser(data);
 

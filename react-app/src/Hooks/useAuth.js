@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
+import axiosClient from "../api/axiosClient";
 
 export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
@@ -26,11 +26,9 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
       return toast.error("Password cannot be empty!");
 
     try {
-      const res = await axios.post(
-        "https://localhost:7233/api/Auth/login",
-        loginForm,
-        { withCredentials: true }
-      );
+      const res = await axiosClient.post("/Auth/login", loginForm, {
+        withCredentials: true,
+      });
       toast.success("Login successful!");
       setLoginForm({ username: "", password: "" });
       onSuccessLogin?.(res.data);
@@ -49,10 +47,7 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
       return toast.error("Email is required!");
 
     try {
-      await axios.post(
-        "https://localhost:7233/api/Auth/register",
-        registerForm
-      );
+      await axiosClient.post("/Auth/register", registerForm);
       toast.success("Register successful! Please login.");
       setRegisterForm({ username: "", password: "", email: "" });
       onSwitchToLogin?.();

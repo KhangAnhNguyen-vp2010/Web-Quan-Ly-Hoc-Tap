@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 import { toast } from "react-toastify";
 
 export function useAddAssignment(courseId, onClose) {
@@ -24,6 +24,7 @@ export function useAddAssignment(courseId, onClose) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(files);
 
     if (!form.assignmentName.trim() || !form.assignmentContent.trim()) {
       toast.error("Please enter complete information");
@@ -42,8 +43,8 @@ export function useAddAssignment(courseId, onClose) {
     setLoading(true); // Set loading state to true
 
     try {
-      const response = await axios.post(
-        "https://localhost:7233/api/Assignments/AddAssignment",
+      const response = await axiosClient.post(
+        "/Assignments/AddAssignment",
         formData,
         {
           withCredentials: true,

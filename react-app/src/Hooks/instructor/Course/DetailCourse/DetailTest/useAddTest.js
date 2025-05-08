@@ -1,7 +1,7 @@
 // useAddTest.js
 import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 
 export const useAddTest = (courseId, onClose) => {
   const [test, setTest] = useState({
@@ -35,16 +35,12 @@ export const useAddTest = (courseId, onClose) => {
     });
 
     try {
-      await axios.post(
-        `https://localhost:7233/api/Tests/with-files`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axiosClient.post(`/Tests/with-files`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       onClose();
       toast.success("Added!!!");
     } catch (error) {

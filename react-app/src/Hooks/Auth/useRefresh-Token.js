@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import { useEffect } from "react";
 export const useRefreshToken = () => {
   useEffect(() => {
@@ -11,13 +11,9 @@ export const useRefreshToken = () => {
         console.log("👉 Gọi refresh-token vì đã quá 25 phút hoặc lần đầu");
 
         try {
-          await axios.post(
-            "https://localhost:7233/api/Auth/refresh-token",
-            null,
-            {
-              withCredentials: true,
-            }
-          );
+          await axiosClient.post("/Auth/refresh-token", null, {
+            withCredentials: true,
+          });
           localStorage.setItem("lastRefresh", now.toString());
           console.log("✅ Token đã được làm mới");
         } catch (err) {

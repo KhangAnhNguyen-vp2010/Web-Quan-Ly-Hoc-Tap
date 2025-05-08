@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axiosClient from "../../../../../api/axiosClient";
 
 export const useEditLesson = (initialLesson, onUpdate, onClose) => {
   const [lesson, setLesson] = useState(initialLesson);
@@ -15,8 +15,8 @@ export const useEditLesson = (initialLesson, onUpdate, onClose) => {
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        `https://localhost:7233/api/Lessons/${lesson.lessonId}`,
+      await axiosClient.put(
+        `/Lessons/${lesson.lessonId}`,
         {
           lessonName: lesson.lessonName,
           linkYoutube: lesson.linkYoutube,
