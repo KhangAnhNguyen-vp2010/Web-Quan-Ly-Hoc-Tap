@@ -4,7 +4,7 @@ import EditTest from "./EditTest";
 import TestFilesList from "./TestFilesList";
 import TestScoreList from "./TestScoreList";
 
-const DetailTest = ({ test, courseId, onClose }) => {
+const DetailTest = ({ test, courseId, onClose, user }) => {
   const {
     test: currentTest,
     showEditTest,
@@ -31,15 +31,23 @@ const DetailTest = ({ test, courseId, onClose }) => {
             <div className={styles.testContent}>
               <strong>📋Content:</strong> {currentTest.testContent}
             </div>
-            <button className={styles["btn-edit"]} onClick={toggleEditTest}>
-              ✏️Edit Test or Adding File
-            </button>
+            {user.role === "Instructor" && (
+              <button className={styles["btn-edit"]} onClick={toggleEditTest}>
+                ✏️Edit Test or Adding File
+              </button>
+            )}
           </div>
         </div>
         <hr />
-        <TestFilesList testId={currentTest.testId} loadingFile={loadListFile} />
+        <TestFilesList
+          testId={currentTest.testId}
+          loadingFile={loadListFile}
+          user={user}
+        />
         <hr />
-        <TestScoreList testId={currentTest.testId} courseId={courseId} />
+        {user.role === "Instructor" && (
+          <TestScoreList testId={currentTest.testId} courseId={courseId} />
+        )}
       </div>
       {showEditTest && (
         <EditTest

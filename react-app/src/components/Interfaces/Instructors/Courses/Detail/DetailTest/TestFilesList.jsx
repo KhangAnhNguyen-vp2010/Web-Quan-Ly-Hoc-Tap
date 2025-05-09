@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestFilesList.module.css";
 
-const TestFilesList = ({ testId, loadingFile }) => {
+const TestFilesList = ({ testId, loadingFile, user }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -354,7 +354,7 @@ const TestFilesList = ({ testId, loadingFile }) => {
       const fetchExcelData = async () => {
         try {
           setLoading(true);
-          const res = await axios.get(filePath, {
+          const res = await axiosClient.get(filePath, {
             responseType: "arraybuffer",
             headers: { "Cache-Control": "no-cache" },
           });
@@ -452,7 +452,8 @@ const TestFilesList = ({ testId, loadingFile }) => {
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>
-        Đề bài <label htmlFor="fileUpload">+</label>
+        Đề bài{" "}
+        {user.role === "Instructor" && <label htmlFor="fileUpload">+</label>}
         <input
           id="fileUpload"
           type="file"

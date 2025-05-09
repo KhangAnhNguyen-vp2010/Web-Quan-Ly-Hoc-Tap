@@ -10,6 +10,7 @@ import Instructor from "../pages/Instructor";
 import Student from "../pages/Student";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "../pages/NotFound";
+import StudentLayout from "../layouts/StudentLayout";
 
 const AppRoutes = () => {
   return (
@@ -18,6 +19,9 @@ const AppRoutes = () => {
         <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+      </Route>
+
+      <Route element={<StudentLayout />}>
         <Route
           path="/student"
           element={

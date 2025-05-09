@@ -4,7 +4,7 @@ import DetailLesson from "./DetailLesson/DetailLesson";
 import AddLesson from "./DetailLesson/AddLesson";
 import { useLessons } from "../../../../../Hooks/instructor/Course/DetailCourse/useLessons";
 
-const Lessons = ({ courseId, searchTerm, page, SetTotalPages }) => {
+const Lessons = ({ courseId, searchTerm, page, SetTotalPages, user }) => {
   const {
     lessons,
     loading,
@@ -26,12 +26,14 @@ const Lessons = ({ courseId, searchTerm, page, SetTotalPages }) => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h4 className={styles.title}>🎥List of Lessons</h4>
-          <button
-            className={styles["btn-addLesson"]}
-            onClick={() => setShowAddLesson(!showAddLesson)}
-          >
-            🎥Add Lesson
-          </button>
+          {user.role === "Instructor" && (
+            <button
+              className={styles["btn-addLesson"]}
+              onClick={() => setShowAddLesson(!showAddLesson)}
+            >
+              🎥Add Lesson
+            </button>
+          )}
         </div>
 
         <div className={styles.lessonsList}>
@@ -88,6 +90,7 @@ const Lessons = ({ courseId, searchTerm, page, SetTotalPages }) => {
             refetch();
             setShowDetailLesson(!showDetailLesson);
           }}
+          user={user}
         />
       )}
 
