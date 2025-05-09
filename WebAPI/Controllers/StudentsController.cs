@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs.JoinTheCourse;
@@ -12,13 +14,15 @@ namespace WebAPI.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly QuanLyHocTapContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public StudentsController(QuanLyHocTapContext context)
+        public StudentsController(QuanLyHocTapContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
-
+        [Authorize]
         [HttpGet("unregistered")]
         public async Task<IActionResult> GetUnregisteredCourses(
     int userId,
@@ -77,7 +81,7 @@ namespace WebAPI.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("registered")]
         public async Task<IActionResult> GetRegisteredCourses(
     int userId,
@@ -137,7 +141,7 @@ namespace WebAPI.Controllers
 
 
 
-
+        [Authorize]
         [HttpPost("JoinTheCourse")]
         public async Task<ActionResult> PostEnrollment([FromBody] JoinTheCourseDto dto)
         {
@@ -167,6 +171,95 @@ namespace WebAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Create successfully!!!" });
+        }
+
+
+
+        [HttpPost("submitAssignment/{userId}/{assignmentId}")]
+        public async Task<IActionResult> SubmitAssignment(int userId, int assignmentId, [FromForm] List<IFormFile>? files)
+        {
+            var result = await _context.AssignmentsCompleteds
+                        .Where(ac => ac.UserId == userId && ac.AssignmentId == assignmentId)
+                        .Select(ac => ac.CompletionId)
+                        .FirstOrDefaultAsync();
+
+            if (result == 0)
+            {
+                return NotFound("CompletionID not found for the given UserID and AssignmentID.");
+            }
+
+            var assignmentCompleted = await _context.AssignmentsCompleteds
+                                    .FirstOrDefaultAsync(ac => ac.CompletionId == result);
+
+            if (assignmentCompleted == null)
+            {
+                return NotFound("CompletionID not found.");
+            }
+
+            assignmentCompleted.CompletionDate = DateOnly.FromDateTime(DateTime.Now);
+
+            if (files != null && files.Any())
+            {
+                var uploadDate = DateTime.Now;
+                string wwwRootPath = _env.WebRootPath;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                        string subFolder = extension switch
+                        {
+                            ".pdf" => "pdf",
+                            ".doc" or ".docx" => "word",
+                            ".xls" or ".xlsx" => "excel",
+                            _ => "others"
+                        };
+
+                        var uploadPath = Path.Combine(wwwRootPath, "assignmentsCompleted", "files", subFolder);
+                        Directory.CreateDirectory(uploadPath);
+
+                        var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                        var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        var assignmentCompletedFile = new AssignmentCompletedFile
+                        {
+                            CompletionId = result,
+                            FileName = file.FileName,
+                            FileType = extension,
+                            FilePath = $"/assignmentsCompleted/files/{subFolder}/{uniqueFileName}",
+                            UploadDate = uploadDate
+                        };
+
+                        _context.AssignmentCompletedFiles.Add(assignmentCompletedFile);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Submit Assignment successfully." });
+        }
+
+        [HttpGet("completion-date/{userId}/{assignmentId}")]
+        public async Task<IActionResult> GetCompletionDate(int userId, int assignmentId)
+        {
+            var result = await _context.AssignmentsCompleteds
+                        .Where(ac => ac.UserId == userId && ac.AssignmentId == assignmentId)
+                        .Select(ac => ac.CompletionDate)
+                        .FirstOrDefaultAsync();
+
+            if (result == default)
+            {
+                return NotFound("Not found.");
+            }
+
+            return Ok(new { CompletionDate = result });
+
         }
     }
 }

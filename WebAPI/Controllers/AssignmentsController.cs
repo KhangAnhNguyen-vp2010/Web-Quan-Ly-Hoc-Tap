@@ -307,11 +307,14 @@ namespace WebAPI.Controllers
 
 
         //////////////////////////////////////////////////////////////////////////////GET FILE BY ASSIGNMENT////////////////////////////////////////////////
-        [Authorize]
+        //[Authorize]
         [HttpGet("{assignmentId}/files")]
-        public async Task<IActionResult> GetAssignmentFiles(int assignmentId)
+        public async Task<IActionResult> GetAssignmentFiles(int assignmentId, string? completed, int userId = 0)
         {
-            var files = await _context.AssignmentFiles
+      
+            if (completed == null)
+            {
+                 var files = await _context.AssignmentFiles
                 .Where(f => f.AssignmentId == assignmentId)
                 .Select(f => new
                 {
@@ -323,10 +326,38 @@ namespace WebAPI.Controllers
                 })
                 .ToListAsync();
 
-            if (!files.Any())
-                return NotFound(new { message = "No files found for this test." });
+                if (!files.Any())
+                    return NotFound(new { message = "No files found for this test." });
 
-            return Ok(files);
+                return Ok(files);
+            }
+            else
+            {
+                var result = await _context.AssignmentsCompleteds
+                        .Where(ac => ac.UserId == userId && ac.AssignmentId == assignmentId)
+                        .Select(ac => ac.CompletionId)
+                        .FirstOrDefaultAsync();
+
+                var files = await _context.AssignmentCompletedFiles
+                .Where(f => f.CompletionId == result)
+                .Select(f => new
+                {
+                    f.FileId,
+                    f.FileName,
+                    f.FileType,
+                    f.FilePath,
+                    f.UploadDate
+                })
+                .ToListAsync();
+
+                if (!files.Any())
+                    return NotFound(new { message = "No files found for this test." });
+
+                return Ok(files);
+            }
+            
+
+            
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

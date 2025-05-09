@@ -17,5 +17,7 @@ public partial class AssignmentsCompleted
 
     public virtual Assignment? Assignment { get; set; }
 
+    public virtual ICollection<AssignmentCompletedFile> AssignmentCompletedFiles { get; set; } = new List<AssignmentCompletedFile>();
+
     public virtual User? User { get; set; }
 }
