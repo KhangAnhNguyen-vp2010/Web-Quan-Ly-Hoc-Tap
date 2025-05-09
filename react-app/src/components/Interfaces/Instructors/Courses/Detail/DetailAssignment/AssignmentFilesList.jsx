@@ -6,7 +6,12 @@ import * as XLSX from "xlsx";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestFilesList.module.css";
 
-const AssignmentFilesList = ({ assignmentId, loadingFile }) => {
+const AssignmentFilesList = ({
+  assignmentId,
+  loadingFile,
+  user,
+  completed,
+}) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -45,18 +50,29 @@ const AssignmentFilesList = ({ assignmentId, loadingFile }) => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axiosClient.get(
-        `/Assignments/${assignmentId}/files`,
-        {
-          withCredentials: true,
-        }
-      );
-      setFiles(response.data);
+      if (!completed) {
+        const response = await axiosClient.get(
+          `/Assignments/${assignmentId}/files`,
+          {
+            withCredentials: true,
+          }
+        );
+        setFiles(response.data);
+      } else {
+        const response = await axiosClient.get(
+          `/Assignments/${assignmentId}/files?completed=true&userId=${user.id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setFiles(response.data);
+      }
+
       setError("");
     } catch (err) {
       console.error("Error fetching files:", err);
       if (err.response && err.response.status === 404) {
-        setError("Không tìm thấy file nào cho bài kiểm tra này.");
+        setError("Không tìm thấy file nào cho bài tập này.");
       } else {
         setError("Đã xảy ra lỗi khi tải file.");
       }
@@ -357,7 +373,7 @@ const AssignmentFilesList = ({ assignmentId, loadingFile }) => {
       const fetchExcelData = async () => {
         try {
           setLoading(true);
-          const res = await axios.get(filePath, {
+          const res = await axiosClient.get(filePath, {
             responseType: "arraybuffer",
             headers: { "Cache-Control": "no-cache" },
           });
@@ -455,7 +471,8 @@ const AssignmentFilesList = ({ assignmentId, loadingFile }) => {
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>
-        File Bài Tập <label htmlFor="fileUpload">+</label>
+        {completed && completed ? "File Bài Nộp" : "File Bài Tập"}{" "}
+        {user.role === "Instructor" && <label htmlFor="fileUpload">+</label>}
         <input
           id="fileUpload"
           type="file"
@@ -481,12 +498,15 @@ const AssignmentFilesList = ({ assignmentId, loadingFile }) => {
               >
                 Tải xuống
               </a>
-              <button
-                className={styles["btn-deleteFile"]}
-                onClick={() => handleDeleteFile(file.fileId)}
-              >
-                Xoá
-              </button>
+              {user.role === "Instructor" && (
+                <button
+                  className={styles["btn-deleteFile"]}
+                  onClick={() => handleDeleteFile(file.fileId)}
+                >
+                  Xoá
+                </button>
+              )}
+
               <div className={styles.uploadDate}>
                 {new Date(file.uploadDate).toLocaleDateString("vi-VN")}
               </div>

@@ -23,36 +23,71 @@ function DetailCourse({ onClose, course }) {
     resetSearchAndPage,
   } = useDetailCourse();
 
-  const selectTab = [
-    <StudentList
-      key="0"
-      courseId={course.courseId}
-      searchTerm={search.debounce}
-      page={page}
-      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
-    />,
-    <Lessons
-      key="1"
-      courseId={course.courseId}
-      searchTerm={search.debounce}
-      page={page}
-      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
-    />,
-    <Assignments
-      key="2"
-      courseId={course.courseId}
-      searchTerm={search.debounce}
-      page={page}
-      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
-    />,
-    <Tests
-      key="3"
-      courseId={course.courseId}
-      searchTerm={search.debounce}
-      page={page}
-      SetTotalPages={(totalPages) => setTotalPages(totalPages)}
-    />,
-  ];
+  if (!user) {
+    return null;
+  }
+
+  const selectTab =
+    user && user.role === "Instructor"
+      ? [
+          <StudentList
+            key="0"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+          />,
+          <Lessons
+            key="1"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+            user={user}
+          />,
+          <Assignments
+            key="2"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+            user={user}
+          />,
+          <Tests
+            key="3"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+            user={user}
+          />,
+        ]
+      : [
+          <Lessons
+            key="0"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+            user={user}
+          />,
+          <Assignments
+            key="1"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+            user={user}
+          />,
+          <Tests
+            key="2"
+            courseId={course.courseId}
+            searchTerm={search.debounce}
+            page={page}
+            SetTotalPages={(totalPages) => setTotalPages(totalPages)}
+            user={user}
+          />,
+        ];
 
   return (
     <div className={styles.overlay}>
@@ -78,9 +113,12 @@ function DetailCourse({ onClose, course }) {
             <p className={styles.description}>
               <strong>📜Description:</strong> {course.description}
             </p>
-            <p className={styles.instructor}>
-              <strong>🧑‍🏫Lecturer:</strong> {user ? user.fullName : "Loading..."}
-            </p>
+            {user && user.role === "Instructor" && (
+              <p className={styles.instructor}>
+                <strong>🧑‍🏫Lecturer:</strong>{" "}
+                {user ? user.fullName : "Loading..."}
+              </p>
+            )}
           </div>
         </div>
 
@@ -98,7 +136,12 @@ function DetailCourse({ onClose, course }) {
           </div>
           <div className={styles["tab-container"]}>
             <TabSelector
-              tabs={["Students", "Lessons", "Assignments", "Tests"]}
+              tabs={
+                user && user.role === "Instructor"
+                  ? ["Students", "Lessons", "Assignments", "Tests"]
+                  : ["Lessons", "Assignments", "Tests"]
+              }
+              // tabs={["Students", "Lessons", "Assignments", "Tests"]}
               onTabChange={(index) => {
                 setTabIndex(index);
                 resetSearchAndPage();

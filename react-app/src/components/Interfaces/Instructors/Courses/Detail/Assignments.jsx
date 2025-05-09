@@ -4,7 +4,7 @@ import DetailAssignment from "./DetailAssignment/DetailAssignment";
 import AddAssignment from "./DetailAssignment/AddAssignment";
 import { useAssignments } from "../../../../../Hooks/instructor/Course/DetailCourse/useAssignments";
 
-const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
+const Assignments = ({ courseId, searchTerm, page, SetTotalPages, user }) => {
   const {
     assignments,
     loading,
@@ -26,12 +26,14 @@ const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h4 className={styles.title}>📙List of Assignments</h4>
-          <button
-            className={styles["btn-addAssignment"]}
-            onClick={() => setShowAddAssignment(!showAddAssignment)}
-          >
-            📙Add Exercises
-          </button>
+          {user.role === "Instructor" && (
+            <button
+              className={styles["btn-addAssignment"]}
+              onClick={() => setShowAddAssignment(!showAddAssignment)}
+            >
+              📙Add Exercises
+            </button>
+          )}
         </div>
 
         <div className={styles.assignmentsList}>
@@ -75,6 +77,7 @@ const Assignments = ({ courseId, searchTerm, page, SetTotalPages }) => {
             fetchAssignments();
             setShowDetailAssignment(!showDetailAssignment);
           }}
+          user={user}
         />
       )}
 

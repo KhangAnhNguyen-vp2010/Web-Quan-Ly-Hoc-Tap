@@ -3,7 +3,7 @@ import VideoPlayer from "./VideoPlayer";
 import EditLesson from "./EditLessson";
 import { useDetailLesson } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailLesson/useDetailLesson";
 
-const DetailLesson = ({ lesson: initialLesson, onClose }) => {
+const DetailLesson = ({ lesson: initialLesson, onClose, user }) => {
   const { lesson, showEditLesson, toggleEditLesson, handleUpdateLesson } =
     useDetailLesson(initialLesson);
   return (
@@ -17,9 +17,11 @@ const DetailLesson = ({ lesson: initialLesson, onClose }) => {
         <div className={styles["header-container"]}>
           <div>
             <h2 className={styles.assignmentTitle}>{lesson.lessonName}</h2>
-            <button className={styles["btn-edit"]} onClick={toggleEditLesson}>
-              ✏️Edit Lesson
-            </button>
+            {user.role === "Instructor" && (
+              <button className={styles["btn-edit"]} onClick={toggleEditLesson}>
+                ✏️Edit Lesson
+              </button>
+            )}
           </div>
         </div>
         <hr />

@@ -16,6 +16,10 @@ export function useDetailAssignment(assignment, onClose) {
     setLoadListFile(!loadListFile);
   };
 
+  const handleOnSubmit = () => {
+    setLoadListFile(!loadListFile);
+  };
+
   const toggleEditAssignment = () => {
     setShowEditAssignment(!showEditAssignment);
   };
@@ -26,6 +30,7 @@ export function useDetailAssignment(assignment, onClose) {
     loadListFile,
     count,
     handleOnCloseEdit,
+    handleOnSubmit,
     toggleEditAssignment,
     setCount,
   };

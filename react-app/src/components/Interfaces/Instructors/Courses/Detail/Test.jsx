@@ -4,7 +4,7 @@ import DetailTest from "./DetailTest/DetailTest";
 import AddTest from "./DetailTest/AddTest";
 import { useTests } from "../../../../../Hooks/instructor/Course/DetailCourse/useTests";
 
-const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
+const Tests = ({ courseId, searchTerm, page, SetTotalPages, user }) => {
   const {
     tests,
     test,
@@ -26,12 +26,14 @@ const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h4 className={styles.title}>📝List of Tests</h4>
-          <button
-            className={styles["btn-addTest"]}
-            onClick={() => setShowAddTest(!showAddTest)}
-          >
-            📝Add Test
-          </button>
+          {user.role === "Instructor" && (
+            <button
+              className={styles["btn-addTest"]}
+              onClick={() => setShowAddTest(!showAddTest)}
+            >
+              📝Add Test
+            </button>
+          )}
         </div>
 
         <div className={styles.testsList}>
@@ -73,6 +75,7 @@ const Tests = ({ courseId, searchTerm, page, SetTotalPages }) => {
             fetchTests();
             setShowDetailTest(!showDetailTest);
           }}
+          user={user}
         />
       )}
 

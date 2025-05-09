@@ -3,6 +3,7 @@ import axiosClient from "../../../api/axiosClient";
 import styles from "./ShopCourse.module.scss";
 import DetailCard from "./DetailCard/DetailCard";
 import { useJoinTheCourse } from "../../../Hooks/student/useJoinTheCourse";
+import Pagination from "../Instructors/Pagination";
 
 const ShopCourse = ({ user }) => {
   const [courses, setCourses] = useState([]);
@@ -139,41 +140,11 @@ const ShopCourse = ({ user }) => {
           </div>
         )}
 
-        {totalPages > 1 && (
-          <div className={styles.pagination}>
-            <button
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-              className={`${styles.pageButton} ${
-                page === 1 ? styles.disabled : ""
-              }`}
-            >
-              &lt;
-            </button>
-
-            {[...Array(totalPages).keys()].map((num) => (
-              <button
-                key={num + 1}
-                onClick={() => setPage(num + 1)}
-                className={`${styles.pageButton} ${
-                  page === num + 1 ? styles.active : ""
-                }`}
-              >
-                {num + 1}
-              </button>
-            ))}
-
-            <button
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-              className={`${styles.pageButton} ${
-                page === totalPages ? styles.disabled : ""
-              }`}
-            >
-              &gt;
-            </button>
-          </div>
-        )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
       {detail.show && (
         <DetailCard
