@@ -22,6 +22,7 @@ namespace WebAPI.Controllers
             _env = env;
         }
 
+        ///////////////////////////////////////////////////////LIST COURSE UNREGISTERED///////////////////////////////////////////////////////////////////
         [Authorize]
         [HttpGet("unregistered")]
         public async Task<IActionResult> GetUnregisteredCourses(
@@ -79,8 +80,10 @@ namespace WebAPI.Controllers
                 data
             });
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+        ///////////////////////////////////////////////////////LIST COURSE REGISTERED///////////////////////////////////////////////////////////////////
         [Authorize]
         [HttpGet("registered")]
         public async Task<IActionResult> GetRegisteredCourses(
@@ -138,9 +141,10 @@ namespace WebAPI.Controllers
                 data
             });
         }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+        ///////////////////////////////////////////////////////JOIN THE COURSE///////////////////////////////////////////////////////////////////
         [Authorize]
         [HttpPost("JoinTheCourse")]
         public async Task<ActionResult> PostEnrollment([FromBody] JoinTheCourseDto dto)
@@ -172,9 +176,11 @@ namespace WebAPI.Controllers
 
             return Ok(new { message = "Create successfully!!!" });
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+        ///////////////////////////////////////////////////////SUBMIT ASSIGNMENT///////////////////////////////////////////////////////////////////
+        [Authorize]
         [HttpPost("submitAssignment/{userId}/{assignmentId}")]
         public async Task<IActionResult> SubmitAssignment(int userId, int assignmentId, [FromForm] List<IFormFile>? files)
         {
@@ -244,7 +250,85 @@ namespace WebAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Submit Assignment successfully." });
         }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        ///////////////////////////////////////////////////////SUBMIT TEST///////////////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpPost("submitTest/{userId}/{testId}")]
+        public async Task<IActionResult> SubmitTest(int userId, int testId, [FromForm] List<IFormFile>? files)
+        {
+            var result = await _context.TestScores
+                        .Where(ac => ac.UserId == userId && ac.TestId == testId)
+                        .Select(ac => ac.ScoreId)
+                        .FirstOrDefaultAsync();
+
+            if (result == 0)
+            {
+                return NotFound("ScoreID not found for the given UserID and TestID.");
+            }
+
+            var testCompleted = await _context.TestScores
+                                    .FirstOrDefaultAsync(ac => ac.ScoreId == result);
+
+            if (testCompleted == null)
+            {
+                return NotFound("CompletionID not found.");
+            }
+
+            testCompleted.CompletedDate = DateTime.Now;
+
+            if (files != null && files.Any())
+            {
+                var uploadDate = DateTime.Now;
+                string wwwRootPath = _env.WebRootPath;
+
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                        string subFolder = extension switch
+                        {
+                            ".pdf" => "pdf",
+                            ".doc" or ".docx" => "word",
+                            ".xls" or ".xlsx" => "excel",
+                            _ => "others"
+                        };
+
+                        var uploadPath = Path.Combine(wwwRootPath, "testsCompleted", "files", subFolder);
+                        Directory.CreateDirectory(uploadPath);
+
+                        var uniqueFileName = $"{Guid.NewGuid()}_{file.FileName}";
+                        var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        var testCompletedFile = new TestCompletedFile
+                        {
+                            ScoreId = result,
+                            FileName = file.FileName,
+                            FileType = extension,
+                            FilePath = $"/testsCompleted/files/{subFolder}/{uniqueFileName}",
+                            UploadDate = uploadDate
+                        };
+
+                        _context.TestCompletedFiles.Add(testCompletedFile);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Submit Test successfully." });
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////GET THE ASSIGNMENT DUE DATE///////////////////////////////////////////////////////////////////
+        [Authorize]
         [HttpGet("completion-date/{userId}/{assignmentId}")]
         public async Task<IActionResult> GetCompletionDate(int userId, int assignmentId)
         {
@@ -261,5 +345,66 @@ namespace WebAPI.Controllers
             return Ok(new { CompletionDate = result });
 
         }
+        ///////////////////////////////////////////////////////GET THE ASSIGNMENT DUE DATE///////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////GET TIMELINE (COMPLETION DATE, START TIME, END TIME) OF THE TEST///////////////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpGet("timestamps/{userId}/{testId}")]
+        public async Task<IActionResult> GetTimestamps(int userId, int testId)
+        {
+            var result = await _context.TestScores
+                        .Where(ac => ac.UserId == userId && ac.TestId == testId)
+                        .Select(ac => new
+                        {
+                            ac.CompletedDate,
+                            ac.StartDate,
+                            ac.EndDate,
+                        })
+                        .FirstOrDefaultAsync();
+
+            if (result == default)
+            {
+                return NotFound("Not found.");
+            }
+
+            var completedStr = result?.CompletedDate?.ToString("yyyy-MM-dd HH:mm");
+            var startStr = result?.StartDate?.ToString("yyyy-MM-dd HH:mm");
+            var endStr = result?.EndDate?.ToString("yyyy-MM-dd HH:mm");
+
+
+            return Ok(new { 
+                completedDate = completedStr,
+                startDate = startStr,
+                endDate = endStr,
+            });
+        }
+        ///////////////////////////////////////////////////////GET THE ASSIGNMENT DUE DATE///////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////TAKE THE TEST///////////////////////////////////////////////////////////////////
+        [Authorize]
+        [HttpPost("StartTesting/{userId}/{testId}")]
+        public async Task<IActionResult> StartTesting(int userId, int testId)
+        {
+            var result = await _context.TestScores
+                        .Where(ac => ac.UserId == userId && ac.TestId == testId)
+                        .FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                return NotFound("Test score entry not found.");
+            }
+
+            DateTime startDate = DateTime.Now;
+            result.StartDate = startDate;
+            result.EndDate = startDate.AddMinutes(60);
+
+            await _context.SaveChangesAsync();
+            
+            return Ok(new {message="StartTesting successfully"});
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
     }
 }

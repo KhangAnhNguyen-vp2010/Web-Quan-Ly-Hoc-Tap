@@ -21,5 +21,7 @@ public partial class TestScore
 
     public virtual Test? Test { get; set; }
 
+    public virtual ICollection<TestCompletedFile> TestCompletedFiles { get; set; } = new List<TestCompletedFile>();
+
     public virtual User? User { get; set; }
 }

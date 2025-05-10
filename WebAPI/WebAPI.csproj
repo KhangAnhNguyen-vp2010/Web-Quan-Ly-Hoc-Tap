@@ -35,6 +35,10 @@
     <Folder Include="wwwroot\files\word\" />
     <Folder Include="wwwroot\images\courses\" />
     <Folder Include="wwwroot\files\pdf\" />
+    <Folder Include="wwwroot\testsCompleted\files\excel\" />
+    <Folder Include="wwwroot\testsCompleted\files\others\" />
+    <Folder Include="wwwroot\testsCompleted\files\word\" />
+    <Folder Include="wwwroot\testsCompleted\files\pdf\" />
   </ItemGroup>
 
 </Project>
