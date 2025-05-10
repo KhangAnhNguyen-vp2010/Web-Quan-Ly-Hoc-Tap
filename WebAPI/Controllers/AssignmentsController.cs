@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             _env = env;
         }
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////GET ASSIGNMENT BY COURSE///////////////////////////////////////////////////////////////////
         [Authorize]
         [HttpGet("Course/{id}")]
         public async Task<IActionResult> GetAssignmentsByCourse(int id, [FromQuery] string? search, [FromQuery] int page = 1)
@@ -307,7 +307,7 @@ namespace WebAPI.Controllers
 
 
         //////////////////////////////////////////////////////////////////////////////GET FILE BY ASSIGNMENT////////////////////////////////////////////////
-        //[Authorize]
+        [Authorize]
         [HttpGet("{assignmentId}/files")]
         public async Task<IActionResult> GetAssignmentFiles(int assignmentId, string? completed, int userId = 0)
         {

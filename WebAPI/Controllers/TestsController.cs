@@ -251,11 +251,13 @@ namespace WebAPI.Controllers
 
 
         //////////////////////////////////////////////GET TETS FILE/////////////////////////////////////////
-        [Authorize]
+        //[Authorize]
         [HttpGet("{testId}/files")]
-        public async Task<IActionResult> GetTestFiles(int testId)
+        public async Task<IActionResult> GetTestFiles(int testId, string? completed, int userId = 0)
         {
-            var files = await _context.TestFiles
+            if (completed == null)
+            {
+                var files = await _context.TestFiles
                 .Where(f => f.TestId == testId)
                 .Select(f => new
                 {
@@ -267,10 +269,36 @@ namespace WebAPI.Controllers
                 })
                 .ToListAsync();
 
-            if (!files.Any())
-                return NotFound(new { message = "No files found for this test." });
+                if (!files.Any())
+                    return NotFound(new { message = "No files found for this test." });
 
-            return Ok(files);
+                return Ok(files);
+            }
+            else
+            {
+                var result = await _context.TestScores
+                        .Where(ac => ac.UserId == userId && ac.TestId == testId)
+                        .Select(ac => ac.ScoreId)
+                        .FirstOrDefaultAsync();
+
+                var files = await _context.TestCompletedFiles
+                .Where(f => f.ScoreId == result)
+                .Select(f => new
+                {
+                    f.FileId,
+                    f.FileName,
+                    f.FileType,
+                    f.FilePath,
+                    f.UploadDate
+                })
+                .ToListAsync();
+
+                if (!files.Any())
+                    return NotFound(new { message = "No files found for this test." });
+
+                return Ok(files);
+            }
+                
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
