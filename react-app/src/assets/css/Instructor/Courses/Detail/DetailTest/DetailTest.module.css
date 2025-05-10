@@ -108,3 +108,14 @@
 .btn-edit:hover {
   background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
 }
+
+.btn-submitted {
+  background-color: #007bff; /* Màu xanh dương hiện đại */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 30px;
+  opacity: 0.5;
+}

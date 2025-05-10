@@ -21,7 +21,7 @@ function DetailAssignment({ assignment, onClose, user }) {
     setCount,
   } = useDetailAssignment(assignment, onClose);
 
-  const [showSubmitAssignment, setShowSubmitAssignment] = useState();
+  const [showSubmitAssignment, setShowSubmitAssignment] = useState(false);
   const [completedDate, setCompletedDate] = useState(null);
 
   const getCompletedDate = async () => {
