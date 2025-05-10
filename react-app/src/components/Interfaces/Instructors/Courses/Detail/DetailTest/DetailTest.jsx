@@ -3,6 +3,9 @@ import { useDetailTest } from "../../../../../../Hooks/instructor/Course/DetailC
 import EditTest from "./EditTest";
 import TestFilesList from "./TestFilesList";
 import TestScoreList from "./TestScoreList";
+import axiosClient from "../../../../../../api/axiosClient";
+import { useEffect, useState } from "react";
+import SubmitForm from "../../../../Students/DetailCourse/SubmitForm";
 
 const DetailTest = ({ test, courseId, onClose, user }) => {
   const {
@@ -11,7 +14,50 @@ const DetailTest = ({ test, courseId, onClose, user }) => {
     loadListFile,
     toggleEditTest,
     handleOnCloseEdit,
+    handleOnSubmit,
   } = useDetailTest(test);
+
+  const [timestamps, setTimestamps] = useState({
+    completedDate: null,
+    startDate: null,
+    endDate: null,
+  });
+
+  const [showSubmitTest, setShowSubmitTest] = useState(false);
+
+  const getTimestamps = async () => {
+    try {
+      const res = await axiosClient.get(
+        `/Students/timestamps/${user.id}/${test.testId}`
+      );
+      setTimestamps({
+        completedDate: res.data.completedDate,
+        startDate: res.data.startDate,
+        endDate: res.data.endDate,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const startTesting = async () => {
+    try {
+      await axiosClient.post(
+        `/Students/StartTesting/${user.id}/${test.testId}`
+      );
+    } catch (error) {
+      console.log("Loi khi start testing " + error);
+    }
+  };
+
+  const handleStartTesting = async () => {
+    await startTesting();
+    await getTimestamps();
+  };
+
+  useEffect(() => {
+    getTimestamps();
+  }, [, showSubmitTest]);
 
   return (
     <div className={styles.testDetails}>
@@ -31,22 +77,64 @@ const DetailTest = ({ test, courseId, onClose, user }) => {
             <div className={styles.testContent}>
               <strong>📋Content:</strong> {currentTest.testContent}
             </div>
-            {user.role === "Instructor" && (
+            {user.role === "Instructor" ? (
               <button className={styles["btn-edit"]} onClick={toggleEditTest}>
                 ✏️Edit Test or Adding File
               </button>
+            ) : timestamps.startDate === null ? (
+              <button
+                className={styles["btn-edit"]}
+                onClick={handleStartTesting}
+              >
+                Bắt đầu làm bài
+              </button>
+            ) : (
+              <>
+                <button
+                  className={
+                    timestamps.completedDate !== null
+                      ? styles["btn-submitted"]
+                      : styles["btn-edit"]
+                  }
+                  onClick={() => setShowSubmitTest(!showSubmitTest)}
+                  disabled={timestamps.completedDate !== null}
+                >
+                  {timestamps.completedDate !== null
+                    ? "Đã Nộp Bài Vào Lúc " + timestamps.completedDate
+                    : "Nộp bài"}
+                </button>{" "}
+                {new Date().toLocaleDateString("vi-VN") +
+                  "🕒" +
+                  new Date(timestamps.startDate).toTimeString().slice(0, 5) +
+                  "  ⏩  " +
+                  new Date(timestamps.endDate).toTimeString().slice(0, 5) +
+                  "🕔" +
+                  "(Thời lượng 60 phút)"}
+              </>
             )}
           </div>
         </div>
         <hr />
-        <TestFilesList
-          testId={currentTest.testId}
-          loadingFile={loadListFile}
-          user={user}
-        />
+        {user.role !== "Instructor" && timestamps.startDate === null ? (
+          <p>Nhấn "Bắt đầu làm bài" để mở khoá đề bài!!!</p>
+        ) : (
+          <TestFilesList
+            testId={currentTest.testId}
+            loadingFile={loadListFile}
+            user={user}
+          />
+        )}
+
         <hr />
-        {user.role === "Instructor" && (
+        {user.role === "Instructor" ? (
           <TestScoreList testId={currentTest.testId} courseId={courseId} />
+        ) : (
+          <TestFilesList
+            testId={currentTest.testId}
+            loadingFile={loadListFile}
+            user={user}
+            completed={true}
+          />
         )}
       </div>
       {showEditTest && (
@@ -55,6 +143,14 @@ const DetailTest = ({ test, courseId, onClose, user }) => {
           initialTest={currentTest}
           onUpdate={handleOnCloseEdit}
           onClose={toggleEditTest}
+        />
+      )}
+      {showSubmitTest && (
+        <SubmitForm
+          user={user}
+          test={currentTest}
+          onClose={() => setShowSubmitTest(!showSubmitTest)}
+          onSubmit={handleOnSubmit}
         />
       )}
     </div>

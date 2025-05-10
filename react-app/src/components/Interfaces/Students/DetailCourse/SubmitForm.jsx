@@ -7,8 +7,6 @@ function SubmitForm({ user, assignment, onClose, onSubmit, test }) {
   const handleFileChange = (e) => {
     setFiles([...e.target.files]);
   };
-
-  console.log(test);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,16 +19,30 @@ function SubmitForm({ user, assignment, onClose, onSubmit, test }) {
     setLoading(true);
 
     try {
-      await axiosClient.post(
-        `/Students/submitAssignment/${user.id}/${assignment.assignmentId}`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      if (assignment) {
+        await axiosClient.post(
+          `/Students/submitAssignment/${user.id}/${assignment.assignmentId}`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      } else {
+        await axiosClient.post(
+          `/Students/submitTest/${user.id}/${test.testId}`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+
       onSubmit();
       onClose();
     } catch (error) {

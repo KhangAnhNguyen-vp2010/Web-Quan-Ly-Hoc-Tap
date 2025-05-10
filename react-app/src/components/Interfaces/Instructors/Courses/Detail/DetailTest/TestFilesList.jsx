@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestFilesList.module.css";
 
-const TestFilesList = ({ testId, loadingFile, user }) => {
+const TestFilesList = ({ testId, loadingFile, user, completed }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -45,10 +45,21 @@ const TestFilesList = ({ testId, loadingFile, user }) => {
 
   const fetchFiles = async () => {
     try {
-      const response = await axiosClient.get(`/Tests/${testId}/files`, {
-        withCredentials: true,
-      });
-      setFiles(response.data);
+      if (!completed) {
+        const response = await axiosClient.get(`/Tests/${testId}/files`, {
+          withCredentials: true,
+        });
+        setFiles(response.data);
+      } else {
+        const response = await axiosClient.get(
+          `/Tests/${testId}/files?completed=true&userId=${user.id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setFiles(response.data);
+      }
+
       setError("");
     } catch (err) {
       console.error("Error fetching files:", err);
@@ -452,7 +463,7 @@ const TestFilesList = ({ testId, loadingFile, user }) => {
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>
-        Đề bài{" "}
+        {completed && completed ? "File Bài Nộp" : "Đề Bài Kiểm Tra"}{" "}
         {user.role === "Instructor" && <label htmlFor="fileUpload">+</label>}
         <input
           id="fileUpload"
@@ -479,12 +490,15 @@ const TestFilesList = ({ testId, loadingFile, user }) => {
               >
                 Tải xuống
               </a>
-              <button
-                className={styles["btn-deleteFile"]}
-                onClick={() => handleDeleteFile(file.fileId)}
-              >
-                Xoá
-              </button>
+              {user.role === "Instructor" && (
+                <button
+                  className={styles["btn-deleteFile"]}
+                  onClick={() => handleDeleteFile(file.fileId)}
+                >
+                  Xoá
+                </button>
+              )}
+
               <div className={styles.uploadDate}>
                 {new Date(file.uploadDate).toLocaleDateString("vi-VN")}
               </div>

@@ -16,11 +16,16 @@ export const useDetailTest = (initialTest) => {
     setLoadListFile(!loadListFile);
   };
 
+  const handleOnSubmit = () => {
+    setLoadListFile(!loadListFile);
+  };
+
   return {
     test,
     showEditTest,
     loadListFile,
     toggleEditTest,
     handleOnCloseEdit,
+    handleOnSubmit,
   };
 };
