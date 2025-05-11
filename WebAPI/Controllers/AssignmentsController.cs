@@ -82,7 +82,8 @@ namespace WebAPI.Controllers
                     UserName = joined.user.Username,
                     Full_Name = joined.user.FullName,
                     AssignmentID = joined.ac.AssignmentId,
-                    Completion_Date = joined.ac.CompletionDate
+                    Completion_Date = joined.ac.CompletionDate,
+                    Grade = joined.ac.Grade,
                 })
                 .ToListAsync();
 

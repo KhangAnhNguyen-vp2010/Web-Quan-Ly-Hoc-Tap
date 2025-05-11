@@ -181,7 +181,7 @@ namespace WebAPI.Controllers
 
         ///////////////////////////////////////////////////////SUBMIT ASSIGNMENT///////////////////////////////////////////////////////////////////
         [Authorize]
-        [HttpPost("submitAssignment/{userId}/{assignmentId}")]
+        [HttpPatch("submitAssignment/{userId}/{assignmentId}")]
         public async Task<IActionResult> SubmitAssignment(int userId, int assignmentId, [FromForm] List<IFormFile>? files)
         {
             var result = await _context.AssignmentsCompleteds
@@ -255,7 +255,7 @@ namespace WebAPI.Controllers
 
         ///////////////////////////////////////////////////////SUBMIT TEST///////////////////////////////////////////////////////////////////
         [Authorize]
-        [HttpPost("submitTest/{userId}/{testId}")]
+        [HttpPatch("submitTest/{userId}/{testId}")]
         public async Task<IActionResult> SubmitTest(int userId, int testId, [FromForm] List<IFormFile>? files)
         {
             var result = await _context.TestScores
@@ -384,7 +384,7 @@ namespace WebAPI.Controllers
 
         ///////////////////////////////////////////////////////TAKE THE TEST///////////////////////////////////////////////////////////////////
         [Authorize]
-        [HttpPost("StartTesting/{userId}/{testId}")]
+        [HttpPatch("StartTesting/{userId}/{testId}")]
         public async Task<IActionResult> StartTesting(int userId, int testId)
         {
             var result = await _context.TestScores
