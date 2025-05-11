@@ -7,7 +7,8 @@ import EditAssignment from "./EditAssignment";
 import AssignmentFilesList from "./AssignmentFilesList";
 import { useDetailAssignment } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailAssignment/useDetailAssignment";
 import SubmitForm from "../../../../Students/DetailCourse/SubmitForm";
-import axiosClient from "../../../../../../api/axiosClient";
+import { useCompletedDate } from "../../../../../../Hooks/student/useCompletedDate";
+import StudentView from "../../../Scoring/StudentView";
 
 function DetailAssignment({ assignment, onClose, user }) {
   const {
@@ -22,21 +23,17 @@ function DetailAssignment({ assignment, onClose, user }) {
   } = useDetailAssignment(assignment, onClose);
 
   const [showSubmitAssignment, setShowSubmitAssignment] = useState(false);
-  const [completedDate, setCompletedDate] = useState(null);
 
-  const getCompletedDate = async () => {
-    try {
-      const res = await axiosClient.get(
-        `/Students/completion-date/${user.id}/${assignment.assignmentId}`,
-        { withCredentials: true }
-      );
-      setCompletedDate(res.data.completionDate);
-    } catch (error) {}
-  };
+  const { completedDate } = useCompletedDate({
+    showSubmitAssignment,
+    assignment,
+    user,
+  });
 
-  useEffect(() => {
-    getCompletedDate();
-  }, [showSubmitAssignment]);
+  const [showStudentAssignment, setShowStudentAssignment] = useState(false);
+  const [student, setStudent] = useState(null);
+
+  const [loadCompletedList, setLoadCompletedList] = useState(false);
 
   return (
     <>
@@ -96,6 +93,7 @@ function DetailAssignment({ assignment, onClose, user }) {
           {user.role === "Instructor" ? (
             <div className={styles["assignments-container"]}>
               <CompletedAssignmentsList
+                key={loadCompletedList}
                 assignmentId={currentAssignment.assignmentId}
                 countCompleted={(count) =>
                   setCount((prev) => ({
@@ -103,6 +101,10 @@ function DetailAssignment({ assignment, onClose, user }) {
                     completed: count,
                   }))
                 }
+                onOpenStudentAssignment={() =>
+                  setShowStudentAssignment(!showStudentAssignment)
+                }
+                student={(s) => setStudent(s)}
               />
               <UncompletedAssignmentsList
                 assignmentId={currentAssignment.assignmentId}
@@ -136,6 +138,14 @@ function DetailAssignment({ assignment, onClose, user }) {
             assignment={currentAssignment}
             onClose={() => setShowSubmitAssignment(!showSubmitAssignment)}
             onSubmit={handleOnSubmit}
+          />
+        )}
+        {showStudentAssignment && (
+          <StudentView
+            onClose={() => setShowStudentAssignment(!showStudentAssignment)}
+            onUpdateScore={() => setLoadCompletedList(!loadCompletedList)}
+            student={student}
+            assignment={currentAssignment}
           />
         )}
       </div>

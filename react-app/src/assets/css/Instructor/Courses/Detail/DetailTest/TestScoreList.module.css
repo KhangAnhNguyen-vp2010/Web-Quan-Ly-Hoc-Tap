@@ -48,9 +48,10 @@
 }
 
 .table tbody tr:hover {
-  background-color: #f0f7ff;
+  background-color: #a0c4ed;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .table td {

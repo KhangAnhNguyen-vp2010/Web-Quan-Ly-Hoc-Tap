@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./DetailCard.module.scss";
 import { useJoinTheCourse } from "../../../../Hooks/student/useJoinTheCourse";
 
@@ -35,7 +34,7 @@ function DetailCard({ user, course, onClose, onJoin }) {
             onClick={() => handleRegister(course.courseId)}
             disabled={loading}
           >
-            {loading ? "Đang đăng ký..." : "Đăng ký khoá học"}
+            {loading ? "Đang thực thi..." : "Tham gia khoá học này miễn phí"}
           </button>
         </div>
       </div>

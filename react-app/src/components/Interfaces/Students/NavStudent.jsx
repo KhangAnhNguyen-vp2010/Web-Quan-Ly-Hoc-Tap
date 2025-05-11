@@ -50,7 +50,7 @@ function NavStudent({ setIndex }) {
               onClick={(e) => handleChangeIndex(e, 0)}
               className={selectIndex === 0 ? "active" : ""}
             >
-              Shopping
+              Courses
             </NavLink>
           </li>
           <li>

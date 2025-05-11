@@ -1,12 +1,13 @@
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/DetailTest.module.css";
-import { useDetailTest } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailTest/useDetailTest";
 import EditTest from "./EditTest";
 import TestFilesList from "./TestFilesList";
 import TestScoreList from "./TestScoreList";
-import axiosClient from "../../../../../../api/axiosClient";
-import { useEffect, useState } from "react";
 import SubmitForm from "../../../../Students/DetailCourse/SubmitForm";
-
+import { useStartTesting } from "../../../../../../Hooks/student/useStartTesting";
+import { useGetTimestamps } from "../../../../../../Hooks/student/useGetTimestamps";
+import { useDetailTest } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailTest/useDetailTest";
+import StudentView from "../../../Scoring/StudentView";
+import { useState } from "react";
 const DetailTest = ({ test, courseId, onClose, user }) => {
   const {
     test: currentTest,
@@ -16,48 +17,24 @@ const DetailTest = ({ test, courseId, onClose, user }) => {
     handleOnCloseEdit,
     handleOnSubmit,
   } = useDetailTest(test);
-
-  const [timestamps, setTimestamps] = useState({
-    completedDate: null,
-    startDate: null,
-    endDate: null,
-  });
+  const { startTesting } = useStartTesting({ test, user });
 
   const [showSubmitTest, setShowSubmitTest] = useState(false);
 
-  const getTimestamps = async () => {
-    try {
-      const res = await axiosClient.get(
-        `/Students/timestamps/${user.id}/${test.testId}`
-      );
-      setTimestamps({
-        completedDate: res.data.completedDate,
-        startDate: res.data.startDate,
-        endDate: res.data.endDate,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { timestamps, getTimestamps } = useGetTimestamps({
+    test,
+    user,
+    showSubmitTest,
+  });
 
-  const startTesting = async () => {
-    try {
-      await axiosClient.post(
-        `/Students/StartTesting/${user.id}/${test.testId}`
-      );
-    } catch (error) {
-      console.log("Loi khi start testing " + error);
-    }
-  };
+  const [showStudentTest, setShowStudentTest] = useState(false);
+  const [student, setStudent] = useState(null);
+  const [loadTestScoreList, setLoadTestScoreList] = useState(false);
 
   const handleStartTesting = async () => {
     await startTesting();
     await getTimestamps();
   };
-
-  useEffect(() => {
-    getTimestamps();
-  }, [, showSubmitTest]);
 
   return (
     <div className={styles.testDetails}>
@@ -127,7 +104,15 @@ const DetailTest = ({ test, courseId, onClose, user }) => {
 
         <hr />
         {user.role === "Instructor" ? (
-          <TestScoreList testId={currentTest.testId} courseId={courseId} />
+          <TestScoreList
+            key={loadTestScoreList}
+            testId={currentTest.testId}
+            courseId={courseId}
+            onOpenStudentTest={(s) => {
+              setShowStudentTest(!showStudentTest);
+              setStudent(s);
+            }}
+          />
         ) : (
           <TestFilesList
             testId={currentTest.testId}
@@ -151,6 +136,14 @@ const DetailTest = ({ test, courseId, onClose, user }) => {
           test={currentTest}
           onClose={() => setShowSubmitTest(!showSubmitTest)}
           onSubmit={handleOnSubmit}
+        />
+      )}
+      {showStudentTest && (
+        <StudentView
+          test={currentTest}
+          student={student}
+          onClose={() => setShowStudentTest(!showStudentTest)}
+          onUpdateScore={() => setLoadTestScoreList(!loadTestScoreList)}
         />
       )}
     </div>

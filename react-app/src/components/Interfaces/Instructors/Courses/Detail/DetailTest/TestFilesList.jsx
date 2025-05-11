@@ -52,7 +52,9 @@ const TestFilesList = ({ testId, loadingFile, user, completed }) => {
         setFiles(response.data);
       } else {
         const response = await axiosClient.get(
-          `/Tests/${testId}/files?completed=true&userId=${user.id}`,
+          `/Tests/${testId}/files?completed=true&userId=${
+            user.id || user.userId
+          }`,
           {
             withCredentials: true,
           }

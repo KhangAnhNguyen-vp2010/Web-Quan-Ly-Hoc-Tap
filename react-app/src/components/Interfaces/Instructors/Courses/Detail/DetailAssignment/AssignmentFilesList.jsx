@@ -60,7 +60,9 @@ const AssignmentFilesList = ({
         setFiles(response.data);
       } else {
         const response = await axiosClient.get(
-          `/Assignments/${assignmentId}/files?completed=true&userId=${user.id}`,
+          `/Assignments/${assignmentId}/files?completed=true&userId=${
+            user.id || user.userID
+          }`,
           {
             withCredentials: true,
           }

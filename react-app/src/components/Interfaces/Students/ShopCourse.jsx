@@ -125,7 +125,7 @@ const ShopCourse = ({ user }) => {
                             setJoin(!join);
                           }}
                         >
-                          Đăng ký
+                          Tham gia miễn phí
                         </button>
                       </div>
                     </div>

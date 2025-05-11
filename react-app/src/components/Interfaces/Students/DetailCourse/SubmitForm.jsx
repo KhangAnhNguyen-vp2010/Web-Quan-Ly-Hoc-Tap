@@ -1,55 +1,13 @@
-import { useState } from "react";
 import styles from "./SubmitForm.module.scss";
-import axiosClient from "../../../../api/axiosClient";
+import { useSubmitForm } from "../../../../Hooks/student/useSubmitForm";
 function SubmitForm({ user, assignment, onClose, onSubmit, test }) {
-  const [loading, setLoading] = useState(false);
-  const [files, setFiles] = useState([]);
-  const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-
-    setLoading(true);
-
-    try {
-      if (assignment) {
-        await axiosClient.post(
-          `/Students/submitAssignment/${user.id}/${assignment.assignmentId}`,
-          formData,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      } else {
-        await axiosClient.post(
-          `/Students/submitTest/${user.id}/${test.testId}`,
-          formData,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      }
-
-      onSubmit();
-      onClose();
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { loading, handleFileChange, handleSubmit } = useSubmitForm({
+    user,
+    assignment,
+    onClose,
+    onSubmit,
+    test,
+  });
 
   return (
     <div className={styles.overlay}>

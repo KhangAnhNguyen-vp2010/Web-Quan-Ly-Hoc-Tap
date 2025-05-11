@@ -2,7 +2,12 @@ import React, { useEffect } from "react";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailAssignment/CompletedAssignmentsList.module.css"; // Import the CSS module
 import { useCompletedAssignments } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailAssignment/useCompletedAssignments";
 
-const CompletedAssignmentsList = ({ assignmentId, countCompleted }) => {
+const CompletedAssignmentsList = ({
+  assignmentId,
+  countCompleted,
+  onOpenStudentAssignment,
+  student,
+}) => {
   const { completedUsers, loading } = useCompletedAssignments(assignmentId);
 
   useEffect(() => {
@@ -24,13 +29,23 @@ const CompletedAssignmentsList = ({ assignmentId, countCompleted }) => {
           </div>
         ) : (
           completedUsers.list.map((user) => (
-            <li key={user.userID} className={styles.assignmentItem}>
+            <li
+              key={user.userID}
+              className={styles.assignmentItem}
+              onClick={() => {
+                onOpenStudentAssignment();
+                student(user);
+              }}
+            >
               <span className={styles.assignmentText}>
                 Mã số: {user.userID}
               </span>
               <span className={styles.assignmentText}>{user.full_Name}</span>
               <span className={styles.completionDate}>
-                Completed at: {new Date(user.completion_Date).toLocaleString()}
+                Completed at: {user.completion_Date}
+              </span>
+              <span className={styles.completionDate}>
+                Grade: {user.grade !== null ? user.grade : "Chưa chấm"}
               </span>
             </li>
           ))

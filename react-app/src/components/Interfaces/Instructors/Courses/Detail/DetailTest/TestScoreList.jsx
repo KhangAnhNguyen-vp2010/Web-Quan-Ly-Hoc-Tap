@@ -1,7 +1,7 @@
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestScoreList.module.css";
 import { useTestScores } from "../../../../../../Hooks/instructor/Course/DetailCourse/DetailTest/useTestScores";
 
-const TestScoreList = ({ courseId, testId }) => {
+const TestScoreList = ({ courseId, testId, onOpenStudentTest }) => {
   const { scores, loading, error } = useTestScores(courseId, testId);
 
   if (loading) {
@@ -42,11 +42,12 @@ const TestScoreList = ({ courseId, testId }) => {
             <th>Mã học viên</th>
             <th>Tên học viên</th>
             <th>Trạng thái</th>
+            <th>Điểm</th>
           </tr>
         </thead>
         <tbody>
-          {scores.map((s) => (
-            <tr key={s.userID}>
+          {scores.map((s, index) => (
+            <tr key={index} onClick={() => onOpenStudentTest(s)}>
               <td>{s.userId}</td>
               <td>{s.full_Name}</td>
               <td>
@@ -64,6 +65,7 @@ const TestScoreList = ({ courseId, testId }) => {
                   </span>
                 )}
               </td>
+              <td>{s.score !== null ? s.score : "Chưa có điểm"}</td>
             </tr>
           ))}
         </tbody>
