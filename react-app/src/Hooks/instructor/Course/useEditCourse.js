@@ -38,6 +38,7 @@ export const useEditCourse = (courseObject, setLoad, onClose) => {
         withCredentials: true,
       });
     } catch (error) {
+      toast.error(error.response.data);
       console.error("Error updating course:", error);
       return;
     }

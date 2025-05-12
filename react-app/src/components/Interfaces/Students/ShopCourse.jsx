@@ -18,7 +18,7 @@ const ShopCourse = ({ user }) => {
     show: false,
   });
   const [join, setJoin] = useState(false);
-  const { registerCourse } = useJoinTheCourse(user.id);
+  const { registerCourse, loadingJoin } = useJoinTheCourse(user.id);
 
   const fetchCourses = async () => {
     try {
@@ -124,8 +124,11 @@ const ShopCourse = ({ user }) => {
                             registerCourse(course.courseId);
                             setJoin(!join);
                           }}
+                          disabled={loadingJoin}
                         >
-                          Tham gia miễn phí
+                          {loadingJoin
+                            ? "Đang tham gia..."
+                            : "Tham gia miễn phí"}
                         </button>
                       </div>
                     </div>

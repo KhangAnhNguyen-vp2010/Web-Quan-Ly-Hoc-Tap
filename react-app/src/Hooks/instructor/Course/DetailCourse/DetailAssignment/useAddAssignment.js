@@ -6,6 +6,7 @@ export function useAddAssignment(courseId, onClose) {
   const [form, setForm] = useState({
     assignmentName: "",
     assignmentContent: "",
+    dueDate: "",
   });
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,18 +23,32 @@ export function useAddAssignment(courseId, onClose) {
     }));
   };
 
+  const isValidDate = (dateStr) => {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regex.test(dateStr)) return false;
+
+    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split("-").map(Number);
+
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() + 1 === month &&
+      date.getDate() === day
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(files);
 
-    if (!form.assignmentName.trim() || !form.assignmentContent.trim()) {
-      toast.error("Please enter complete information");
+    if (form.dueDate === "" || !isValidDate(form.dueDate)) {
+      toast.error("Invalid submission deadline");
       return;
     }
 
     const formData = new FormData();
     formData.append("courseID", courseId);
     formData.append("assignmentName", form.assignmentName);
+    formData.append("dueDate", form.dueDate);
     formData.append("assignmentContent", form.assignmentContent);
 
     for (let i = 0; i < files.length; i++) {

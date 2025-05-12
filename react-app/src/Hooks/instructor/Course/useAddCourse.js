@@ -49,13 +49,13 @@ export const useAddCourse = (user, setLoad, onClose) => {
       });
 
       toast.success("Course added successfully!");
-      resetForm();
-      onClose(); // đóng modal
-      setLoad((prev) => !prev);
     } catch (err) {
-      toast.error("Error adding course.");
+      toast.error(err.response.data);
       console.error(err);
     }
+    resetForm();
+    onClose();
+    setLoad((prev) => !prev);
   };
 
   return {

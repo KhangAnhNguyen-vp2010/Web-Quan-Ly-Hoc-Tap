@@ -1,0 +1,152 @@
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); // phủ mờ nền
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.popupContent {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 300px;
+  max-width: 90%;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  z-index: 1001;
+  overflow: auto;
+  max-height: 80vh;
+  width: 80%;
+  animation: slideUp 0.3s ease-out;
+}
+
+.popupContent::-webkit-scrollbar {
+  width: 6px; /* Điều chỉnh độ rộng của thanh cuộn */
+}
+
+.popupContent::-webkit-scrollbar-thumb {
+  background: #888; /* Màu sắc của phần thanh cuộn */
+  border-radius: 5px;
+}
+
+.popupContent::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Màu sắc nền của thanh cuộn */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.btn-close {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #3b82f6; // màu blue chính (Tailwind: blue-500)
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #97b8ff; // màu hover (blue-600)
+  }
+}
+
+.buttonPrediction {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.prediction {
+  padding: 10px 10px;
+  font-size: 16px;
+  background-color: rgb(249, 142, 142);
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.prediction:hover {
+  background-color: rgb(244, 80, 80);
+  transform: scale(1.05);
+}
+
+.prediction:focus {
+  outline: none;
+}
+
+/* Typing Effect */
+.typingEffect {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #000;
+  width: 0;
+  animation: typing 3s steps(40) 1s forwards, blink 0.75s step-end infinite,
+    expandContract 3s infinite alternate;
+}
+
+@keyframes typing {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* Expand and Contract Effect */
+@keyframes expandContract {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}

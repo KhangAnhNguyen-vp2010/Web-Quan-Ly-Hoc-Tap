@@ -22,6 +22,17 @@ function AddAssignment({ courseId, onClose }) {
               required
             />
           </div>
+
+          <div>
+            <label>Deadline:</label>
+            <input
+              type="date"
+              name="dueDate"
+              value={form.dueDate}
+              onChange={handleChange}
+            />
+          </div>
+
           <div>
             <label>Exercise content:</label>
             <textarea

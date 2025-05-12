@@ -3,11 +3,10 @@ import { toast } from "react-toastify";
 import axiosClient from "../../api/axiosClient";
 
 export const useJoinTheCourse = (userId) => {
-  const [loading, setLoading] = useState(false);
+  const [loadingJoin, setLoadingJoin] = useState(false);
 
   const registerCourse = async (courseId, onSuccess = () => {}) => {
     try {
-      setLoading(true);
       await axiosClient.post(
         `/Students/JoinTheCourse`,
         {
@@ -20,11 +19,11 @@ export const useJoinTheCourse = (userId) => {
       onSuccess();
     } catch (error) {
       console.error("Lỗi đăng ký khoá học: ", error);
-      toast.error("Đăng ký thất bại. Vui lòng thử lại!");
+      toast.error(error.response.data);
     } finally {
-      setLoading(false);
+      setLoadingJoin(false);
     }
   };
 
-  return { registerCourse, loading };
+  return { registerCourse, loadingJoin, setLoadingJoin };
 };

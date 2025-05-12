@@ -27,10 +27,12 @@ function StudentView({ assignment, student, onClose, onUpdateScore, test }) {
             <p>
               Completed At:{" "}
               {student.completion_Date ||
-                new Date(student.completedDate).toLocaleDateString()}
+                (student.completedDate
+                  ? new Date(student.completedDate).toLocaleDateString()
+                  : "Chưa xong")}
             </p>
           </div>
-          <div class={styles["grade-input"]}>
+          <div className={styles["grade-input"]}>
             <label htmlFor="score">Score:</label>
             <input
               type="number"

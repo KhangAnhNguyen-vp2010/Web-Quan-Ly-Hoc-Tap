@@ -4,7 +4,7 @@ import { useJoinTheCourse } from "../../../../Hooks/student/useJoinTheCourse";
 function DetailCard({ user, course, onClose, onJoin }) {
   if (!course) return null;
 
-  const { registerCourse, loading } = useJoinTheCourse(user.id);
+  const { registerCourse, loadingJoin } = useJoinTheCourse(user.id);
 
   const handleRegister = (courseId) => {
     registerCourse(courseId, onClose);
@@ -32,9 +32,11 @@ function DetailCard({ user, course, onClose, onJoin }) {
           <button
             className={styles.registerButton}
             onClick={() => handleRegister(course.courseId)}
-            disabled={loading}
+            disabled={loadingJoin}
           >
-            {loading ? "Đang thực thi..." : "Tham gia khoá học này miễn phí"}
+            {loadingJoin
+              ? "Đang thực thi..."
+              : "Tham gia khoá học này miễn phí"}
           </button>
         </div>
       </div>
