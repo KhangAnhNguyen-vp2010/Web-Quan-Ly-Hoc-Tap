@@ -380,5 +380,22 @@ namespace WebAPI.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
+        [HttpGet("student/{userId}/tests/{courseId}")]
+        public async Task<IActionResult> GetTestScoresByStudent(int userId, int courseId)
+        {
+            var results = await _context.TestScores
+                .Where(ts => ts.UserId == userId && ts.Test.CourseId == courseId && ts.Score != null)
+                .Select(ts => new
+                {
+                    ts.ScoreId,
+                    ts.Test.TestName,
+                    ts.Test.TestDate,
+                    ts.Score
+                })
+                .ToListAsync();
+
+            return Ok(results);
+        }
+
     }
 }

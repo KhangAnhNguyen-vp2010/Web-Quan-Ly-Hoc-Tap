@@ -171,11 +171,11 @@ namespace WebAPI.Controllers
             if (file != null && file.Length > 0)
             {
                 // Kiểm tra định dạng file ảnh (chỉ cho phép ảnh)
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
                 var fileExtension = Path.GetExtension(file.FileName).ToLower();
                 if (!allowedExtensions.Contains(fileExtension))
                 {
-                    return BadRequest("Chỉ chấp nhận các file hình ảnh (.jpg, .jpeg, .png, .gif).");
+                    return BadRequest("Chỉ chấp nhận các file hình ảnh (.jpg, .jpeg, .png, .gif, .webp).");
                 }
 
                 // Tạo đường dẫn để lưu ảnh

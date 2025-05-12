@@ -163,6 +163,12 @@ namespace WebAPI.Controllers
                 return NotFound("Course not found.");
             }
 
+            //Kiểm tra nếu đã đăng ký rồi
+            var alreadyEnrolled = await _context.Enrollments
+                                .AnyAsync(e => e.UserId == dto.UserID && e.CourseId == dto.CourseID);
+            if (alreadyEnrolled)
+                return BadRequest("Bạn đã đăng ký khoá học này rồi!!!");
+
             // Create a new Enrollment
             var enrollment = new Enrollment
             {
@@ -172,6 +178,36 @@ namespace WebAPI.Controllers
             };
 
             _context.Enrollments.Add(enrollment);
+
+            await _context.SaveChangesAsync();
+
+            //Lấy danh sách Assignments
+            var assignments = await _context.Assignments
+                            .Where(a => a.CourseId == dto.CourseID)
+                            .ToListAsync();
+
+            var assignmentCompletedList = assignments.Select(a => new AssignmentsCompleted
+            {
+                UserId = dto.UserID,
+                AssignmentId = a.AssignmentId,
+            }).ToList();
+
+            _context.AssignmentsCompleteds.AddRange(assignmentCompletedList);
+            
+
+            //Lấy danh sách Tests
+            var tests = await _context.Tests
+                    .Where(t => t.CourseId == dto.CourseID)
+                    .ToListAsync();
+
+            var testScoreList = tests.Select(t => new TestScore
+            {
+                UserId = dto.UserID,
+                TestId = t.TestId,
+            }).ToList();
+
+            _context.TestScores.AddRange(testScoreList);
+
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Create successfully!!!" });

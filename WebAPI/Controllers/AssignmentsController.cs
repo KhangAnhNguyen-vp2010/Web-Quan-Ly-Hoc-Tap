@@ -130,7 +130,7 @@ namespace WebAPI.Controllers
             {
                 CourseId = request.CourseID,
                 AssignmentName = request.AssignmentName,
-                DueDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                DueDate = request.DueDate,
                 ExerciseContent = request.AssignmentContent,
             };
 
@@ -415,5 +415,27 @@ namespace WebAPI.Controllers
             return Ok(new { message = "Adding successfully." });
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        //////////////////////////////////////////////////////////////////////////////GET ASSIGNMENT SCORES/////////////////////////////////////////////
+        [Authorize]
+        [HttpGet("student/{userId}/assignments/{courseId}")]
+        public async Task<IActionResult> GetAssignmentScoresByStudent(int userId, int courseId)
+        {
+            var results = await _context.AssignmentsCompleteds
+                .Where(ac => ac.UserId == userId && ac.Assignment.CourseId == courseId && ac.Grade != null)
+                .Select(ac => new
+                {
+                    ac.CompletionId,
+                    ac.Assignment.AssignmentName,
+                    ac.CompletionDate,
+                    ac.Grade
+                })
+                .ToListAsync();
+
+            return Ok(results);
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     }
 }
