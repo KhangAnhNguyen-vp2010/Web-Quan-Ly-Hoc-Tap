@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../../../api/axiosClient";
 
 export const useAssignmentScores = ({ studentId, courseId }) => {
-  const [listAssignmentScores, getListAssignmentScores] = useState([]);
+  const [listAssignmentScores, setListAssignmentScores] = useState([]);
+  const [SCA_AssignmentScores, setSCA_AssignmentScores] = useState({
+    studyTime: "",
+    totalAssignmentsOntime: "",
+    totalAssignmentsLate: "",
+    AVG: "",
+  });
   const fetch = async () => {
     try {
       const res = await axiosClient.get(
@@ -10,7 +16,13 @@ export const useAssignmentScores = ({ studentId, courseId }) => {
         { withCredentials: true }
       );
 
-      getListAssignmentScores(res.data);
+      setListAssignmentScores(res.data.assignments);
+      setSCA_AssignmentScores({
+        studyTime: res.data.studyTime,
+        totalAssignmentsOntime: res.data.totalAssignments_Ontime,
+        totalAssignmentsLate: res.data.totalAssignments_Late,
+        AVG: res.data.averageGrade,
+      });
     } catch (error) {}
   };
 
@@ -18,5 +30,5 @@ export const useAssignmentScores = ({ studentId, courseId }) => {
     fetch();
   }, []);
 
-  return { listAssignmentScores };
+  return { listAssignmentScores, SCA_AssignmentScores };
 };

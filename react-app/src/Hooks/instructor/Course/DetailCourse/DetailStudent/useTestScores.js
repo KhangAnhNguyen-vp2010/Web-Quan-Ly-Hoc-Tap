@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../../../api/axiosClient";
 
 export const useTestScores = ({ studentId, courseId }) => {
-  const [listTestScores, getListTestScores] = useState([]);
+  const [listTestScores, setListTestScores] = useState([]);
+  const [SCA_TestScores, setSCA_TestScores] = useState({
+    studyTime: "",
+    totalTestsOntime: "",
+    totalTestsLate: "",
+    AVG: "",
+  });
   const fetch = async () => {
     try {
       const res = await axiosClient.get(
@@ -10,7 +16,13 @@ export const useTestScores = ({ studentId, courseId }) => {
         { withCredentials: true }
       );
 
-      getListTestScores(res.data);
+      setListTestScores(res.data.testScores);
+      setSCA_TestScores({
+        studyTime: res.data.studyTime,
+        totalTestsOntime: res.data.totalTests_Ontime,
+        totalTestsLate: res.data.totalTests_Late,
+        AVG: res.data.averageScore,
+      });
     } catch (error) {}
   };
 
@@ -18,5 +30,5 @@ export const useTestScores = ({ studentId, courseId }) => {
     fetch();
   }, []);
 
-  return { listTestScores };
+  return { listTestScores, SCA_TestScores };
 };

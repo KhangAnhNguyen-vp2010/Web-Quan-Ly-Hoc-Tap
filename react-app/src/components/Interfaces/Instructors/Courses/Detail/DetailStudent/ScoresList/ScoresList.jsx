@@ -17,7 +17,18 @@ function ScoresList({ scores }) {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>📙{item.assignmentName || item.testName}</td>
-                <td>🕒{item.completionDate || item.testDate}</td>
+                <td>
+                  🕒
+                  {item.completionDate ||
+                    new Date(item.completedDate).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false, // Nếu bạn muốn sử dụng giờ 24h
+                    })}
+                </td>
                 <td>{item.grade || item.score}</td>
               </tr>
             ))

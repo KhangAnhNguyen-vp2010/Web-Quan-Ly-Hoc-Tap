@@ -7,6 +7,7 @@ export const useJoinTheCourse = (userId) => {
 
   const registerCourse = async (courseId, onSuccess = () => {}) => {
     try {
+      setLoadingJoin(true);
       await axiosClient.post(
         `/Students/JoinTheCourse`,
         {
