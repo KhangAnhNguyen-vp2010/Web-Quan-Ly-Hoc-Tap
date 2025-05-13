@@ -429,11 +429,32 @@ namespace WebAPI.Controllers
                     ac.CompletionId,
                     ac.Assignment.AssignmentName,
                     ac.CompletionDate,
-                    ac.Grade
+                    ac.Grade,
+                    ac.Assignment.DueDate,
                 })
                 .ToListAsync();
 
-            return Ok(results);
+            // Tính Studytime, TotalAssignments, và AverageGrade
+            int studyTime = results.Sum(ac =>
+                                    ac.CompletionDate <= ac.DueDate ? 3 : 1);
+
+            int totalAssignments = results.Count;
+
+            int totalAssignments_Ontime = results.Count(ac => ac.CompletionDate <= ac.DueDate);
+            int totalAssignments_Late = results.Count(ac => ac.CompletionDate > ac.DueDate);
+
+            decimal averageGrade = totalAssignments > 0
+                                ? Math.Round(results.Average(ac => ac.Grade ?? 0), 1)
+                                : 0;
+
+            return Ok(new
+            {
+                Assignments = results,
+                StudyTime = studyTime,
+                TotalAssignments_Ontime = totalAssignments_Ontime,
+                TotalAssignments_Late = totalAssignments_Late,
+                AverageGrade = averageGrade,
+            });
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

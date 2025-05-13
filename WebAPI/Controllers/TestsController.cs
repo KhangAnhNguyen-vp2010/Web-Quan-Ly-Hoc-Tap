@@ -380,6 +380,9 @@ namespace WebAPI.Controllers
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        ///////////////////////////////////////////////////////////////////GET TEST SCORES//////////////////////////////////////////////////////////
+        [Authorize]
         [HttpGet("student/{userId}/tests/{courseId}")]
         public async Task<IActionResult> GetTestScoresByStudent(int userId, int courseId)
         {
@@ -389,13 +392,33 @@ namespace WebAPI.Controllers
                 {
                     ts.ScoreId,
                     ts.Test.TestName,
-                    ts.Test.TestDate,
-                    ts.Score
+                    ts.CompletedDate,
+                    ts.Score,
+                    ts.EndDate,
                 })
                 .ToListAsync();
 
-            return Ok(results);
-        }
+            // Tính StudyTime
+            int studyTime = results.Sum(item => item.CompletedDate <= item.EndDate ? 3 : 1);
 
+            // Tính số lượng bài kiểm tra có điểm
+            int count = results.Count;
+
+            int totalTests_Ontime = results.Count(ac => ac.CompletedDate <= ac.EndDate);
+            int totalTests_Late = results.Count(ac => ac.CompletedDate > ac.EndDate);
+
+            // Trung bình điểm (Score), làm tròn 1 chữ số thập phân
+            decimal avgScore = count > 0 ? Math.Round(results.Average(item => item.Score ?? 0), 1) : 0;
+
+            return Ok(new
+            {
+                TestScores = results,
+                StudyTime = studyTime,
+                TotalTests_Ontime = totalTests_Ontime,
+                TotalTests_Late = totalTests_Late,
+                AverageScore = avgScore
+            });
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 }
