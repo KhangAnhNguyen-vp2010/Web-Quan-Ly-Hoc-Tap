@@ -15,14 +15,15 @@ model_xgboost = load_model_xgboost()
 @router.post("/predict-LinearRegression")
 def predict(data: InputData):
     result = predict_score(model_linear, data)
-    return {"predicted_score": round(result, 1)}
+    return result
+
 
 @router.post("/predict-RandomForest")
 def predict(data: InputData):
     result = predict_score(model_random_forest, data)
-    return {"predicted_score": round(result, 1)}
+    return result
 
 @router.post("/predict-XGBoost")
 def predict(data: InputData):
     result = predict_score(model_xgboost, data)
-    return {"predicted_score": round(float(result), 1)}
+    return result
