@@ -11,6 +11,7 @@ import EditCourse from "../components/Interfaces/Instructors/Courses/EditCourse"
 import { CourseProvider } from "../contexts/CourseContext";
 import AddCourseForm from "../components/Interfaces/Instructors/Courses/AddCourse";
 import DetailCourse from "../components/Interfaces/Instructors/Courses/DetailCourse";
+import { useGetUser } from "../Hooks/useGetUser";
 
 function Instructor() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,8 +38,12 @@ function Instructor() {
     setShowProfile(!showProfile);
   };
 
+  const { user } = useGetUser();
+
+  console.log(user);
+
   const rightComponents = [
-    <Dashboard key="0" isCollapsed={collapsed} />,
+    <Dashboard key="0" isCollapsed={collapsed} user={user} />,
     <Courses
       key="1"
       onCloseEditForm={() => setShowEditForm(!showEditForm)}
@@ -47,6 +52,10 @@ function Instructor() {
       onCloseDetailForm={() => setShowDetailForm(!showDetailForm)}
     />,
   ];
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <>

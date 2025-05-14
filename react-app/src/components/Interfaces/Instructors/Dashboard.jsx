@@ -1,62 +1,12 @@
 import clsx from "clsx";
 import styles from "../../../assets/css/Instructor/Dashboard.module.css";
 import Chart from "react-apexcharts";
-function Dashboard({ isCollapsed }) {
-  const barOptions = {
-    chart: {
-      id: "bar-chart",
-      toolbar: {
-        show: false,
-      },
-    },
-    xaxis: {
-      categories: [
-        "Product A",
-        "Product B",
-        "Product C",
-        "Product D",
-        "Product E",
-      ],
-      labels: {
-        style: {
-          colors: ["#fff", "#fff", "#fff", "#fff", "#fff"],
-          fontSize: "10px",
-        },
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: "#fff",
-          fontSize: "10px",
-        },
-      },
-    },
-    plotOptions: {
-      bar: {
-        distributed: true, // ⚠️ Bắt buộc để mỗi cột có 1 màu riêng
-      },
-    },
-    colors: ["#F44336", "#2196F3", "#FFC107", "#4CAF50", "#9C27B0"],
-    tooltip: {
-      enabled: true, // Kích hoạt tooltip
-      theme: "dark", // Giao diện tối cho tooltip
-      style: {
-        fontSize: "14px", // Kích thước chữ trong tooltip
-        fontWeight: "bold", // Đậm chữ
-      },
-    },
-    legend: {
-      show: false, // Tắt legend dưới
-    },
-  };
+import { useTop5Course } from "../../../Hooks/Other/useTop5Course";
+import { useGetTotalCoursesByInstructor } from "../../../Hooks/Other/useGetTotalCoursesByInstructor";
 
-  const barSeries = [
-    {
-      name: "Sales",
-      data: [50, 70, 30, 90, 40],
-    },
-  ];
+function Dashboard({ isCollapsed, user }) {
+  const { barOptions, barSeries } = useTop5Course({ id: user.id });
+  const { total } = useGetTotalCoursesByInstructor({ id: user.id });
 
   const areaOptions = {
     chart: {
@@ -119,10 +69,10 @@ function Dashboard({ isCollapsed }) {
       <div className={clsx(styles["main-cards"])}>
         <div className={clsx(styles.card)}>
           <div className={clsx(styles["card-inner"])}>
-            <h3>CATEGORIES</h3>
+            <h3>MY COURSES</h3>
             <span className="material-symbols-outlined">inventory_2</span>
           </div>
-          <h1>249</h1>
+          <h1>{total}</h1>
         </div>
 
         <div className={clsx(styles.card)}>
@@ -135,7 +85,7 @@ function Dashboard({ isCollapsed }) {
 
         <div className={clsx(styles.card)}>
           <div className={clsx(styles["card-inner"])}>
-            <h3>CUSTOMERS</h3>
+            <h3>STUDENTS</h3>
             <span className="material-symbols-outlined">groups</span>
           </div>
           <h1>1500</h1>
@@ -154,7 +104,7 @@ function Dashboard({ isCollapsed }) {
 
       <div className={clsx(styles.charts)}>
         <div className={clsx(styles["charts-card"])}>
-          <h2 className={clsx(styles["chart-title"])}>Top 5 Product</h2>
+          <h2 className={clsx(styles["chart-title"])}>Top 5 Course</h2>
           <Chart
             key={isCollapsed ? "collapsed" : "expanded"}
             options={barOptions}

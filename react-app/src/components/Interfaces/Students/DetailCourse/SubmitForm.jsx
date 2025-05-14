@@ -18,7 +18,7 @@ function SubmitForm({ user, assignment, onClose, onSubmit, test }) {
         <form onSubmit={handleSubmit} className={styles["form-container"]}>
           <div>
             <label>File đính kèm</label>
-            <input type="file" multiple onChange={handleFileChange} />
+            <input type="file" multiple onChange={handleFileChange} required />
           </div>
 
           <button type="submit" disabled={loading}>

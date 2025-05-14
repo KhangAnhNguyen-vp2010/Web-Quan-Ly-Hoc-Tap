@@ -1,5 +1,6 @@
 import styles from "./ScoresList.module.scss";
 function ScoresList({ scores }) {
+  console.log(scores);
   return (
     <div className={styles.container}>
       <table className={styles.table}>
@@ -8,6 +9,7 @@ function ScoresList({ scores }) {
             <th>🔢STT</th>
             <th>📗Name</th>
             <th>📅Completed At</th>
+            <th>⏰Dead Line</th>
             <th>💯Score</th>
           </tr>
         </thead>
@@ -29,12 +31,24 @@ function ScoresList({ scores }) {
                       hour12: false, // Nếu bạn muốn sử dụng giờ 24h
                     })}
                 </td>
+                <td>
+                  🕒
+                  {item.dueDate ||
+                    new Date(item.endDate).toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false, // Nếu bạn muốn sử dụng giờ 24h
+                    })}
+                </td>
                 <td>{item.grade || item.score}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="4" className={styles.noData}>
+              <td colSpan="5" className={styles.noData}>
                 <p>📦Chưa có dữ liệu📦</p>
               </td>
             </tr>
