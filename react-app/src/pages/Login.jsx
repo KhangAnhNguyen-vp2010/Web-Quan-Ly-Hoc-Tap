@@ -47,6 +47,7 @@ function Login() {
   const {
     loginForm,
     registerForm,
+    loading,
     handleLoginChange,
     handleRegisterChange,
     handleLoginSubmit,
@@ -66,19 +67,30 @@ function Login() {
           onChange={handleLoginChange}
           onSubmit={handleLoginSubmit}
           showForgot={() => setShowForgot(!showForgot)}
+          loading={loading}
         />
         <RegisterForm
           formData={registerForm}
           onChange={handleRegisterChange}
           onSubmit={handleRegisterSubmit}
+          loading={loading}
         />
         <div className={clsx(styles["toggle-box"])}>
           <div className={clsx(styles["toggle-panel"], styles["toggle-left"])}>
             <h1>Hello, Welcome!</h1>
             <p>Don't have an account?</p>
             <button
-              className={clsx(styles.btn, styles["register-btn"])}
+              className={
+                loading
+                  ? clsx(
+                      styles.btn,
+                      styles["register-btn"],
+                      styles["btn-onSubmit"]
+                    )
+                  : clsx(styles.btn, styles["register-btn"])
+              }
               onClick={handleRegister}
+              disabled={loading}
             >
               Register
             </button>
@@ -87,8 +99,17 @@ function Login() {
             <h1>Welcome Back!</h1>
             <p>Already have an account?</p>
             <button
-              className={clsx(styles.btn, styles["login-btn"])}
+              className={
+                loading
+                  ? clsx(
+                      styles.btn,
+                      styles["login-btn"],
+                      styles["btn-onSubmit"]
+                    )
+                  : clsx(styles.btn, styles["login-btn"])
+              }
               onClick={handleLogin}
+              disabled={loading}
             >
               Login
             </button>

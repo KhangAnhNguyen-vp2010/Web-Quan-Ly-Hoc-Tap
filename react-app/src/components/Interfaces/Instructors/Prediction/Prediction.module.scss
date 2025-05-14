@@ -121,7 +121,8 @@
   text-align: center;
 
   .click-btn {
-    background-color: #4a90e2;
+    width: 40%;
+    margin: 20px;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -131,13 +132,33 @@
     transition: all 0.3s ease;
 
     &:hover {
-      background-color: #357acb;
       transform: scale(1.05);
     }
 
     &:active {
       transform: scale(0.97);
     }
+  }
+}
+
+.linear {
+  background-color: #eaa433;
+  &:hover {
+    background-color: #d18e24;
+  }
+}
+
+.random-forest {
+  background-color: #bac430;
+  &:hover {
+    background-color: #989f2d;
+  }
+}
+
+.xg-boost {
+  background-color: #9041cc;
+  &:hover {
+    background-color: #6e2e9f;
   }
 }
 

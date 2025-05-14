@@ -9,6 +9,7 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
     password: "",
     email: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleLoginChange = (e) => {
     setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
@@ -25,16 +26,22 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
     if (loginForm.password.trim() === "")
       return toast.error("Password cannot be empty!");
 
-    try {
-      const res = await axiosClient.post("/Auth/login", loginForm, {
-        withCredentials: true,
-      });
-      toast.success("Login successful!");
-      setLoginForm({ username: "", password: "" });
-      onSuccessLogin?.(res.data);
-    } catch (error) {
-      toast.error(error.response?.data || "Login failed!");
-    }
+    setLoading(true);
+
+    setTimeout(async () => {
+      try {
+        const res = await axiosClient.post("/Auth/login", loginForm, {
+          withCredentials: true,
+        });
+        toast.success("Login successful!");
+        setLoginForm({ username: "", password: "" });
+        onSuccessLogin?.(res.data);
+      } catch (error) {
+        toast.error(error.response?.data || "Login failed!");
+      } finally {
+        setLoading(false);
+      }
+    }, 1000);
   };
 
   const handleRegisterSubmit = async (e) => {
@@ -46,19 +53,26 @@ export const useAuthForm = (onSuccessLogin, onSwitchToLogin) => {
     if (registerForm.email.trim() === "")
       return toast.error("Email is required!");
 
-    try {
-      await axiosClient.post("/Auth/register", registerForm);
-      toast.success("Register successful! Please login.");
-      setRegisterForm({ username: "", password: "", email: "" });
-      onSwitchToLogin?.();
-    } catch (error) {
-      toast.error(error.response?.data || "Register failed!");
-    }
+    setLoading(true);
+
+    setTimeout(async () => {
+      try {
+        await axiosClient.post("/Auth/register", registerForm);
+        toast.success("Register successful! Please login.");
+        setRegisterForm({ username: "", password: "", email: "" });
+        onSwitchToLogin?.();
+      } catch (error) {
+        toast.error(error.response?.data || "Register failed!");
+      } finally {
+        setLoading(false);
+      }
+    }, 1000);
   };
 
   return {
     loginForm,
     registerForm,
+    loading,
     handleLoginChange,
     handleRegisterChange,
     handleLoginSubmit,

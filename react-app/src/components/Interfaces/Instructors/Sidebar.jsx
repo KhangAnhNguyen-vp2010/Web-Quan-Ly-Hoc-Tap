@@ -8,10 +8,11 @@ const Sidebar = ({
   onClickCollapsed,
   onClickOpenProfile,
 }) => {
-  const { isOpen, handleOpenClick, handleOnClick, handleLogout } = useSidebar({
-    onLinkClick,
-    onClickCollapsed,
-  });
+  const { isOpen, loading, handleOpenClick, handleOnClick, handleLogout } =
+    useSidebar({
+      onLinkClick,
+      onClickCollapsed,
+    });
   return (
     <div className={clsx(styles.body)} data-aos="zoom-in" data-aos-delay="1000">
       <aside
@@ -73,7 +74,9 @@ const Sidebar = ({
           </li>
           <li>
             <span className="material-symbols-outlined">logout</span>
-            <a onClick={handleLogout}>Log Out</a>
+            <a onClick={!loading && handleLogout}>
+              {loading ? "Log Out..." : "Log Out"}
+            </a>
           </li>
         </ul>
       </aside>

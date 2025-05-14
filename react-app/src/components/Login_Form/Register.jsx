@@ -2,7 +2,7 @@ import styles from "../../assets/css/Login_Form/Login.module.css";
 import clsx from "clsx";
 import "boxicons/css/boxicons.min.css";
 
-function Register({ formData, onChange, onSubmit }) {
+function Register({ formData, onChange, onSubmit, loading }) {
   return (
     <div className={clsx(styles["form-box"], styles.register)}>
       <form onSubmit={onSubmit}>
@@ -40,8 +40,15 @@ function Register({ formData, onChange, onSubmit }) {
           />
           <i className="bx bxs-lock-alt"></i>
         </div>
-        <button type="submit" className={clsx(styles.btn)}>
-          Register
+        <button
+          type="submit"
+          className={
+            loading
+              ? clsx(styles.btn, styles["btn-onSubmit"])
+              : clsx(styles.btn)
+          }
+        >
+          {loading ? "Register..." : "Register"}
         </button>
         <p>or register with social platforms</p>
         <div className={clsx(styles["social-icons"])}>

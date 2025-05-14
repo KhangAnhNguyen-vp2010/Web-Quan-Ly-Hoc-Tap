@@ -21,10 +21,11 @@ export const useSidebar = ({ onLinkClick, onClickCollapsed }) => {
     navigate("/signup");
   };
 
-  const { handleLogout } = useLogout(handleSuccessLogout);
+  const { loading, handleLogout } = useLogout(handleSuccessLogout);
 
   return {
     isOpen,
+    loading,
     handleOpenClick,
     handleOnClick,
     handleLogout,

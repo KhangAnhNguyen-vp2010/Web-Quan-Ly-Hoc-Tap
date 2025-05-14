@@ -2,7 +2,7 @@ import styles from "../../assets/css/Login_Form/Login.module.css";
 import clsx from "clsx";
 import "boxicons/css/boxicons.min.css";
 
-function Signup({ formData, onChange, onSubmit, showForgot }) {
+function Signup({ formData, onChange, onSubmit, showForgot, loading }) {
   return (
     <div className={clsx(styles["form-box"], styles.login)}>
       <form onSubmit={onSubmit}>
@@ -32,8 +32,16 @@ function Signup({ formData, onChange, onSubmit, showForgot }) {
         <div className={clsx(styles["forgot-link"])}>
           <a onClick={showForgot}>Forgot Password?</a>
         </div>
-        <button type="submit" className={clsx(styles.btn)}>
-          Login
+        <button
+          type="submit"
+          className={
+            loading
+              ? clsx(styles.btn, styles["btn-onSubmit"])
+              : clsx(styles.btn)
+          }
+          disabled={loading}
+        >
+          {loading ? "Login..." : "Login"}
         </button>
         <p>or login with social platforms</p>
         <div className={clsx(styles["social-icons"])}>
