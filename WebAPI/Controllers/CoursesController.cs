@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.DTOs.Course;
+using WebAPI.DTOs.Other;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
@@ -257,5 +258,44 @@ namespace WebAPI.Controllers
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        [HttpGet("top-courses-by-instructor/{instructorId}")]
+        public async Task<ActionResult<IEnumerable<TopCourseDto>>> GetTopCoursesByInstructor(int instructorId)
+        {
+            var topCourses = await _context.Courses
+                .Where(c => c.InstructorId == instructorId)
+                .GroupJoin(
+                    _context.Enrollments,
+                    course => course.CourseId,
+                    enrollment => enrollment.CourseId,
+                    (course, enrollments) => new
+                    {
+                        course.CourseId,
+                        course.CourseName,
+                        StudentCount = enrollments.Count()
+                    })
+                .OrderByDescending(x => x.StudentCount)
+                .Take(5)
+                .Select(x => new TopCourseDto
+                {
+                    CourseID = x.CourseId,
+                    CourseName = x.CourseName,
+                    StudentCount = x.StudentCount
+                })
+                .ToListAsync();
+
+            return Ok(topCourses);
+        }
+
+
+        [HttpGet("GetTotalCoursesByInstructor/{instructorId}")]
+        public async Task<IActionResult> GetTotalCoursesByInstructor(int instructorId)
+        {
+            var total = await _context.Courses
+                    .Where(c => c.InstructorId == instructorId)
+                    .CountAsync();
+
+            return Ok(total);
+        }
     }
 }
