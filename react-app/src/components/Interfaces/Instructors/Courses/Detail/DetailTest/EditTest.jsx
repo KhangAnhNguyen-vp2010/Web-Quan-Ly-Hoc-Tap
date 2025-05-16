@@ -13,7 +13,7 @@ const EditTest = ({ courseId, initialTest, onUpdate, onClose }) => {
         </button>
         <form onSubmit={handleUpdate} className={styles["form-container"]}>
           <div>
-            <label>Exercise name:</label>
+            <label>Test name:</label>
             <input
               type="text"
               name="testName"
@@ -23,7 +23,7 @@ const EditTest = ({ courseId, initialTest, onUpdate, onClose }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label>Deadline:</label>
             <input
               type="date"
@@ -31,10 +31,10 @@ const EditTest = ({ courseId, initialTest, onUpdate, onClose }) => {
               value={test.testDate}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
           <div>
-            <label>Exercise Content:</label>
+            <label>Test Content:</label>
             <input
               type="text"
               name="testContent"

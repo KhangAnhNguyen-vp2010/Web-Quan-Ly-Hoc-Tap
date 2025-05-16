@@ -21,7 +21,7 @@ function NavStudent({ setIndex }) {
   const handleSuccessLogout = () => {
     navigate("/signup");
   };
-  const { handleLogout } = useLogout(handleSuccessLogout);
+  const { loading, handleLogout } = useLogout(handleSuccessLogout);
 
   const handleChangeIndex = (e, index) => {
     e.preventDefault();
@@ -105,9 +105,13 @@ function NavStudent({ setIndex }) {
               <span>{">"}</span>
             </a>
 
-            <a href="#" className="sub-menu-link" onClick={handleLogout}>
+            <a
+              href="#"
+              className="sub-menu-link"
+              onClick={!loading ? handleLogout : undefined}
+            >
               <img src={logout} alt="logout" />
-              <p>Logout</p>
+              <p>{loading ? "Logout..." : "Logout"}</p>
               <span>{">"}</span>
             </a>
           </div>

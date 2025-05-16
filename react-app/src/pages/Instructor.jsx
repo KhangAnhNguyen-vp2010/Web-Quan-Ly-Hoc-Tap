@@ -40,8 +40,6 @@ function Instructor() {
 
   const { user } = useGetUser();
 
-  console.log(user);
-
   const rightComponents = [
     <Dashboard key="0" isCollapsed={collapsed} user={user} />,
     <Courses

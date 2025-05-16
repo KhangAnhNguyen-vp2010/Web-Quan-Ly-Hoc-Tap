@@ -15,7 +15,7 @@ const AddTest = ({ courseId, onClose }) => {
         </button>
         <form onSubmit={handleAdd} className={styles["form-container"]}>
           <div>
-            <label>Exercise name:</label>
+            <label>Test name:</label>
             <input
               type="text"
               name="testName"
@@ -26,7 +26,7 @@ const AddTest = ({ courseId, onClose }) => {
           </div>
 
           <div>
-            <label>Exercise Content:</label>
+            <label>Test Content:</label>
             <input
               type="text"
               name="testContent"

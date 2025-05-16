@@ -6,12 +6,12 @@ import { useTestScores } from "../../../../../../Hooks/instructor/Course/DetailC
 import { useState } from "react";
 function DetailStudent({ student_CourseId, onClose }) {
   const { listAssignmentScores, SCA_AssignmentScores } = useAssignmentScores({
-    studentId: student_CourseId.student.userId,
+    studentId: student_CourseId.student.userId || student_CourseId.student.id,
     courseId: student_CourseId.courseId,
   });
 
   const { listTestScores, SCA_TestScores } = useTestScores({
-    studentId: student_CourseId.student.userId,
+    studentId: student_CourseId.student.userId || student_CourseId.student.id,
     courseId: student_CourseId.courseId,
   });
 

@@ -46,13 +46,13 @@ export const useEditTest = (initialTest, courseId, onUpdate, onClose) => {
       return;
     }
 
-    if (
-      new Date(test.testDate).setHours(0, 0, 0, 0) <
-      new Date().setHours(0, 0, 0, 0)
-    ) {
-      toast.error("Không chấp nhận ngày trong quá khứ");
-      return;
-    }
+    // if (
+    //   new Date(test.testDate).setHours(0, 0, 0, 0) <
+    //   new Date().setHours(0, 0, 0, 0)
+    // ) {
+    //   toast.error("Không chấp nhận ngày trong quá khứ");
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append("testName", test.testName);

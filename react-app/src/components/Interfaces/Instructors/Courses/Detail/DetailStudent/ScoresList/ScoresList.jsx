@@ -1,6 +1,5 @@
 import styles from "./ScoresList.module.scss";
 function ScoresList({ scores }) {
-  console.log(scores);
   return (
     <div className={styles.container}>
       <table className={styles.table}>

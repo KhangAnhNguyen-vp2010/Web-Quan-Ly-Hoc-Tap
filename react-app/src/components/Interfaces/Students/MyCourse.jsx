@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosClient from "../../../api/axiosClient";
 import styles from "./MyCourse.module.scss";
 import Pagination from "../Instructors/Pagination";
+import DetailStudent from "../Instructors/Courses/Detail/DetailStudent/DetailStudent";
 
 const MyCourse = ({ user, onOpen }) => {
   const [courses, setCourses] = useState([]);
@@ -11,6 +12,11 @@ const MyCourse = ({ user, onOpen }) => {
   const [pageSize] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showDetailStudent, setShowDetailStudent] = useState(false);
+  const [student_CourseId, setStudent_CourseId] = useState({
+    student: null,
+    courseId: null,
+  });
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -78,27 +84,41 @@ const MyCourse = ({ user, onOpen }) => {
           <p>Đang tải dữ liệu...</p>
         ) : (
           <ul className={styles.courseList}>
-            {courses.map((course) => (
-              <li
-                key={course.courseId}
-                className={styles.courseItem}
-                onClick={() => {
-                  onOpen(course);
-                }}
-              >
-                <img
-                  src={
-                    `${import.meta.env.VITE_PUBLIC_URL}${course.img}` ||
-                    "https://via.placeholder.com/100x100?text=No+Image"
-                  }
-                  alt={course.courseName}
-                  className={styles.courseImage}
-                />
-                <div className={styles.courseContent}>
-                  <h4>Tên khoá học: {course.courseName}</h4>
-                  <p>Mô tả:{course.description}</p>
-                </div>
-              </li>
+            {courses.map((course, index) => (
+              <>
+                <li
+                  key={index}
+                  className={styles.courseItem}
+                  onClick={() => {
+                    onOpen(course);
+                  }}
+                >
+                  <img
+                    src={
+                      `${import.meta.env.VITE_PUBLIC_URL}${course.img}` ||
+                      "https://via.placeholder.com/100x100?text=No+Image"
+                    }
+                    alt={course.courseName}
+                    className={styles.courseImage}
+                  />
+                  <div className={styles.courseContent}>
+                    <h4>Tên khoá học: {course.courseName}</h4>
+                    <p>Mô tả:{course.description}</p>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDetailStudent(!showDetailStudent);
+                      setStudent_CourseId({
+                        student: user,
+                        courseId: course.courseId,
+                      });
+                    }}
+                  >
+                    Xem quá trình học
+                  </button>
+                </li>
+              </>
             ))}
           </ul>
         )}
@@ -109,6 +129,12 @@ const MyCourse = ({ user, onOpen }) => {
           onPageChange={(newPage) => setPage(newPage)}
         />
       </div>
+      {showDetailStudent && (
+        <DetailStudent
+          onClose={() => setShowDetailStudent(!showDetailStudent)}
+          student_CourseId={student_CourseId}
+        />
+      )}
     </>
   );
 };

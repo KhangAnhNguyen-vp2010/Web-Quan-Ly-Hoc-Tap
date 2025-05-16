@@ -5,6 +5,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import * as XLSX from "xlsx";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import styles from "../../../../../../assets/css/Instructor/Courses/Detail/DetailTest/TestFilesList.module.css";
+import WordPreview from "../Preview/WordPreview";
 
 const AssignmentFilesList = ({
   assignmentId,
@@ -303,14 +304,16 @@ const AssignmentFilesList = ({
       fileExtension === ".doc"
     ) {
       try {
+        console.log(fullPath);
         return (
           <div className={styles.fullPreviewContainer}>
             {closeButton}
             <div className={styles.docContainer}>
-              <DocViewer
+              {/* <DocViewer
                 documents={[{ uri: fullPath, fileName: file.fileName }]}
                 pluginRenderers={DocViewerRenderers}
-              />
+              /> */}
+              <WordPreview fullPath={fullPath} file={file} />
             </div>
           </div>
         );

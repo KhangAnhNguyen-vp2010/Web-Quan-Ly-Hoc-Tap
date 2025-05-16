@@ -74,8 +74,8 @@ const Sidebar = ({
           </li>
           <li>
             <span className="material-symbols-outlined">logout</span>
-            <a onClick={!loading && handleLogout}>
-              {loading ? "Log Out..." : "Log Out"}
+            <a onClick={!loading ? handleLogout : undefined}>
+              {loading ? "Logout..." : "Logout"}
             </a>
           </li>
         </ul>
