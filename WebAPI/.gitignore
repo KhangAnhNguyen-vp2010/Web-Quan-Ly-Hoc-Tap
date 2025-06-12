@@ -19,3 +19,8 @@ packages/
 *.db
 .env
 *.sqlite
+
+## Publish
+publish/
+wwwroot/dist/
+wwwroot/lib/
