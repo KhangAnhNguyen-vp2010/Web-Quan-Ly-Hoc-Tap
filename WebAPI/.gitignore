@@ -22,5 +22,6 @@ packages/
 
 ## Publish
 publish/
+wwwroot/
 wwwroot/dist/
 wwwroot/lib/
